@@ -88,6 +88,57 @@ def test_full_flow(client):
     assert any(d["layer"] == "L1" for d in diag)
 
 
+def test_training_lifecycle_targets_only_trained_competency(client):
+    """L9 Before→During→After: impact write-back must bump ONLY the trained competency."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    profiles = client.get("/api/v1/profiles", headers=admin).json()
+    employee_id = profiles[0]["employee_id"]
+
+    # Ensure gaps exist for this employee, then pick a real gap.
+    client.post(f"/api/v1/gaps/analyze/{employee_id}", headers=admin)
+    gaps = [g for g in client.get("/api/v1/gaps", headers=admin).json() if g["gap_size"] > 0]
+    assert gaps, "expected at least one real gap"
+    gap = gaps[0]
+
+    # Name of the competency we're about to train (report panels key by name, not id).
+    comps = {c["id"]: c["name_en"] for c in client.get("/api/v1/competencies", headers=admin).json()}
+    trained_name = comps.get(gap["competency_id"])
+
+    # Other competencies with a real gap — these must NOT move when we train a different one.
+    before = client.get(f"/api/v1/reports/employee/{employee_id}", headers=admin).json()
+    other = [c for c in before["competencies"]
+             if c["competency_en"] != trained_name
+             and 0 < c["assessed_level"] < c["required_level"]]
+
+    # BEFORE: design a program for the gap's competency + nominate against the gap.
+    prog = client.post("/api/v1/training/programs", headers=admin, json={
+        "competency_id": gap["competency_id"], "target_level": gap["target_level"],
+    }).json()
+    nom = client.post("/api/v1/training/nominate", headers=admin, json={
+        "employee_id": employee_id, "program_id": prog["program_id"], "gap_id": gap["id"],
+    }).json()
+
+    # DURING.
+    client.post(f"/api/v1/training/nominations/{nom['nomination_id']}/stage", headers=admin,
+                json={"stage": "DURING", "status": "IN_PROGRESS"})
+
+    # AFTER: impact closes the gap fully.
+    impact = client.post(f"/api/v1/training/nominations/{nom['nomination_id']}/impact",
+                         headers=admin, json={
+                             "pre_level": gap["current_level"], "post_level": gap["target_level"],
+                         }).json()
+    assert 0.0 <= impact["gap_closure_pct"] <= 100.0
+
+    # Untrained competencies must be unchanged — the impact must not bump every competency.
+    after = client.get(f"/api/v1/reports/employee/{employee_id}", headers=admin).json()
+    after_by_name = {c["competency_en"]: c for c in after["competencies"]}
+    for c in other:
+        assert after_by_name[c["competency_en"]]["assessed_level"] == c["assessed_level"], (
+            "untrained competency level changed — write-back leaked across competencies"
+        )
+
+
 def test_rls_scopes_tenant(client):
     """An employee-scoped user must not see global/admin-only breadth beyond their tenant."""
     employee = _login(client, "employee@noc.ly")

@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.models.l3_l4 import Competency, CompetencyRequirement
 from app.models.l5_l6 import CompetencyResult, Profile
-from app.models.l7_l8 import Assessment, AssessmentItem, AuditTrail, Evidence, Question
+from app.models.l7_l8 import Assessment, AssessmentItem, AuditTrail, Question
 from app.services.engines import assessment_engine as engine
 from app.services.engines.gateway import gateway
 from app.services.engines.governance import append_audit, open_decision
@@ -67,9 +67,13 @@ def run_assessment(
     by_id = {q.id: q for q in path}
 
     required = required_level_for(db, employee_id, competency_id)
-    evidence_count = db.execute(
-        select(Evidence).where(Evidence.employee_id == employee_id)
-    ).scalars().all()
+    # Corroborating evidence must be relevant to THIS competency (semantic match),
+    # not merely any evidence the employee happens to have on file.
+    from app.services.engines.evidence_engine import match_evidence_to_competency
+
+    matches = match_evidence_to_competency(db, employee_id, competency_id)
+    relevant = [m for m in matches if m["similarity"] >= 0.5]
+    best_evidence_id = relevant[0]["evidence_id"] if relevant else None
 
     assessment = Assessment(
         tenant_id=tenant_id, employee_id=employee_id, competency_id=competency_id,
@@ -92,7 +96,7 @@ def run_assessment(
 
     ctx = engine.AssessmentContext(
         employee_id=employee_id, competency_id=competency_id, required_level=required,
-        item_scores=item_scores, evidence_count=len(evidence_count),
+        item_scores=item_scores, evidence_count=len(relevant),
     )
     result = engine.run(ctx)
 
@@ -108,7 +112,7 @@ def run_assessment(
             tenant_id=tenant_id, profile_id=profile.id, competency_id=competency_id,
             assessed_level=result["assessed_level"], required_level=required,
             confidence=result["confidence"], source="ASSESSMENT", status=result["status"],
-            evidence_id=evidence_count[0].id if evidence_count else None,
+            evidence_id=best_evidence_id,
         ))
 
     if result["needs_human_review"]:

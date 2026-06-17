@@ -45,9 +45,14 @@ def pilot_entry(db: Session = Depends(get_db_for)) -> dict:
     subs = db.execute(select(OrgNode).where(OrgNode.node_type == "SUBSIDIARY")).scalars().all()
     candidates = []
     for s in subs:
+        # Profiles live on leaf-tenant nodes (sections); a section belongs to this
+        # subsidiary when the subsidiary id appears in the node's materialized path.
+        descendant_ids = db.execute(
+            select(OrgNode.id).where(OrgNode.path.like(f"%{s.id}%"))
+        ).scalars().all()
         readiness = db.execute(
-            select(func.avg(Profile.readiness_index)).where(Profile.tenant_id.like(f"%{s.id}%"))
-        ).scalar()
+            select(func.avg(Profile.readiness_index)).where(Profile.tenant_id.in_(descendant_ids))
+        ).scalar() if descendant_ids else None
         readiness = round(float(readiness or 0.0), 1)
         # Impact heuristic: subsidiaries with critical activity weight higher (demo: fixed high).
         impact = 80.0

@@ -83,9 +83,10 @@ def talent_discovery(db: Session = Depends(get_db_for)) -> list[dict]:
     emp = {e.id: e for e in db.execute(select(Employee)).scalars().all()}
     return [
         {"employee_id": p.employee_id,
-         "name_en": emp[p.employee_id].full_name_en if p.employee_id in emp else "",
+         "name_en": emp[p.employee_id].full_name_en,
+         "name_ar": emp[p.employee_id].full_name_ar,
          "readiness_index": p.readiness_index, "signal": "High potential"}
-        for p in profiles
+        for p in profiles if p.employee_id in emp  # skip orphaned profiles
     ]
 
 

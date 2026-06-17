@@ -35,7 +35,8 @@ def compute(db: Session) -> dict:
     risk_control = round(100 * (1 - len(at_risk) / len(crit)), 1) if crit else 0.0
     roi = round(sum(i.gap_closure_pct for i in impacts) / len(impacts), 1) if impacts else 0.0
     ready = [p for p in profiles if p.readiness_index >= 75]
-    succession = round(100 * len(ready) / len(crit), 1) if crit else 0.0
+    # Bench coverage of critical roles, capped at 100% (more ready people than roles ⇒ full).
+    succession = round(min(100.0, 100 * len(ready) / len(crit)), 1) if crit else 0.0
     decision_speed = round(100 * len(resolved) / len(decisions), 1) if decisions else 0.0
     avg_conf = db.execute(select(func.avg(Gap.confidence))).scalar() or 0.0
     fairness = round(float(avg_conf) * 100, 1)

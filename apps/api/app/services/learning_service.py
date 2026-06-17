@@ -21,8 +21,10 @@ from app.services.engines.governance import append_audit
 def derive_needs(db: Session, *, tenant_id: str, min_priority: str = "HIGH") -> list[dict]:
     """Verified gaps → training needs (never a generic course title)."""
     rank = {"MEDIUM": 0, "HIGH": 1, "VERY_HIGH": 2}
-    threshold = rank[min_priority]
-    gaps = [g for g in db.execute(select(Gap)).scalars().all() if rank[g.priority] >= threshold]
+    threshold = rank.get(min_priority, 1)
+    # Only real gaps (gap_size > 0); unknown priorities sort lowest rather than crashing.
+    gaps = [g for g in db.execute(select(Gap)).scalars().all()
+            if g.gap_size > 0 and rank.get(g.priority, -1) >= threshold]
     created = []
     for g in gaps:
         need = TrainingNeed(
@@ -102,10 +104,12 @@ def measure_impact(db: Session, *, actor_user_id: str, tenant_id: str, nominatio
     if not nom:
         return {"error": "nomination not found"}
 
-    target = pre_level + max(1, post_level - pre_level)
-    closure = 0.0
-    if target > pre_level:
-        closure = round(100 * (post_level - pre_level) / (target - pre_level), 1)
+    # The gap this nomination targets defines the competency + required (target) level.
+    gap = db.get(Gap, nom.gap_id) if nom.gap_id else None
+    target = gap.target_level if gap else max(pre_level + 1, post_level)
+    denom = target - pre_level
+    # Gap closure as a share of the gap that existed before training, clamped to [0, 100].
+    closure = round(max(0.0, min(100.0, 100 * (post_level - pre_level) / denom)), 1) if denom > 0 else 0.0
 
     impact = TrainingImpact(
         tenant_id=tenant_id, nomination_id=nomination_id, pre_level=pre_level,
@@ -115,19 +119,20 @@ def measure_impact(db: Session, *, actor_user_id: str, tenant_id: str, nominatio
     nom.stage = "AFTER"
     nom.status = "COMPLETED"
 
-    # Write back: bump the competency result + recompute readiness for the profile.
+    # Write back: bump ONLY the trained competency, then recompute readiness.
     profile = db.query(Profile).filter(Profile.employee_id == nom.employee_id).one_or_none()
     if profile:
-        prog = db.get(Program, nom.program_id)
         results = db.execute(
             select(CompetencyResult).where(CompetencyResult.profile_id == profile.id)
         ).scalars().all()
+        target_competency = gap.competency_id if gap else None
         for r in results:
-            if post_level > r.assessed_level and (not prog or True):
+            if r.competency_id == target_competency and post_level > r.assessed_level:
                 r.assessed_level = post_level
         if results:
             ratios = [min(1.0, r.assessed_level / r.required_level) for r in results if r.required_level]
-            profile.readiness_index = round(100 * sum(ratios) / len(ratios), 1) if ratios else profile.readiness_index
+            if ratios:
+                profile.readiness_index = round(100 * sum(ratios) / len(ratios), 1)
 
     append_audit(db, actor_user_id=actor_user_id, action="TRAINING_IMPACT",
                  entity="l9_impact", entity_id=impact.id,

@@ -44,6 +44,8 @@ def analyze_individual(db: Session, *, actor_user_id: str, tenant_id: str, emplo
     idx = readiness_index(signals)
 
     for g in gaps:
+        if g["gap_size"] <= 0:  # only persist real gaps
+            continue
         db.add(Gap(
             tenant_id=tenant_id, scope="INDIVIDUAL", subject_id=employee_id,
             competency_id=g["competency_id"], current_level=g["current_level"],
