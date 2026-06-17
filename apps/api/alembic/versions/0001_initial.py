@@ -36,8 +36,12 @@ def upgrade() -> None:
     for table in TENANT_TABLES:
         op.execute(f"ALTER TABLE {table} ENABLE ROW LEVEL SECURITY")
         op.execute(f"ALTER TABLE {table} FORCE ROW LEVEL SECURITY")
-        # Visible when the row's tenant is in the caller's subtree, the caller is
-        # global ('*'), or the row itself is global ('*').
+        # Visible when the caller is global, the row is global, the row's tenant
+        # equals the caller's, OR the row's tenant node is a DESCENDANT of the
+        # caller's tenant (subtree access — e.g. a COMPANY_ADMIN bound to a
+        # subsidiary sees rows stored at its child sections). Descendant is
+        # tested via the org-node materialized path. The path test is guarded by
+        # a non-empty current_tenant so an unset context never matches via LIKE.
         op.execute(f"""
             CREATE POLICY tenant_isolation ON {table}
             USING (
@@ -45,6 +49,14 @@ def upgrade() -> None:
                 OR current_setting('app.current_tenant', true) = '*'
                 OR tenant_id = '*'
                 OR tenant_id = current_setting('app.current_tenant', true)
+                OR (
+                    current_setting('app.current_tenant', true) <> ''
+                    AND EXISTS (
+                        SELECT 1 FROM l1_org_node n
+                        WHERE n.id = {table}.tenant_id
+                          AND n.path LIKE '%' || current_setting('app.current_tenant', true) || '%'
+                    )
+                )
             )
         """)
 

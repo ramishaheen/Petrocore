@@ -53,10 +53,11 @@ tamper-evident audit trail; pgvector for semantic evidence ↔ requirement match
 
 ## 4. Multi-tenancy & security
 
-- **Tenant tree:** the L1 institutional hierarchy *is* the tenant tree. Every tenant-scoped row carries `tenant_id` (a hierarchy node).
-- **Isolation:** PostgreSQL Row-Level Security. `SET app.current_tenant` / `app.current_role` per request; policies filter rows to the requester's subtree.
-- **RBAC:** roles in §3 of the spec (EMPLOYEE … PLATFORM_ADMIN, CONSULTANT). Enforced at API + RLS.
-- **PII:** field-level encryption, encryption at rest + in transit, least-privilege, full audit log.
+- **Tenant tree:** the L1 institutional hierarchy *is* the tenant tree. Every tenant-scoped row carries `tenant_id` (a hierarchy node, usually a leaf section).
+- **Isolation:** PostgreSQL Row-Level Security. `SET app.current_tenant` / `app.current_role` per request. A row is visible when the caller is global (`PLATFORM_ADMIN`/`NOC_EXECUTIVE` or tenant `*`), the row is global, the tenant matches exactly, **or the row's tenant node is a descendant of the caller's tenant** — subtree access tested via the org-node materialized `path` (so a `COMPANY_ADMIN` bound to a subsidiary sees rows at its child sections).
+- **⚠️ RLS requires a non-superuser app role.** Postgres bypasses RLS for superusers and `BYPASSRLS` roles. The dev/CI `petrocore` role is a superuser, so RLS policies are *defined and `FORCE`d* but only **enforced in production when the API connects as a dedicated least-privilege role** (no `SUPERUSER`, no `BYPASSRLS`, `GRANT`ed CRUD on the app tables). Create that role and point `DATABASE_URL` at it before go-live. Application-layer tenant scoping (`tenant_id` filters + RBAC) is the second line of defense.
+- **RBAC:** roles in §3 of the spec (EMPLOYEE … PLATFORM_ADMIN, CONSULTANT). Enforced at API + RLS. Tenant-scoped bulk imports require a concrete target tenant (global users must pass `tenant_id`) so data is never written as a wildcard row.
+- **PII:** field-level encryption (Fernet), encryption at rest + in transit, least-privilege, full audit log.
 
 ## 5. Service topology (dev)
 

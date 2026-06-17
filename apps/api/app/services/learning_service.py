@@ -135,6 +135,12 @@ def measure_impact(db: Session, *, actor_user_id: str, tenant_id: str, nominatio
             if ratios:
                 profile.readiness_index = round(100 * sum(ratios) / len(ratios), 1)
 
+    # Retire the closed gap so it isn't re-nominated by /gaps, dashboards, or
+    # /training/needs (those treat gap_size > 0 as open).
+    if gap:
+        gap.current_level = max(gap.current_level, post_level)
+        gap.gap_size = max(0, gap.target_level - gap.current_level)
+
     append_audit(db, actor_user_id=actor_user_id, action="TRAINING_IMPACT",
                  entity="l9_impact", entity_id=impact.id,
                  after={"pre": pre_level, "post": post_level, "closure_pct": closure})

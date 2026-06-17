@@ -66,9 +66,17 @@ def analyze_individual(db: Session, *, actor_user_id: str, tenant_id: str, emplo
 
 
 def analyze_department(db: Session, *, actor_user_id: str, tenant_id: str, node_id: str) -> dict:
-    """Department Gap Map + Competency Gap Matrix across all employees in a section/dept."""
+    """Department Gap Map + Competency Gap Matrix across all employees in the
+    node's subtree. Employees are attached to leaf SECTION nodes, so when
+    ``node_id`` is a DEPARTMENT we resolve its descendant sections via the
+    org-node materialized path before filtering."""
+    descendant_ids = db.execute(
+        select(OrgNode.id).where(
+            (OrgNode.id == node_id) | (OrgNode.path.like(f"%{node_id}%"))
+        )
+    ).scalars().all()
     employees = db.execute(
-        select(Employee).where(Employee.section_id == node_id)
+        select(Employee).where(Employee.section_id.in_(descendant_ids))
     ).scalars().all()
 
     matrix: dict[str, dict] = {}

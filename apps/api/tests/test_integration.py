@@ -150,6 +150,11 @@ def test_training_lifecycle_targets_only_trained_competency(client):
             "untrained competency level changed — write-back leaked across competencies"
         )
 
+    # The closed gap must be retired (gap_size 0) so it is not re-nominated.
+    remaining = client.get("/api/v1/gaps", headers=admin).json()
+    closed = next((g for g in remaining if g["id"] == gap["id"]), None)
+    assert closed is None or closed["gap_size"] == 0, "trained gap was not retired after impact"
+
 
 def test_rls_scopes_tenant(client):
     """An employee-scoped user must not see global/admin-only breadth beyond their tenant."""
@@ -215,7 +220,13 @@ def test_import_export_roundtrip_and_pii_encryption(client):
     ]).json()
     assert res["total"] == 1 and (res["created"] + res["updated"]) == 1
 
-    client.post("/api/v1/integration/import/employees", headers=admin, json=[
+    # A global (tenant '*') user must target a concrete tenant for employee imports.
+    nodes = client.get("/api/v1/org/nodes", headers=admin).json()
+    section_id = next(n["id"] for n in nodes if n["node_type"] == "SECTION")
+    assert client.post("/api/v1/integration/import/employees", headers=admin, json=[
+        {"employee_no": "IMP-X", "full_name_en": "No Tenant", "full_name_ar": "بدون"},
+    ]).status_code == 400  # missing tenant_id ⇒ rejected
+    client.post(f"/api/v1/integration/import/employees?tenant_id={section_id}", headers=admin, json=[
         {"employee_no": "IMP-100", "full_name_en": "Imported Person",
          "full_name_ar": "شخص مستورد", "email": "imp@noc.ly", "years_experience": 5},
     ])

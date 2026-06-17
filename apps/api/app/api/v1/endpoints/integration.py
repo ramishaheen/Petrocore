@@ -6,7 +6,7 @@ Exports are RLS-scoped to the caller's tenant subtree.
 import csv
 import io
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from app.api.deps import CurrentUser, get_db_for, require_roles
 from app.core.rbac import Role
 from app.core.security import encrypt_pii
-from app.models.l1_l2 import Employee, Job
+from app.models.l1_l2 import Employee, Job, OrgNode
 from app.models.l3_l4 import Competency
 from app.models.l5_l6 import Profile
 from app.schemas import (
@@ -25,6 +25,25 @@ from app.services.engines.governance import append_audit
 router = APIRouter(prefix="/integration", tags=["Integration · Import / Export"])
 
 _steward = require_roles(Role.PLATFORM_ADMIN, Role.HR_VALIDATOR, Role.CONSULTANT, Role.COMPANY_ADMIN)
+
+
+def _resolve_import_tenant(db: Session, user: CurrentUser, tenant_id: str | None) -> str:
+    """Resolve a CONCRETE target tenant for tenant-scoped imports.
+
+    Tenant-bound stewards import into their own tenant. Global users (tenant '*',
+    e.g. PLATFORM_ADMIN) must pass an explicit ``tenant_id`` — otherwise rows would
+    be written as global ('*') and leak into every tenant's lists/exports.
+    """
+    if user.tenant_id and user.tenant_id != "*":
+        return user.tenant_id
+    if not tenant_id or tenant_id == "*":
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            "global users must specify ?tenant_id=<org_node_id> for tenant-scoped imports",
+        )
+    if not db.get(OrgNode, tenant_id):
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "tenant_id is not a known org node")
+    return tenant_id
 
 
 @router.post("/import/competencies", response_model=ImportResult)
@@ -56,11 +75,12 @@ def import_competencies(
 @router.post("/import/jobs", response_model=ImportResult)
 def import_jobs(
     rows: list[JobImport],
+    tenant_id: str | None = None,
     user: CurrentUser = Depends(_steward),
     db: Session = Depends(get_db_for),
 ) -> ImportResult:
-    """Upsert jobs by code within the caller's tenant."""
-    tenant = user.tenant_id or "*"
+    """Upsert jobs by code within a concrete target tenant."""
+    tenant = _resolve_import_tenant(db, user, tenant_id)
     created = updated = 0
     for r in rows:
         existing = db.execute(
@@ -85,11 +105,13 @@ def import_jobs(
 @router.post("/import/employees", response_model=ImportResult)
 def import_employees(
     rows: list[EmployeeImport],
+    tenant_id: str | None = None,
     user: CurrentUser = Depends(_steward),
     db: Session = Depends(get_db_for),
 ) -> ImportResult:
-    """Upsert employees by employee_no; auto-create a draft 360° profile (PII encrypted)."""
-    tenant = user.tenant_id or "*"
+    """Upsert employees by employee_no into a concrete tenant; auto-create a draft
+    360° profile (PII encrypted)."""
+    tenant = _resolve_import_tenant(db, user, tenant_id)
     created = updated = 0
     for r in rows:
         existing = db.execute(

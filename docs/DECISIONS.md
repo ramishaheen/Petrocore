@@ -2,6 +2,20 @@
 
 > Architecture Decision Records (ADRs). Newest first.
 
+## ADR-0010 · Subtree tenancy, concrete-tenant imports, gap retirement (review fixes)
+**Status:** accepted · **Date:** 2026-06-17
+Addressed automated-review findings on PR #1:
+- **RLS subtree access.** Policies matched only exact `tenant_id`; parent-scoped roles (e.g.
+  `COMPANY_ADMIN` on a subsidiary) saw empty results because rows live at leaf sections. Policy now
+  also matches rows whose tenant node is a descendant via the org-node materialized `path`.
+- **Department analysis** resolves descendant sections via `path` before filtering employees.
+- **Imports require a concrete tenant.** Global users (tenant `*`) must pass `tenant_id`; previously
+  imported employees/profiles were written as wildcard rows visible to every tenant.
+- **Gap retirement.** Training impact now updates the targeted `Gap` (`current_level`/`gap_size`) so a
+  closed gap is no longer re-nominated by `/gaps`, dashboards, or `/training/needs`.
+- **Documented** that RLS is only *enforced* under a non-superuser app role (the dev/CI `petrocore`
+  superuser bypasses RLS); production must connect as a least-privilege role.
+
 ## ADR-0009 · Full UI parity, integration APIs, and broadened test coverage
 **Status:** accepted · **Date:** 2026-06-17
 Completed the in-browser experience and acceptance coverage: Competency Passport (L5),
