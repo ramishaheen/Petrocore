@@ -2,6 +2,17 @@
 
 > Architecture Decision Records (ADRs). Newest first.
 
+## ADR-0009 · Full UI parity, integration APIs, and broadened test coverage
+**Status:** accepted · **Date:** 2026-06-17
+Completed the in-browser experience and acceptance coverage: Competency Passport (L5),
+AI Assessment (L7), Training Governance Before/During/After (L9), and an expanded Reports hub
+(Institutional Value, Succession, Department Readiness, Training Impact, Governance & Audit).
+Added HR/ERP **import/export** integration APIs (§12) and broadened the integration suite to cover
+the governance gate, recommendations, import/export round-trip, **PII-at-rest encryption**, and an
+**RBAC 403** case (20 tests total). A local Postgres+pgvector workflow now validates DB-backed
+changes before every push. Remaining items (nationwide load test, formal a11y audit) are operational
+tasks requiring infrastructure outside this repository.
+
 ## ADR-0008 · Phases 3–8 completed end-to-end
 **Status:** accepted · **Date:** 2026-06-17
 All 10 layers now expose working services + APIs: L7 question-bank-driven adaptive assessment with

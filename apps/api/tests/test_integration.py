@@ -157,3 +157,84 @@ def test_rls_scopes_tenant(client):
     # Employee tenant is a section; org nodes visible are RLS-filtered (strategic elements etc.).
     r = client.get("/api/v1/competencies", headers=employee)
     assert r.status_code == 200  # dictionary is global reference, visible to all
+
+
+def test_governance_gate_and_audit_chain(client):
+    """Low-confidence result opens a decision; resolving it keeps the audit chain intact."""
+    admin = _login(client, "admin@petrocore.ly")
+    profiles = client.get("/api/v1/profiles", headers=admin).json()
+    employee_id = profiles[0]["employee_id"]
+    comp_id = client.get("/api/v1/competencies", headers=admin).json()[0]["id"]
+
+    # Low scores ⇒ low confidence ⇒ a governance decision is opened.
+    client.post("/api/v1/assessments/run", headers=admin, json={
+        "employee_id": employee_id, "competency_id": comp_id,
+        "item_scores": [0.2, 0.3], "evidence_count": 0,
+    })
+    pending = client.get("/api/v1/governance/decisions", headers=admin).json()
+    assert pending, "expected a pending governance decision"
+
+    # Resolve it (approve) and confirm the tamper-evident chain is still intact.
+    decision_id = pending[0]["id"]
+    resolved = client.post(f"/api/v1/governance/decisions/{decision_id}/resolve",
+                           headers=admin, json={"approve": True}).json()
+    assert resolved["governance_status"] == "APPROVED"
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+
+
+def test_recommendation_requires_governance(client):
+    """A gap recommendation is created PENDING and opens a governance decision."""
+    admin = _login(client, "admin@petrocore.ly")
+    profiles = client.get("/api/v1/profiles", headers=admin).json()
+    employee_id = profiles[0]["employee_id"]
+    comp_id = client.get("/api/v1/competencies", headers=admin).json()[0]["id"]
+
+    # Seed a real result + gap.
+    qs = client.get(f"/api/v1/assessments/questions/{comp_id}", headers=admin).json()
+    client.post("/api/v1/assessments/grade", headers=admin, json={
+        "employee_id": employee_id, "competency_id": comp_id,
+        "responses": [{"question_id": q["id"], "choice": 0, "score": 0.0} for q in qs],
+    })
+    client.post(f"/api/v1/gaps/analyze/{employee_id}", headers=admin)
+    gaps = [g for g in client.get("/api/v1/gaps", headers=admin).json() if g["gap_size"] > 0]
+    assert gaps
+    rec = client.post(f"/api/v1/gaps/{gaps[0]['id']}/recommend", headers=admin).json()
+    assert rec["status"] == "PENDING"
+    assert rec["text_ar"]  # bilingual recommendation
+
+
+def test_import_export_roundtrip_and_pii_encryption(client):
+    """Bulk import upserts + PII is encrypted at rest; CSV export is produced."""
+    from sqlalchemy import text
+
+    from app.db.session import SessionLocal
+
+    admin = _login(client, "admin@petrocore.ly")
+    res = client.post("/api/v1/integration/import/competencies", headers=admin, json=[
+        {"code": "IMP-1", "name_en": "Imported Skill", "name_ar": "مهارة مستوردة", "family": "DIGITAL"},
+    ]).json()
+    assert res["total"] == 1 and (res["created"] + res["updated"]) == 1
+
+    client.post("/api/v1/integration/import/employees", headers=admin, json=[
+        {"employee_no": "IMP-100", "full_name_en": "Imported Person",
+         "full_name_ar": "شخص مستورد", "email": "imp@noc.ly", "years_experience": 5},
+    ])
+
+    # PII stored encrypted (not plaintext) at rest.
+    db = SessionLocal()
+    db.execute(text("SELECT set_config('app.current_role','PLATFORM_ADMIN',false)"))
+    db.execute(text("SELECT set_config('app.current_tenant','*',false)"))
+    row = db.execute(text("SELECT email_enc FROM l2_employee WHERE employee_no='IMP-100'")).first()
+    db.close()
+    assert row is not None and row[0] and "imp@noc.ly" not in row[0]
+
+    # CSV export is produced.
+    csv = client.get("/api/v1/integration/export/readiness.csv", headers=admin)
+    assert csv.status_code == 200 and "employee_no" in csv.text
+
+
+def test_import_forbidden_for_employee_role(client):
+    """RBAC: a plain EMPLOYEE cannot bulk-import data."""
+    employee = _login(client, "employee@noc.ly")
+    r = client.post("/api/v1/integration/import/competencies", headers=employee, json=[])
+    assert r.status_code == 403

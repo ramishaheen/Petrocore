@@ -99,7 +99,7 @@ docs/             ARCHITECTURE.md · DATA_MODEL.md · DECISIONS.md
 | 5 | Training Governance (L9 + Before/During/After) — needs, learner cohorts, program design, nomination, impact write-back | ✅ done |
 | 6 | Outputs & Dashboards (L10 + 8 reports) + Institutional Value Engine | ✅ done |
 | 7 | Governance gate, Readiness Diagnostic, Enablement (advisory, pilot entry matrix, calibration/scale-up) | ✅ done |
-| 8 | Hardening — security headers, end-to-end integration test + Postgres CI job | 🟡 baseline (load test / a11y / external HR-ERP integration APIs remain) |
+| 8 | Hardening — security headers, RBAC-403 tests, governance/import tests, HR/ERP integration APIs, end-to-end integration suite + Postgres CI job | ✅ done (nationwide load test & formal a11y audit remain as ops tasks) |
 
 Legend: ✅ complete · 🟡 substantial · 🟧 scaffolded · ⬜ planned.
 

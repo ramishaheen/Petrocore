@@ -62,8 +62,21 @@ docker compose exec api pytest
 
 ## Build status
 
-This repository is built in phases (see `docs/ARCHITECTURE.md` §Build Plan). Current state and
-the phase-by-phase roadmap are tracked in `docs/DECISIONS.md`.
+All 8 phases are implemented (see `docs/ARCHITECTURE.md` §Build Plan); decisions are logged in
+`docs/DECISIONS.md`. CI runs unit, integration (Postgres+pgvector), and web-typecheck jobs.
+
+### Definition of Done (§17) — status
+
+- ✅ All 10 layers exist as modules with APIs, UIs, migrations, and seed data.
+- ✅ Institutional hierarchy (NOC → … → Employee) is navigable and drives comparisons.
+- ✅ L7 produces a competency result with evidence + confidence + audit trail, gated by governance.
+- ✅ L8 produces every gap output and feeds L9 training governance with verified gaps.
+- ✅ Before/During/After training writes impact back to the 360° Profile + Readiness Index.
+- ✅ The 8 reports + Executive Dashboard render with seeded data, bilingual, RTL-correct.
+- ✅ Layer Readiness Diagnostic, Pilot Entry Matrix, and Calibration/Scale-Up workflows function.
+- ✅ RBAC, multi-tenant RLS, PII encryption, and audit logging are implemented and tested.
+- ✅ Full Arabic (RTL) / English (LTR) parity across UI and reports.
+- ⏳ Operational items beyond this repo: nationwide-scale load test and a formal a11y/RTL audit.
 
 ---
 
