@@ -1,8 +1,10 @@
-// Demo mode: when VITE_DEMO=1, the app serves baked-in fixture data instead of
-// calling the live API, so it can be deployed as a static preview with no backend.
+// Demo mode: when built with VITE_DEMO=1 (see vite.config.ts `define`), the app
+// serves baked-in fixture data instead of calling the live API, so it can be
+// deployed as a static preview with no backend.
 import type { InternalAxiosRequestConfig } from "axios";
 
-export const DEMO = (import.meta as { env?: Record<string, string> }).env?.VITE_DEMO === "1";
+declare const __DEMO__: boolean;
+export const DEMO: boolean = typeof __DEMO__ !== "undefined" && __DEMO__;
 
 const competencies = [
   { id: "c-well", code: "TECH-WELL", name_en: "Well Operations", name_ar: "عمليات الآبار", family: "TECHNICAL" },
