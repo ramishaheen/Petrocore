@@ -5,6 +5,7 @@
     "subtitle": "Competency & Workforce Readiness Intelligence Platform"
   },
   "nav": {
+    "primary": "Primary navigation",
     "dashboard": "Executive Readiness Dashboard",
     "hierarchy": "Institutional Hierarchy",
     "competencies": "Competency Dictionary",
@@ -120,6 +121,7 @@
     "confidence": "Confidence",
     "priority": "Priority",
     "status": "Status",
-    "readiness": "Readiness"
+    "readiness": "Readiness",
+    "skipToContent": "Skip to content"
   }
 }

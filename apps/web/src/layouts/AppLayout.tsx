@@ -28,12 +28,13 @@ export default function AppLayout() {
 
   return (
     <div className="min-h-screen flex">
+      <a href="#main" className="skip-link">{t("common.skipToContent")}</a>
       <aside className="w-64 bg-petro-dark text-white flex flex-col">
         <div className="p-5 border-b border-white/10">
           <div className="text-lg font-bold">{t("app.name")}</div>
           <div className="text-xs text-white/60 mt-1">{t("app.tagline")}</div>
         </div>
-        <nav className="flex-1 p-3 space-y-1">
+        <nav className="flex-1 p-3 space-y-1" aria-label={t("nav.primary")}>
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -61,7 +62,7 @@ export default function AppLayout() {
           </button>
         </div>
       </aside>
-      <main className="flex-1 p-8 overflow-auto">
+      <main id="main" className="flex-1 p-8 overflow-auto">
         <Outlet />
       </main>
     </div>

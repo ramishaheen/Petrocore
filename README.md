@@ -76,7 +76,11 @@ All 8 phases are implemented (see `docs/ARCHITECTURE.md` §Build Plan); decision
 - ✅ Layer Readiness Diagnostic, Pilot Entry Matrix, and Calibration/Scale-Up workflows function.
 - ✅ RBAC, multi-tenant RLS, PII encryption, and audit logging are implemented and tested.
 - ✅ Full Arabic (RTL) / English (LTR) parity across UI and reports.
-- ⏳ Operational items beyond this repo: nationwide-scale load test and a formal a11y/RTL audit.
+- ✅ Accessibility baseline: skip-to-content link, keyboard focus-visible styling, ARIA-labelled
+  navigation, `lang`/`dir` mirroring; route-level code-splitting for fast loads.
+- ✅ Load test for simultaneous nationwide assessment (`tools/loadtest/`, k6) with p95/error thresholds.
+- ⏳ Operational follow-ups (need a staging cluster): execute the load test at national scale and a
+  formal third-party a11y/RTL audit.
 
 ---
 

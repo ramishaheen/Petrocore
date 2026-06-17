@@ -16,3 +16,23 @@ body {
 .card {
   @apply bg-white rounded-xl shadow-sm border border-slate-100 p-5;
 }
+
+/* Accessibility: visible keyboard focus + skip-to-content link. */
+*:focus-visible {
+  outline: 2px solid #0d5c4a;
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: 0;
+  top: -48px;
+  background: #083c30;
+  color: #fff;
+  padding: 8px 16px;
+  z-index: 50;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0;
+}
