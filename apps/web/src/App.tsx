@@ -15,6 +15,7 @@ const Hierarchy = lazy(() => import("./pages/Hierarchy"));
 const Profiles = lazy(() => import("./pages/Profiles"));
 const ProfileDetail = lazy(() => import("./pages/ProfileDetail"));
 const Competencies = lazy(() => import("./pages/Competencies"));
+const CompetencyDetail = lazy(() => import("./pages/CompetencyDetail"));
 const Assessment = lazy(() => import("./pages/Assessment"));
 const Gaps = lazy(() => import("./pages/Gaps"));
 const Training = lazy(() => import("./pages/Training"));
@@ -58,6 +59,7 @@ export default function App() {
           <Route path="/profiles" element={<Profiles />} />
           <Route path="/profiles/:id" element={<ProfileDetail />} />
           <Route path="/competencies" element={<Competencies />} />
+          <Route path="/competencies/:id" element={<CompetencyDetail />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/gaps" element={<Gaps />} />
           <Route path="/training" element={<Training />} />

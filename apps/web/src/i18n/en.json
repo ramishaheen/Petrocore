@@ -191,6 +191,18 @@
     "LINE_MANAGER": "Line Manager",
     "HR_VALIDATOR": "HR Validation"
   },
+  "hierarchy": {
+    "subtitle": "NOC → subsidiaries → activities → departments → sections"
+  },
+  "competencyDetail": {
+    "requiredByLevel": "Required Level by Management Level",
+    "calibratedNote": "A competency is calibrated by role, level, experience and risk — not a fixed bar.",
+    "calibration": "Calibration",
+    "level": "Level",
+    "experience": "Experience band",
+    "risk": "Risk weight",
+    "years": "Years"
+  },
   "competencies": {
     "title": "Competency Dictionary & Professional Standards",
     "family": "Family",
@@ -215,6 +227,7 @@
     "priority": "Priority",
     "status": "Status",
     "readiness": "Readiness",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "theme": "Toggle theme"
   }
 }

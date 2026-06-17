@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 import { Badge, Card, PageHeader, PageSkeleton } from "../components/ui";
 import { api } from "../lib/api";
@@ -23,6 +24,7 @@ export default function Competencies() {
   });
 
   if (isLoading || !data) return <PageSkeleton />;
+  const Chevron = ar ? ChevronLeft : ChevronRight;
 
   // Group by family for a scannable, structured dictionary.
   const families = [...new Set(data.map((c) => c.family))];
@@ -40,10 +42,12 @@ export default function Competencies() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {data.filter((c) => c.family === fam).map((c) => (
-              <div key={c.id} className="flex items-center gap-3 rounded-xl border border-slate-100 px-3 py-2 hover:border-petro/30 hover:bg-petro-50/40 transition-colors">
+              <Link key={c.id} to={`/competencies/${c.id}`}
+                    className="flex items-center gap-3 rounded-xl border border-slate-100 px-3 py-2 hover:border-petro/30 hover:bg-petro-50/40 transition-colors group">
                 <span className="font-mono text-[10px] text-ink-muted bg-slate-50 rounded px-1.5 py-0.5 shrink-0">{c.code}</span>
-                <span className="text-sm text-ink truncate">{ar ? c.name_ar : c.name_en}</span>
-              </div>
+                <span className="text-sm text-ink truncate flex-1">{ar ? c.name_ar : c.name_en}</span>
+                <Chevron size={14} className="text-ink-muted group-hover:text-petro transition-colors" />
+              </Link>
             ))}
           </div>
         </Card>

@@ -10,51 +10,50 @@ interface Node {
   activity_segment: string | null; children: Node[];
 }
 
-const TYPE_COLOR: Record<string, string> = {
-  NOC: "bg-petro text-white",
-  SUBSIDIARY: "bg-petro-light text-white",
-  ACTIVITY: "bg-amber-100 text-amber-700",
-  DEPARTMENT: "bg-blue-100 text-blue-700",
-  SECTION: "bg-slate-100 text-slate-600",
-  JOB: "bg-emerald-100 text-emerald-700",
-  EMPLOYEE: "bg-slate-50 text-slate-500",
+const TYPE_STYLE: Record<string, string> = {
+  NOC: "bg-petro-grad text-white border-transparent",
+  SUBSIDIARY: "bg-petro text-white border-transparent",
+  ACTIVITY: "border-amber-300 text-amber-700 bg-amber-50",
+  DEPARTMENT: "border-blue-300 text-blue-700 bg-blue-50",
+  SECTION: "border-slate-200 text-ink bg-white",
+  JOB: "border-emerald-300 text-emerald-700 bg-emerald-50",
+  EMPLOYEE: "border-slate-200 text-ink-soft bg-white",
 };
 
-function TreeNode({ node, depth }: { node: Node; depth: number }) {
+function OrgNode({ node }: { node: Node }) {
   const { i18n } = useTranslation();
+  const ar = i18n.language === "ar";
   return (
-    <div>
-      <div
-        className="flex items-center gap-2 py-2 border-b border-slate-50 hover:bg-petro-50/40 rounded-lg transition-colors"
-        style={{ paddingInlineStart: depth * 22 + 8 }}
-      >
-        {depth > 0 && <span className="text-slate-200">└</span>}
-        <span className={`chip ${TYPE_COLOR[node.node_type] ?? "bg-slate-100 text-slate-600"}`}>
-          {node.node_type}
-        </span>
-        <span className="text-sm text-ink">{i18n.language === "ar" ? node.name_ar : node.name_en}</span>
-        {node.activity_segment && (
-          <span className="text-[10px] text-ink-muted">· {node.activity_segment}</span>
-        )}
+    <li>
+      <div className="org-node">
+        <div className={`rounded-xl border px-4 py-2.5 shadow-soft min-w-[150px] ${TYPE_STYLE[node.node_type] ?? "border-slate-200 bg-white"}`}>
+          <div className="text-[9px] uppercase tracking-wider opacity-70">{node.node_type}</div>
+          <div className="text-sm font-medium leading-tight">{ar ? node.name_ar : node.name_en}</div>
+          {node.activity_segment && <div className="text-[10px] opacity-70 mt-0.5">{node.activity_segment}</div>}
+        </div>
       </div>
-      {node.children.map((c) => <TreeNode key={c.id} node={c} depth={depth + 1} />)}
-    </div>
+      {node.children.length > 0 && (
+        <ul>{node.children.map((c) => <OrgNode key={c.id} node={c} />)}</ul>
+      )}
+    </li>
   );
 }
 
 export default function Hierarchy() {
   const { t } = useTranslation();
   const { data, isLoading } = useQuery<Node[]>({
-    queryKey: ["tree"],
-    queryFn: async () => (await api.get("/org/tree")).data,
+    queryKey: ["tree"], queryFn: async () => (await api.get("/org/tree")).data,
   });
-
   if (isLoading || !data) return <PageSkeleton />;
 
   return (
     <div className="space-y-6">
-      <PageHeader title={t("nav.hierarchy")} icon={Network} />
-      <Card>{data.map((root) => <TreeNode key={root.id} node={root} depth={0} />)}</Card>
+      <PageHeader title={t("nav.hierarchy")} subtitle={t("hierarchy.subtitle")} icon={Network} />
+      <Card className="overflow-x-auto">
+        <div className="orgchart inline-block min-w-full">
+          <ul>{data.map((root) => <OrgNode key={root.id} node={root} />)}</ul>
+        </div>
+      </Card>
     </div>
   );
 }

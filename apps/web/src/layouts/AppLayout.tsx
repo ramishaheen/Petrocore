@@ -1,8 +1,9 @@
 import {
   Activity, BarChart3, BookOpen, Boxes, Building2, ClipboardCheck, GraduationCap,
-  LayoutDashboard, LogOut, Network, Rocket, ScrollText, ShieldCheck, Globe, UserCircle,
-  Users, type LucideIcon,
+  LayoutDashboard, LogOut, Moon, Network, Rocket, ScrollText, ShieldCheck, Globe, Sun,
+  UserCircle, Users, type LucideIcon,
 } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 
@@ -10,6 +11,7 @@ import PersonaSwitcher from "../components/PersonaSwitcher";
 import { setLocale, type Locale } from "../i18n";
 import { DEMO } from "../lib/demo";
 import { navForRole } from "../lib/roles";
+import { getTheme, toggleTheme } from "../lib/theme";
 import { useAuth } from "../store/auth";
 
 const ICONS: Record<string, LucideIcon> = {
@@ -26,6 +28,7 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const ar = i18n.language === "ar";
+  const [dark, setDark] = useState(getTheme() === "dark");
 
   const items = navForRole(role);
   const groups = GROUP_ORDER
@@ -78,9 +81,17 @@ export default function AppLayout() {
         </nav>
 
         <div className="p-3 border-t border-white/10">
-          <button onClick={() => setLocale((ar ? "en" : "ar") as Locale)} className="btn-ghost w-full mb-2">
-            <Globe size={15} /> {t("common.language")}
-          </button>
+          <div className="flex gap-2 mb-2">
+            <button onClick={() => setLocale((ar ? "en" : "ar") as Locale)} className="btn-ghost flex-1">
+              <Globe size={15} /> {t("common.language")}
+            </button>
+            <button
+              onClick={() => setDark(toggleTheme() === "dark")}
+              className="btn-ghost px-3" aria-label={t("common.theme")} title={t("common.theme")}
+            >
+              {dark ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
+          </div>
           <button
             onClick={() => { logout(); navigate("/login"); }}
             className="btn w-full bg-petro-gold/90 hover:bg-petro-gold text-petro-dark font-medium"

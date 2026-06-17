@@ -146,6 +146,21 @@ const GET: Record<string, unknown> = {
   ],
   "/profiles": PEOPLE.map((p) => ({ id: p.id, employee_id: p.emp, name_en: p.en, name_ar: p.ar, job_en: p.job_en, job_ar: p.job_ar, readiness_index: p.readiness, status: p.status })),
   "/competencies": competencies,
+  "/competencies/families": {
+    families: { TECHNICAL: "تقنية", HSE: "الصحة والسلامة والبيئة", BEHAVIORAL: "سلوكية", LEADERSHIP: "قيادية", DIGITAL: "رقمية", EVIDENCE_STANDARD: "معايير الأدلة" },
+    admin_levels: [
+      { level: 1, en: "Operator — Apply & Operate", ar: "تطبيق وتشغيل" },
+      { level: 2, en: "Supervisor — Guide & Monitor", ar: "توجيه ومتابعة" },
+      { level: 3, en: "Section Head — Plan & Measure", ar: "تخطيط ومؤشرات" },
+      { level: 4, en: "Department Manager — Govern & Decide", ar: "حوكمة وقرار" },
+      { level: 5, en: "Executive — Strategy & Sustainability", ar: "استراتيجية واستدامة" },
+    ],
+    proficiency_bands: [
+      { band: "AWARENESS", range: "0–2", ar: "وعي" }, { band: "BASIC", range: "3–5", ar: "تطبيق أساسي" },
+      { band: "INDEPENDENT", range: "6–10", ar: "ممارسة مستقلة" }, { band: "ADVANCED", range: "10+", ar: "إتقان متقدم" },
+      { band: "EXPERT_COACH", range: "—", ar: "خبير/مُرشد" },
+    ],
+  },
   "/org/tree": tree,
   "/gaps": gaps,
   "/reports/institutional-value": { dimensions: valueDims, value_index: 73 },
@@ -223,6 +238,13 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
       : email.startsWith("manager") ? "LINE_MANAGER" : email.startsWith("dept") ? "DEPT_MANAGER"
       : email.startsWith("ld") ? "LD_MANAGER" : email.startsWith("employee") ? "EMPLOYEE" : "PLATFORM_ADMIN";
     return { access_token: "demo-token", token_type: "bearer", role, role_ar: ROLE_AR[role], tenant_id: "*" };
+  }
+  if (/^\/competencies\/[^/]+\/requirements$/.test(url)) {
+    const bands = ["BASIC", "INDEPENDENT", "INDEPENDENT", "ADVANCED", "ADVANCED"];
+    return [1, 2, 3, 4, 5].map((lvl) => ({
+      id: `req-${lvl}`, admin_level: lvl, required_level: Math.min(5, 2 + Math.floor(lvl / 1.4)),
+      min_experience_band: bands[lvl - 1], risk_weight: lvl >= 4 ? 2 : 1, activity_segment: "PRODUCTION",
+    }));
   }
   if (url.startsWith("/assessments/questions/")) return questionsFor(url.split("/").pop() || "c-psm");
   if (url.startsWith("/profiles/") && method === "get") return profileDetail[url.split("/").pop() || "p1"] ?? profileDetail.p1;

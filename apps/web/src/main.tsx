@@ -6,6 +6,9 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./i18n";
 import "./index.css";
+import { applyTheme, getTheme } from "./lib/theme";
+
+applyTheme(getTheme());
 
 const queryClient = new QueryClient();
 
