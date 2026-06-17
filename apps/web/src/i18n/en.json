@@ -10,9 +10,24 @@
     "competencies": "Competency Dictionary",
     "profiles": "360° Profiles",
     "gaps": "Gap Analysis",
+    "reports": "Reports & Decision Support",
     "governance": "Governance & Audit",
+    "enablement": "Enablement & Pilot",
     "diagnostic": "Layer Readiness Diagnostic",
     "logout": "Log out"
+  },
+  "reports": {
+    "institutionalValue": "Institutional Strategic Value",
+    "criticalRoles": "Critical Roles",
+    "atRisk": "Roles at Risk",
+    "readySuccessors": "Ready Successors"
+  },
+  "enablement": {
+    "pilotEntry": "Pilot Entry Decision Matrix",
+    "calibration": "AI Calibration & Scale-Up",
+    "scope": "Candidate",
+    "impact": "Strategic Impact",
+    "score": "Score"
   },
   "login": {
     "title": "Sign in",

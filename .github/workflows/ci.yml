@@ -21,6 +21,35 @@ jobs:
       - name: Run tests
         run: pytest
 
+  api-integration:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    services:
+      db:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: petrocore
+          POSTGRES_PASSWORD: petrocore
+          POSTGRES_DB: petrocore
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U petrocore"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://petrocore:petrocore@localhost:5432/petrocore
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: pip install -r requirements.txt
+      - name: Run integration test
+        run: pytest tests/test_integration.py -v
+
   web-typecheck:
     runs-on: ubuntu-latest
     defaults:

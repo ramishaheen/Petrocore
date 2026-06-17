@@ -69,6 +69,36 @@ class AssessmentSubmit(BaseModel):
     evidence_count: int = 0
 
 
+class ItemResponse(BaseModel):
+    question_id: str
+    choice: int | None = None
+    score: float = 0.0
+
+
+class AssessmentRun(BaseModel):
+    employee_id: str
+    competency_id: str
+    responses: list[ItemResponse] = []
+
+
+class QuestionOut(ORMModel):
+    id: str
+    competency_id: str
+    kind: str
+    difficulty: int
+    body_en: str
+    body_ar: str
+    options: dict
+
+
+class EvidenceIn(BaseModel):
+    employee_id: str
+    kind: str
+    text: str = ""
+    uri: str | None = None
+    confidence: float = 0.5
+
+
 class AssessmentResult(BaseModel):
     assessed_level: int
     required_level: int
@@ -88,6 +118,42 @@ class GapOut(ORMModel):
     gap_size: int
     priority: str
     confidence: float
+
+
+# ---- L9 ----
+class DesignProgram(BaseModel):
+    competency_id: str
+    target_level: int
+    method: str = "BLENDED"
+    provider: str = "Murzuq Academy"
+    impact_kpi: str = "Readiness Index uplift"
+
+
+class ProgramOut(ORMModel):
+    id: str
+    title_en: str
+    title_ar: str
+    method: str
+    provider: str
+    target_group: str
+    impact_kpi: str
+
+
+class NominateIn(BaseModel):
+    employee_id: str
+    program_id: str
+    gap_id: str | None = None
+
+
+class StageAdvance(BaseModel):
+    stage: str   # BEFORE | DURING | AFTER
+    status: str
+
+
+class ImpactIn(BaseModel):
+    pre_level: int
+    post_level: int
+    performance_link: str = ""
 
 
 # ---- Governance ----

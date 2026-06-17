@@ -92,13 +92,23 @@ docs/             ARCHITECTURE.md · DATA_MODEL.md · DECISIONS.md
 | Phase | Scope | State |
 |-------|-------|-------|
 | 0 | Scaffold, Docker, Postgres+pgvector+RLS, Auth+RBAC, i18n | ✅ done |
-| 1 | Foundation L1–L4 (hierarchy, HR, dictionary, ops requirements) | 🟡 in progress |
-| 2 | Intelligence L5–L6 (360° profile, assets/critical roles) | 🟡 models in place |
-| 3 | AI Assessment & Evidence (L7) | 🟧 engine architecture + stubs |
-| 4 | AI Data Fusion & Gap Analysis (L8) | 🟧 engine architecture + stubs |
-| 5 | Training Governance (L9 + Before/During/After) | ⬜ planned |
-| 6 | Outputs & Dashboards (L10 + 8 reports) | ⬜ planned |
-| 7 | Governance gate, Readiness Diagnostic, Enablement | ⬜ planned |
-| 8 | Hardening (security, load, a11y, bilingual QA, integration APIs) | ⬜ planned |
+| 1 | Foundation L1–L4 (hierarchy, HR, dictionary, ops requirements) | ✅ done |
+| 2 | Intelligence L5–L6 (360° profile, assets/critical roles) | ✅ done |
+| 3 | AI Assessment & Evidence (L7) — question bank, scenarios, pgvector evidence matching, confidence + human-review routing, audit trail | ✅ done |
+| 4 | AI Data Fusion & Gap Analysis (L8) — individual/department reports, competency gap matrix, readiness index, succession insights, recommendations | ✅ done |
+| 5 | Training Governance (L9 + Before/During/After) — needs, learner cohorts, program design, nomination, impact write-back | ✅ done |
+| 6 | Outputs & Dashboards (L10 + 8 reports) + Institutional Value Engine | ✅ done |
+| 7 | Governance gate, Readiness Diagnostic, Enablement (advisory, pilot entry matrix, calibration/scale-up) | ✅ done |
+| 8 | Hardening — security headers, end-to-end integration test + Postgres CI job | 🟡 baseline (load test / a11y / external HR-ERP integration APIs remain) |
 
 Legend: ✅ complete · 🟡 substantial · 🟧 scaffolded · ⬜ planned.
+
+### Backend API surface (46 endpoints across the 10 layers)
+`auth` · `org` (L1) · `competencies` (L3) · `profiles` (L5) · `assessments` (L7:
+questions, scenario, grade, run, evidence, evidence/match, audit) · `gaps` (L8:
+analyze, department, succession, recommend, reports) · `training` (L9: needs,
+cohorts, programs, nominate, stage, impact) · `governance` (decisions, resolve,
+audit/verify) · `dashboards` (executive, diagnostic) · `reports` (employee,
+decision-matrix, talent-discovery, succession, department-readiness,
+training-impact, governance-audit, institutional-value) · `enablement`
+(advisory, pilot-entry, calibration).

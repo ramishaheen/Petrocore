@@ -135,6 +135,31 @@ def seed() -> None:
         db.add(CriticalRole(tenant_id=tenant, job_id=job.id, criticality="VERY_HIGH",
                             loss_risk=0.7, business_impact=0.8))
 
+        # ---- L7: smart question bank (2 items per competency) ----
+        from app.models.l7_l8 import Evidence, Question
+        from app.services.engines.evidence_engine import embed_text
+
+        for code, comp in comps.items():
+            for d, kind in [(2, "MCQ"), (4, "SCENARIO")]:
+                db.add(Question(
+                    competency_id=comp.id, kind=kind, difficulty=d,
+                    body_en=f"[{kind}] Demonstrate {comp.name_en} at level {d}.",
+                    body_ar=f"[{kind}] أظهر {comp.name_ar} عند المستوى {d}.",
+                    options={"choices": ["A", "B", "C", "D"]} if kind == "MCQ" else {},
+                    answer_key={"correct": 1} if kind == "MCQ" else {},
+                ))
+
+        # ---- L7: supporting evidence for the first employee (indexed for matching) ----
+        for kind, txt in [
+            ("CERTIFICATE", "Process safety management certification, IOSH, 2025."),
+            ("TRAINING_RECORD", "Completed advanced well operations course with distinction."),
+            ("PERFORMANCE", "Led shift with zero safety incidents over 12 months."),
+        ]:
+            db.add(Evidence(
+                tenant_id=tenant, employee_id=employees[0].id, kind=kind, text=txt,
+                embedding=embed_text(txt), confidence=0.8,
+            ))
+
         # ---- Users: one per role ----
         users = [
             ("admin@petrocore.ly", "Platform Admin", Role.PLATFORM_ADMIN, "*"),

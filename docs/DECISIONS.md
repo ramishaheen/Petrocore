@@ -2,14 +2,22 @@
 
 > Architecture Decision Records (ADRs). Newest first.
 
-## ADR-0007 · Phased delivery & current state
+## ADR-0008 · Phases 3–8 completed end-to-end
 **Status:** accepted · **Date:** 2026-06-17
-This session delivers a **runnable foundation**: Phase 0 (scaffold, Docker, Postgres+pgvector+RLS,
-JWT auth + RBAC, i18n AR-RTL/EN-LTR) plus the foundation & intelligence **data models** for L1–L8,
-the AI **engine architecture** (graph + model gateway abstractions) with deterministic stubs, and a
-bilingual frontend shell with the key screens. Phases 5–8 are scoped in `ARCHITECTURE.md`.
-Rationale: a coherent vertical slice + complete data model is more valuable than partial breadth,
-and lets remaining phases drop in without rework.
+All 10 layers now expose working services + APIs: L7 question-bank-driven adaptive assessment with
+pgvector evidence matching and confidence/human-review routing; L8 full data-fusion output set
+(individual/department gap reports, competency gap matrix, succession insights, recommendations);
+L9 Before/During/After training governance with impact write-back to the readiness index; L10 the 8
+reports + Executive Dashboard + Institutional Value Engine; §13 enablement (advisory, pilot entry
+matrix, calibration). Hardening adds security headers and an end-to-end integration test backed by a
+pgvector Postgres CI job. Remaining for full production: load testing at nationwide scale, formal
+a11y/RTL audit, and external HR/ERP integration APIs.
+
+## ADR-0007 · Phased delivery & current state
+**Status:** superseded by ADR-0008 · **Date:** 2026-06-17
+Initial session delivered the runnable foundation (Phase 0 + L1–L8 data models + engine architecture
++ bilingual frontend shell). Rationale retained: a coherent vertical slice + complete data model lets
+remaining phases drop in without rework.
 
 ## ADR-0006 · AI engines as a graph behind a model gateway
 **Status:** accepted

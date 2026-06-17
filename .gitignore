@@ -29,3 +29,6 @@ dist/
 htmlcov/
 .coverage
 coverage.xml
+
+# TS build info
+*.tsbuildinfo
