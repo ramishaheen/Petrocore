@@ -73,7 +73,12 @@
     "trend": "Workforce Readiness Trend (12 months)",
     "companyComparison": "Company Readiness Comparison",
     "groupAvg": "Group avg",
-    "familyRadar": "Competency Family Strength"
+    "familyRadar": "Competency Family Strength",
+    "riskHeatmap": "Critical Role Risk",
+    "riskAxes": "Likelihood × Impact (bubble = readiness gap)",
+    "likelihood": "Likelihood",
+    "impact": "Impact",
+    "talentPipeline": "Talent Pipeline"
   },
   "workspace": {
     "greeting": "Welcome back",
@@ -86,7 +91,13 @@
     "recommended": "Recommended Actions",
     "allMet": "All competencies meet their required level — great work!",
     "startLearning": "Start learning →",
-    "achievements": "Achievements"
+    "achievements": "Achievements",
+    "myTraining": "My Training",
+    "certificates": "Certificates",
+    "activity": "Recent Activity",
+    "stage_BEFORE": "Enrolled",
+    "stage_DURING": "In progress",
+    "stage_AFTER": "Completed"
   },
   "team": {
     "subtitle": "Your team's readiness, gaps, and approvals.",
@@ -97,7 +108,10 @@
     "roster": "Team Roster",
     "approvals": "Approvals Queue",
     "noApprovals": "Nothing awaiting your approval.",
-    "approve": "Approve"
+    "approve": "Approve",
+    "distribution": "Readiness Distribution",
+    "heatmap": "Team Competency Heatmap",
+    "member": "Member"
   },
   "dept": {
     "subtitle": "Department readiness map, critical roles, and succession.",
@@ -108,7 +122,14 @@
     "readyNow": "Ready now",
     "ready6_12": "6–12 months",
     "ready12": "12+ months",
-    "priorityGaps": "Priority Competency Gaps"
+    "priorityGaps": "Priority Competency Gaps",
+    "criticalRoles": "Critical Roles & Succession",
+    "role": "Role",
+    "function": "Function",
+    "lossRisk": "Loss Risk",
+    "impact2": "Impact",
+    "successor": "Successor",
+    "knowledgeTransfer": "Knowledge Transfer Needs"
   },
   "training": {
     "principle": "Training starts from a verified gap and ends with measured impact.",

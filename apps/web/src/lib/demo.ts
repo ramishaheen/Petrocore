@@ -26,6 +26,8 @@ const PEOPLE: Person[] = [
   { id: "p4", emp: "e4", en: "Layla Haddad", ar: "ليلى حداد", job_en: "HSE Officer", job_ar: "مسؤولة سلامة", readiness: 58, status: "MANAGER_APPROVED", seed: [3, 2, 4, 3, 2] },
   { id: "p5", emp: "e5", en: "Yusuf Al-Tayeb", ar: "يوسف الطيب", job_en: "Junior Operator", job_ar: "مشغل مبتدئ", readiness: 44, status: "DRAFT", seed: [2, 2, 2, 2, 3] },
   { id: "p6", emp: "e6", en: "Mariam Saleh", ar: "مريم صالح", job_en: "Control Room Operator", job_ar: "مشغلة غرفة تحكم", readiness: 39, status: "DRAFT", seed: [2, 3, 1, 2, 2] },
+  { id: "p7", emp: "e7", en: "Omar Al-Fitouri", ar: "عمر الفيتوري", job_en: "Shift Supervisor", job_ar: "مشرف وردية", readiness: 79, status: "TRUSTED", seed: [4, 5, 4, 4, 3] },
+  { id: "p8", emp: "e8", en: "Huda Barakat", ar: "هدى بركات", job_en: "Reliability Engineer", job_ar: "مهندسة موثوقية", readiness: 69, status: "HR_VALIDATED", seed: [4, 3, 4, 3, 4] },
 ];
 
 const FIVE = ["c-well", "c-proc", "c-psm", "c-comm", "c-data"];
@@ -43,6 +45,19 @@ function detailFor(p: Person) {
     approvals: [
       ...(["MANAGER_APPROVED", "HR_VALIDATED", "TRUSTED"].includes(p.status) ? [{ role: "LINE_MANAGER", decision: "APPROVED", approver_user_id: "u1" }] : []),
       ...(["HR_VALIDATED", "TRUSTED"].includes(p.status) ? [{ role: "HR_VALIDATOR", decision: "APPROVED", approver_user_id: "u2" }] : []),
+    ],
+    certificates: [
+      { en: "IOSH Managing Safely", ar: "شهادة IOSH لإدارة السلامة", year: 2025 },
+      { en: "Well Control (IWCF)", ar: "التحكم في الآبار (IWCF)", year: 2024 },
+    ],
+    training: [
+      { en: "Process Safety Management — L5", ar: "إدارة سلامة العمليات — المستوى 5", stage: p.readiness >= 70 ? "AFTER" : "DURING", closure: p.readiness >= 70 ? 80 : 35 },
+      { en: "Digital & Data Literacy", ar: "الثقافة الرقمية والبيانات", stage: "BEFORE", closure: 0 },
+    ],
+    activity: [
+      { en: "Completed Process Control assessment", ar: "أكمل تقييم التحكم في العمليات", when: "2d" },
+      { en: "Manager validated profile", ar: "اعتمد المدير البروفايل", when: "1w" },
+      { en: "Evidence uploaded: safety record", ar: "رفع دليل: سجل السلامة", when: "2w" },
     ],
   };
 }
@@ -98,6 +113,19 @@ const GET: Record<string, unknown> = {
       { id: "sirte", name_en: "Sirte Oil Co.", name_ar: "شركة سرت للنفط", readiness: 71 },
     ],
     readiness_trend: readinessTrend,
+    critical_role_risk: [
+      { en: "Shift Supervisor", ar: "مشرف وردية", likelihood: 0.7, impact: 0.9, readiness: 79 },
+      { en: "Process Engineer", ar: "مهندس عمليات", likelihood: 0.4, impact: 0.8, readiness: 74 },
+      { en: "Control Room Operator", ar: "مشغل غرفة تحكم", likelihood: 0.8, impact: 0.6, readiness: 39 },
+      { en: "HSE Officer", ar: "مسؤول سلامة", likelihood: 0.5, impact: 0.7, readiness: 58 },
+      { en: "Reliability Engineer", ar: "مهندس موثوقية", likelihood: 0.3, impact: 0.6, readiness: 69 },
+    ],
+    talent_pipeline: [
+      { en: "Skilled", ar: "مهرة", count: 8 },
+      { en: "Candidates", ar: "مرشحون", count: 5 },
+      { en: "Nominated", ar: "مرشّحون للترقية", count: 3 },
+      { en: "Ready", ar: "جاهزون", count: 2 },
+    ],
     family_radar: [
       { family: "Technical", en: "Technical", ar: "تقنية", score: 78 },
       { family: "HSE", en: "HSE", ar: "السلامة", score: 64 },
@@ -121,7 +149,20 @@ const GET: Record<string, unknown> = {
   "/org/tree": tree,
   "/gaps": gaps,
   "/reports/institutional-value": { dimensions: valueDims, value_index: 73 },
-  "/reports/succession": { critical_roles_total: 6, roles_at_risk: 2, roles_at_risk_pct: 33, ready_successors: 2, overall_readiness: 60.7, pipeline: { identified: 6, ready_now: 2, ready_6_12m: 2, ready_12m_plus: 2 } },
+  "/reports/succession": {
+    critical_roles_total: 6, roles_at_risk: 2, roles_at_risk_pct: 33, ready_successors: 2, overall_readiness: 60.7,
+    pipeline: { identified: 8, ready_now: 2, ready_6_12m: 3, ready_12m_plus: 3 },
+    critical_roles: [
+      { role_en: "Shift Supervisor", role_ar: "مشرف وردية", function_en: "Operations", function_ar: "العمليات", loss_risk: "High", impact: "High", readiness: 79, successor_en: "Omar Al-Fitouri", successor_ar: "عمر الفيتوري" },
+      { role_en: "Process Engineer", role_ar: "مهندس عمليات", function_en: "Processing", function_ar: "المعالجة", loss_risk: "Medium", impact: "High", readiness: 74, successor_en: "Huda Barakat", successor_ar: "هدى بركات" },
+      { role_en: "Control Room Operator", role_ar: "مشغل غرفة تحكم", function_en: "Operations", function_ar: "العمليات", loss_risk: "High", impact: "Medium", readiness: 39, successor_en: "—", successor_ar: "—" },
+    ],
+    knowledge_transfer: [
+      { en: "Document offshore startup procedure (Supervisor)", ar: "توثيق إجراء بدء التشغيل البحري (المشرف)" },
+      { en: "Mentor junior operators on PSM", ar: "إرشاد المشغلين المبتدئين في سلامة العمليات" },
+      { en: "Shadow rotation for control-room handover", ar: "تناوب مرافقة لتسليم غرفة التحكم" },
+    ],
+  },
   "/reports/department-readiness": { departments: [
     { tenant_id: "opsa", name_en: "Operations Section A", name_ar: "قسم العمليات أ", avg_readiness: 71, employees: 3 },
     { tenant_id: "opsb", name_en: "Operations Section B", name_ar: "قسم العمليات ب", avg_readiness: 49, employees: 3 },

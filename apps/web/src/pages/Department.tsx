@@ -7,10 +7,16 @@ import { Badge, Card, PageHeader, PageSkeleton, ProgressRing, StatCard } from ".
 import { api } from "../lib/api";
 
 interface Dept { tenant_id: string; name_en?: string; name_ar?: string; avg_readiness: number; employees: number; }
+interface CriticalRole {
+  role_en: string; role_ar: string; function_en: string; function_ar: string;
+  loss_risk: string; impact: string; readiness: number; successor_en: string; successor_ar: string;
+}
 interface Succession {
   critical_roles_total: number; roles_at_risk: number; roles_at_risk_pct?: number;
   ready_successors: number; overall_readiness: number;
   pipeline: { identified: number; ready_now: number; ready_6_12m: number; ready_12m_plus: number };
+  critical_roles?: CriticalRole[];
+  knowledge_transfer?: { en: string; ar: string }[];
 }
 interface Gap { id: string; competency_id: string; priority: string; gap_size: number; scope: string; }
 
@@ -88,6 +94,49 @@ export default function Department() {
           </div>
         </Card>
       </div>
+
+      {(succ.data.critical_roles?.length ?? 0) > 0 && (
+        <Card className="overflow-x-auto">
+          <div className="font-semibold text-ink mb-3 flex items-center gap-2"><ShieldAlert size={16} className="text-petro" /> {t("dept.criticalRoles")}</div>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-ink-muted border-b border-slate-100">
+                <th className="py-2 text-start font-medium">{t("dept.role")}</th>
+                <th className="py-2 text-start font-medium">{t("dept.function")}</th>
+                <th className="py-2 text-start font-medium">{t("dept.lossRisk")}</th>
+                <th className="py-2 text-start font-medium">{t("dept.impact2")}</th>
+                <th className="py-2 text-start font-medium">{t("common.readiness")}</th>
+                <th className="py-2 text-start font-medium">{t("dept.successor")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {succ.data.critical_roles!.map((r, i) => (
+                <tr key={i} className="border-b border-slate-50 last:border-0">
+                  <td className="py-2.5 font-medium text-ink">{ar ? r.role_ar : r.role_en}</td>
+                  <td className="py-2.5 text-ink-soft">{ar ? r.function_ar : r.function_en}</td>
+                  <td className="py-2.5"><Badge tone={r.loss_risk === "High" ? "red" : "amber"}>{r.loss_risk}</Badge></td>
+                  <td className="py-2.5"><Badge tone={r.impact === "High" ? "red" : "amber"}>{r.impact}</Badge></td>
+                  <td className="py-2.5 tabular-nums">{r.readiness}</td>
+                  <td className="py-2.5 text-ink-soft">{ar ? r.successor_ar : r.successor_en}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      )}
+
+      {(succ.data.knowledge_transfer?.length ?? 0) > 0 && (
+        <Card>
+          <div className="font-semibold text-ink mb-3 flex items-center gap-2"><Layers size={16} className="text-petro" /> {t("dept.knowledgeTransfer")}</div>
+          <ul className="space-y-2">
+            {succ.data.knowledge_transfer!.map((k, i) => (
+              <li key={i} className="flex items-center gap-2 text-sm text-ink-soft">
+                <span className="w-1.5 h-1.5 rounded-full bg-petro" /> {ar ? k.ar : k.en}
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
 
       <Card>
         <div className="font-semibold text-ink mb-3 flex items-center gap-2"><AlertTriangle size={16} className="text-petro" /> {t("dept.priorityGaps")}</div>

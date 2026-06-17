@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import {
-  Award, BookOpen, CheckCircle2, Dumbbell, Rocket, Sparkles, Target, TrendingUp,
+  Award, BookOpen, CheckCircle2, Clock, Dumbbell, GraduationCap, Rocket, Sparkles, Target, TrendingUp,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
@@ -16,6 +16,9 @@ interface Result {
 interface Detail {
   id: string; name_en: string; name_ar: string; job_en?: string; job_ar?: string;
   readiness_index: number; status: string; competency_results: Result[];
+  certificates?: { en: string; ar: string; year: number }[];
+  training?: { en: string; ar: string; stage: string; closure: number }[];
+  activity?: { en: string; ar: string; when: string }[];
 }
 interface ProfileRow { id: string; }
 
@@ -133,6 +136,45 @@ export default function MyWorkspace() {
               ))}
             </div>
           )}
+        </Card>
+      </div>
+
+      {/* Training + certificates */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="animate-slide-up">
+          <div className="font-semibold text-ink mb-3 flex items-center gap-2"><GraduationCap size={16} className="text-petro" /> {t("workspace.myTraining")}</div>
+          <div className="space-y-3">
+            {(d.training ?? []).map((tr, i) => (
+              <div key={i}>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-ink">{ar ? tr.ar : tr.en}</span>
+                  <Badge tone={tr.stage === "AFTER" ? "green" : tr.stage === "DURING" ? "amber" : "slate"}>{t(`workspace.stage_${tr.stage}`)}</Badge>
+                </div>
+                <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                  <div className="h-full bg-petro" style={{ width: `${tr.closure}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 pt-3 border-t border-slate-100">
+            <div className="text-xs text-ink-muted mb-2">{t("workspace.certificates")}</div>
+            <div className="flex flex-wrap gap-2">
+              {(d.certificates ?? []).map((c, i) => <Badge key={i} tone="blue">{ar ? c.ar : c.en} · {c.year}</Badge>)}
+            </div>
+          </div>
+        </Card>
+
+        <Card className="animate-slide-up">
+          <div className="font-semibold text-ink mb-3 flex items-center gap-2"><Clock size={16} className="text-petro" /> {t("workspace.activity")}</div>
+          <ol className="relative border-s border-slate-100 ms-1.5 space-y-4">
+            {(d.activity ?? []).map((a, i) => (
+              <li key={i} className="ms-4">
+                <span className="absolute -start-1.5 w-3 h-3 rounded-full bg-petro" />
+                <div className="text-sm text-ink">{ar ? a.ar : a.en}</div>
+                <div className="text-xs text-ink-muted">{a.when}</div>
+              </li>
+            ))}
+          </ol>
         </Card>
       </div>
 

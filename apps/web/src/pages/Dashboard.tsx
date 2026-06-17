@@ -2,8 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, Building2, LayoutDashboard, ShieldCheck, Target, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
-  Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, PolarAngleAxis, PolarGrid,
-  Radar, RadarChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis,
+  Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Funnel, FunnelChart, LabelList,
+  PolarAngleAxis, PolarGrid, Radar, RadarChart, ReferenceLine, ResponsiveContainer,
+  Scatter, ScatterChart, Tooltip, XAxis, YAxis, ZAxis,
 } from "recharts";
 
 import { Badge, Card, PageHeader, PageSkeleton, ProgressRing, StatCard } from "../components/ui";
@@ -17,6 +18,8 @@ interface ExecData {
   companies: Company[]; modules: string[];
   readiness_trend?: { m: string; v: number }[];
   family_radar?: { en: string; ar: string; score: number }[];
+  critical_role_risk?: { en: string; ar: string; likelihood: number; impact: number; readiness: number }[];
+  talent_pipeline?: { en: string; ar: string; count: number }[];
 }
 
 export default function Dashboard() {
@@ -32,6 +35,13 @@ export default function Dashboard() {
   const companies = data.companies.filter((c) => typeof c.readiness === "number");
   const groupAvg = companies.length ? Math.round(companies.reduce((s, c) => s + (c.readiness || 0), 0) / companies.length) : 0;
   const radar = (data.family_radar ?? []).map((f) => ({ name: ar ? f.ar : f.en, value: f.score }));
+  const risk = (data.critical_role_risk ?? []).map((r) => ({
+    x: Math.round(r.likelihood * 100), y: Math.round(r.impact * 100), z: 100 - r.readiness,
+    name: ar ? r.ar : r.en,
+  }));
+  const funnel = (data.talent_pipeline ?? []).map((p, i) => ({
+    name: ar ? p.ar : p.en, value: p.count, fill: ["#083c30", "#0d5c4a", "#1f8a6e", "#c9a227"][i % 4],
+  }));
 
   return (
     <div className="space-y-6">
@@ -102,6 +112,42 @@ export default function Dashboard() {
           </Card>
         )}
       </div>
+
+      {(risk.length > 0 || funnel.length > 0) && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {risk.length > 0 && (
+            <Card className="lg:col-span-2 animate-slide-up">
+              <div className="font-semibold text-ink mb-1 flex items-center gap-2"><AlertTriangle size={16} className="text-petro" /> {t("dashboard.riskHeatmap")}</div>
+              <div className="text-xs text-ink-muted mb-2">{t("dashboard.riskAxes")}</div>
+              <ResponsiveContainer width="100%" height={240}>
+                <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
+                  <CartesianGrid stroke="#eef2f1" />
+                  <XAxis type="number" dataKey="x" name="likelihood" domain={[0, 100]} tick={{ fontSize: 10 }} label={{ value: t("dashboard.likelihood"), position: "insideBottom", offset: -2, fontSize: 11 }} />
+                  <YAxis type="number" dataKey="y" name="impact" domain={[0, 100]} tick={{ fontSize: 10 }} label={{ value: t("dashboard.impact"), angle: -90, position: "insideLeft", fontSize: 11 }} />
+                  <ZAxis type="number" dataKey="z" range={[80, 500]} />
+                  <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(v: number, n: string) => [v, n]} />
+                  <Scatter data={risk}>
+                    {risk.map((r, i) => <Cell key={i} fill={r.x * r.y >= 4900 ? "#ef4444" : r.x * r.y >= 2500 ? "#c9a227" : "#1f8a6e"} fillOpacity={0.75} />)}
+                  </Scatter>
+                </ScatterChart>
+              </ResponsiveContainer>
+            </Card>
+          )}
+          {funnel.length > 0 && (
+            <Card className="animate-slide-up">
+              <div className="font-semibold text-ink mb-1 flex items-center gap-2"><Users size={16} className="text-petro" /> {t("dashboard.talentPipeline")}</div>
+              <ResponsiveContainer width="100%" height={240}>
+                <FunnelChart>
+                  <Tooltip />
+                  <Funnel dataKey="value" data={funnel} isAnimationActive>
+                    <LabelList position="right" fill="#475569" stroke="none" dataKey="name" fontSize={11} />
+                  </Funnel>
+                </FunnelChart>
+              </ResponsiveContainer>
+            </Card>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="animate-slide-up">
