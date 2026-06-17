@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { setLocale, type Locale } from "../i18n";
+import { homeForRole } from "../lib/roles";
 import { useAuth } from "../store/auth";
 
 export default function Login() {
@@ -20,7 +21,7 @@ export default function Login() {
     setError(""); setBusy(true);
     try {
       await login(email, password);
-      navigate("/dashboard");
+      navigate(homeForRole(useAuth.getState().role));
     } catch {
       setError(t("login.error"));
     } finally {

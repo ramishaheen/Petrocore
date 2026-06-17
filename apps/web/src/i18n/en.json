@@ -17,6 +17,9 @@
   },
   "nav": {
     "primary": "Primary navigation",
+    "myWorkspace": "My Workspace",
+    "myTeam": "My Team",
+    "department": "Department",
     "dashboard": "Executive Readiness Dashboard",
     "hierarchy": "Institutional Hierarchy",
     "competencies": "Competency Dictionary",
@@ -66,7 +69,46 @@
     "highRisk": "High-Risk Critical Jobs",
     "topGaps": "Top Critical Competency Gaps",
     "companies": "Subsidiary Companies",
-    "modules": "Dashboard Modules"
+    "modules": "Dashboard Modules",
+    "trend": "Workforce Readiness Trend (12 months)",
+    "companyComparison": "Company Readiness Comparison",
+    "groupAvg": "Group avg",
+    "familyRadar": "Competency Family Strength"
+  },
+  "workspace": {
+    "greeting": "Welcome back",
+    "developmentPath": "Your Development Path",
+    "pathLearn": "Learn",
+    "pathPractice": "Practice",
+    "pathApply": "Apply",
+    "pathExcel": "Excel",
+    "competencyProfile": "Competency Profile",
+    "recommended": "Recommended Actions",
+    "allMet": "All competencies meet their required level — great work!",
+    "startLearning": "Start learning →",
+    "achievements": "Achievements"
+  },
+  "team": {
+    "subtitle": "Your team's readiness, gaps, and approvals.",
+    "members": "Team Members",
+    "avgReadiness": "Avg Readiness",
+    "readyNow": "Ready Now",
+    "pendingApprovals": "Pending Approvals",
+    "roster": "Team Roster",
+    "approvals": "Approvals Queue",
+    "noApprovals": "Nothing awaiting your approval.",
+    "approve": "Approve"
+  },
+  "dept": {
+    "subtitle": "Department readiness map, critical roles, and succession.",
+    "readiness": "Department Readiness",
+    "headcount": "Headcount",
+    "sectionReadiness": "Readiness by Section",
+    "pipeline": "Succession Pipeline",
+    "readyNow": "Ready now",
+    "ready6_12": "6–12 months",
+    "ready12": "12+ months",
+    "priorityGaps": "Priority Competency Gaps"
   },
   "training": {
     "principle": "Training starts from a verified gap and ends with measured impact.",

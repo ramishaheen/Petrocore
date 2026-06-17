@@ -16,34 +16,45 @@ const competencies = [
   { id: "c-data", code: "DIG-DATA", name_en: "Data & Digital Literacy", name_ar: "الثقافة الرقمية والبيانات", family: "DIGITAL" },
   { id: "c-evd", code: "EVD-DOC", name_en: "Evidence Documentation", name_ar: "توثيق الأدلة", family: "EVIDENCE_STANDARD" },
 ];
+const cName = Object.fromEntries(competencies.map((c) => [c.id, c]));
 
-const profiles = [
-  { id: "p1", employee_id: "e1", name_en: "Ahmed Al-Mansouri", name_ar: "أحمد المنصوري", readiness_index: 82, status: "TRUSTED" },
-  { id: "p2", employee_id: "e2", name_en: "Fatima Al-Zawawi", name_ar: "فاطمة الزواوي", readiness_index: 64, status: "HR_VALIDATED" },
-  { id: "p3", employee_id: "e3", name_en: "Khalid Bin Omar", name_ar: "خالد بن عمر", readiness_index: 47, status: "MANAGER_APPROVED" },
+interface Person { id: string; emp: string; en: string; ar: string; job_en: string; job_ar: string; readiness: number; status: string; seed: number[]; }
+const PEOPLE: Person[] = [
+  { id: "p1", emp: "e1", en: "Ahmed Al-Mansouri", ar: "أحمد المنصوري", job_en: "Senior Field Operator", job_ar: "مشغل حقل أول", readiness: 86, status: "TRUSTED", seed: [5, 4, 5, 4, 4] },
+  { id: "p2", emp: "e2", en: "Fatima Al-Zawawi", ar: "فاطمة الزواوي", job_en: "Process Engineer", job_ar: "مهندسة عمليات", readiness: 74, status: "HR_VALIDATED", seed: [4, 4, 3, 3, 4] },
+  { id: "p3", emp: "e3", en: "Khalid Bin Omar", ar: "خالد بن عمر", job_en: "Field Operator", job_ar: "مشغل حقل", readiness: 63, status: "MANAGER_APPROVED", seed: [3, 3, 3, 2, 4] },
+  { id: "p4", emp: "e4", en: "Layla Haddad", ar: "ليلى حداد", job_en: "HSE Officer", job_ar: "مسؤولة سلامة", readiness: 58, status: "MANAGER_APPROVED", seed: [3, 2, 4, 3, 2] },
+  { id: "p5", emp: "e5", en: "Yusuf Al-Tayeb", ar: "يوسف الطيب", job_en: "Junior Operator", job_ar: "مشغل مبتدئ", readiness: 44, status: "DRAFT", seed: [2, 2, 2, 2, 3] },
+  { id: "p6", emp: "e6", en: "Mariam Saleh", ar: "مريم صالح", job_en: "Control Room Operator", job_ar: "مشغلة غرفة تحكم", readiness: 39, status: "DRAFT", seed: [2, 3, 1, 2, 2] },
 ];
 
-function results(seed: number[]) {
-  return competencies.slice(0, 5).map((c, i) => ({
-    competency_id: c.id, competency_en: c.name_en, competency_ar: c.name_ar,
-    assessed_level: seed[i] ?? 3, required_level: 4,
-    confidence: 0.7 + (i % 3) * 0.1, status: (seed[i] ?? 3) >= 4 ? "APPROVED" : "PENDING_REVIEW",
-  }));
+const FIVE = ["c-well", "c-proc", "c-psm", "c-comm", "c-data"];
+function detailFor(p: Person) {
+  const required = [4, 4, 5, 3, 3];
+  return {
+    id: p.id, employee_id: p.emp, name_en: p.en, name_ar: p.ar,
+    job_en: p.job_en, job_ar: p.job_ar, readiness_index: p.readiness, status: p.status,
+    competency_results: FIVE.map((cid, i) => ({
+      competency_id: cid, competency_en: cName[cid].name_en, competency_ar: cName[cid].name_ar,
+      family: cName[cid].family, assessed_level: p.seed[i], required_level: required[i],
+      confidence: 0.7 + ((i + p.seed[i]) % 3) * 0.09,
+      status: p.seed[i] >= required[i] ? "APPROVED" : "PENDING_REVIEW",
+    })),
+    approvals: [
+      ...(["MANAGER_APPROVED", "HR_VALIDATED", "TRUSTED"].includes(p.status) ? [{ role: "LINE_MANAGER", decision: "APPROVED", approver_user_id: "u1" }] : []),
+      ...(["HR_VALIDATED", "TRUSTED"].includes(p.status) ? [{ role: "HR_VALIDATOR", decision: "APPROVED", approver_user_id: "u2" }] : []),
+    ],
+  };
 }
-const profileDetail: Record<string, unknown> = {
-  p1: { id: "p1", employee_id: "e1", name_en: "Ahmed Al-Mansouri", name_ar: "أحمد المنصوري", readiness_index: 82, status: "TRUSTED",
-        competency_results: results([4, 5, 4, 4, 3]), approvals: [{ role: "LINE_MANAGER", decision: "APPROVED", approver_user_id: "u1" }, { role: "HR_VALIDATOR", decision: "APPROVED", approver_user_id: "u2" }] },
-  p2: { id: "p2", employee_id: "e2", name_en: "Fatima Al-Zawawi", name_ar: "فاطمة الزواوي", readiness_index: 64, status: "HR_VALIDATED",
-        competency_results: results([3, 4, 3, 2, 4]), approvals: [{ role: "HR_VALIDATOR", decision: "APPROVED", approver_user_id: "u2" }] },
-  p3: { id: "p3", employee_id: "e3", name_en: "Khalid Bin Omar", name_ar: "خالد بن عمر", readiness_index: 47, status: "MANAGER_APPROVED",
-        competency_results: results([2, 3, 2, 2, 3]), approvals: [{ role: "LINE_MANAGER", decision: "APPROVED", approver_user_id: "u1" }] },
-};
+const profileDetail: Record<string, unknown> = Object.fromEntries(PEOPLE.map((p) => [p.id, detailFor(p)]));
 
 const gaps = [
-  { id: "g1", scope: "INDIVIDUAL", competency_id: "c-psm", current_level: 2, target_level: 5, gap_size: 3, priority: "VERY_HIGH", confidence: 0.86 },
-  { id: "g2", scope: "INDIVIDUAL", competency_id: "c-well", current_level: 2, target_level: 4, gap_size: 2, priority: "HIGH", confidence: 0.78 },
-  { id: "g3", scope: "TEAM", competency_id: "c-data", current_level: 3, target_level: 4, gap_size: 1, priority: "MEDIUM", confidence: 0.71 },
-  { id: "g4", scope: "DEPARTMENT", competency_id: "c-comm", current_level: 2, target_level: 3, gap_size: 1, priority: "MEDIUM", confidence: 0.66 },
+  { id: "g1", scope: "INDIVIDUAL", subject_id: "e5", competency_id: "c-psm", current_level: 2, target_level: 5, gap_size: 3, priority: "VERY_HIGH", confidence: 0.88 },
+  { id: "g2", scope: "INDIVIDUAL", subject_id: "e6", competency_id: "c-psm", current_level: 1, target_level: 5, gap_size: 4, priority: "VERY_HIGH", confidence: 0.83 },
+  { id: "g3", scope: "INDIVIDUAL", subject_id: "e3", competency_id: "c-comm", current_level: 2, target_level: 3, gap_size: 1, priority: "MEDIUM", confidence: 0.72 },
+  { id: "g4", scope: "INDIVIDUAL", subject_id: "e4", competency_id: "c-proc", current_level: 2, target_level: 4, gap_size: 2, priority: "HIGH", confidence: 0.79 },
+  { id: "g5", scope: "TEAM", subject_id: "ops-a", competency_id: "c-data", current_level: 2, target_level: 4, gap_size: 2, priority: "HIGH", confidence: 0.75 },
+  { id: "g6", scope: "DEPARTMENT", subject_id: "ops", competency_id: "c-well", current_level: 3, target_level: 4, gap_size: 1, priority: "MEDIUM", confidence: 0.7 },
 ];
 
 const tree = [{
@@ -53,6 +64,7 @@ const tree = [{
       { id: "prod", node_type: "ACTIVITY", name_en: "Production", name_ar: "الإنتاج", activity_segment: "PRODUCTION", children: [
         { id: "ops", node_type: "DEPARTMENT", name_en: "Field Operations", name_ar: "عمليات الحقل", activity_segment: null, children: [
           { id: "opsa", node_type: "SECTION", name_en: "Operations Section A", name_ar: "قسم العمليات أ", activity_segment: null, children: [] },
+          { id: "opsb", node_type: "SECTION", name_en: "Operations Section B", name_ar: "قسم العمليات ب", activity_segment: null, children: [] },
         ] },
       ] },
     ] },
@@ -69,46 +81,81 @@ const valueDims = [
   { key: "fairness_transparency", en: "Fairness & Transparency", ar: "العدالة والشفافية", score: 79 },
 ];
 
+const readinessTrend = [
+  { m: "Jul", v: 58 }, { m: "Aug", v: 60 }, { m: "Sep", v: 61 }, { m: "Oct", v: 64 },
+  { m: "Nov", v: 66 }, { m: "Dec", v: 67 }, { m: "Jan", v: 69 }, { m: "Feb", v: 70 },
+  { m: "Mar", v: 70 }, { m: "Apr", v: 71 }, { m: "May", v: 72 }, { m: "Jun", v: 73 },
+];
+
 const GET: Record<string, unknown> = {
   "/dashboards/executive": {
-    workforce_readiness_index: 71.4, profiles: 3, critical_jobs_total: 4, high_risk_critical_jobs: 1,
-    high_risk_pct: 25, top_competency_gaps: [{ competency_id: "c-psm", count: 3 }, { competency_id: "c-well", count: 2 }, { competency_id: "c-data", count: 2 }, { competency_id: "c-comm", count: 1 }],
-    companies: [{ id: "agoco", name_en: "Arabian Gulf Oil Co.", name_ar: "شركة الخليج العربي للنفط" }, { id: "waha", name_en: "Waha Oil Co.", name_ar: "شركة الواحة للنفط" }],
+    workforce_readiness_index: 73, profiles: PEOPLE.length, critical_jobs_total: 6, high_risk_critical_jobs: 2,
+    high_risk_pct: 33, profiles_trusted: PEOPLE.filter((p) => p.status === "TRUSTED").length,
+    top_competency_gaps: [{ competency_id: "c-psm", count: 4 }, { competency_id: "c-proc", count: 3 }, { competency_id: "c-data", count: 3 }, { competency_id: "c-comm", count: 2 }, { competency_id: "c-well", count: 1 }],
+    companies: [
+      { id: "agoco", name_en: "Arabian Gulf Oil Co.", name_ar: "شركة الخليج العربي للنفط", readiness: 76 },
+      { id: "waha", name_en: "Waha Oil Co.", name_ar: "شركة الواحة للنفط", readiness: 68 },
+      { id: "sirte", name_en: "Sirte Oil Co.", name_ar: "شركة سرت للنفط", readiness: 71 },
+    ],
+    readiness_trend: readinessTrend,
+    family_radar: [
+      { family: "Technical", en: "Technical", ar: "تقنية", score: 78 },
+      { family: "HSE", en: "HSE", ar: "السلامة", score: 64 },
+      { family: "Behavioral", en: "Behavioral", ar: "سلوكية", score: 72 },
+      { family: "Leadership", en: "Leadership", ar: "قيادية", score: 60 },
+      { family: "Digital", en: "Digital", ar: "رقمية", score: 55 },
+    ],
     modules: ["Workforce Readiness Index", "Company Readiness Comparison", "Critical Competency Gaps", "Training Impact Overview", "Succession Readiness", "Talent Pipeline", "Critical Role Risk", "Decision Priorities"],
   },
   "/dashboards/diagnostic": [
-    { layer: "L1", name_en: "Strategy & Institutional Context", name_ar: "الاستراتيجية والسياق المؤسسي", status: "READY", detail: "6 records available." },
-    { layer: "L5", name_en: "Employee 360° Profile", name_ar: "البروفايل الشامل للموظف", status: "READY", detail: "3 records available." },
-    { layer: "L6", name_en: "Critical Roles", name_ar: "الوظائف الحرجة", status: "NEEDS_REVIEW", detail: "1 record — verify completeness." },
-    { layer: "L8", name_en: "Gap Analysis", name_ar: "تحليل الفجوات", status: "READY", detail: "4 records available." },
+    { layer: "L1", name_en: "Strategy & Institutional Context", name_ar: "الاستراتيجية والسياق المؤسسي", status: "READY", detail: "Hierarchy + strategy elements loaded." },
+    { layer: "L2", name_en: "HR, Jobs & Performance", name_ar: "الموارد البشرية والوظائف", status: "READY", detail: "6 employees, 4 jobs." },
+    { layer: "L3", name_en: "Competency Dictionary", name_ar: "قاموس الجدارات", status: "READY", detail: "8 competencies across 6 families." },
+    { layer: "L5", name_en: "Employee 360° Profile", name_ar: "البروفايل الشامل", status: "READY", detail: "6 profiles." },
+    { layer: "L6", name_en: "Critical Roles", name_ar: "الوظائف الحرجة", status: "NEEDS_REVIEW", detail: "Verify completeness for Section B." },
+    { layer: "L8", name_en: "Gap Analysis", name_ar: "تحليل الفجوات", status: "READY", detail: "Gaps computed for all profiles." },
+    { layer: "L9", name_en: "Training Governance", name_ar: "حوكمة التدريب", status: "NEEDS_REVIEW", detail: "2 programs awaiting impact data." },
   ],
-  "/profiles": profiles,
+  "/profiles": PEOPLE.map((p) => ({ id: p.id, employee_id: p.emp, name_en: p.en, name_ar: p.ar, job_en: p.job_en, job_ar: p.job_ar, readiness_index: p.readiness, status: p.status })),
   "/competencies": competencies,
   "/org/tree": tree,
   "/gaps": gaps,
-  "/reports/institutional-value": { dimensions: valueDims, value_index: 73.8 },
-  "/reports/succession": { critical_roles_total: 4, roles_at_risk: 1, ready_successors: 1, overall_readiness: 64.3, pipeline: { identified: 3, ready_now: 1, ready_6_12m: 1, ready_12m_plus: 1 } },
-  "/reports/department-readiness": { departments: [{ tenant_id: "opsa-section", avg_readiness: 64.3, employees: 3 }] },
-  "/reports/training-impact": { programs_measured: 2, avg_gap_closure_pct: 68.5, records: [] },
-  "/reports/governance-audit": { audit_chain_intact: true, decisions: [{ id: "d1", kind: "COMPETENCY_RESULT", status: "APPROVED", confidence: 0.86 }, { id: "d2", kind: "RECOMMENDATION", status: "PENDING_REVIEW", confidence: 0.62 }] },
-  "/governance/decisions": [{ id: "d2", kind: "RECOMMENDATION", subject_ref: "recommendation:r1", ai_recommendation: "Targeted development for Process Safety Management: raise level 2→5.", confidence: 0.62, governance_status: "PENDING_REVIEW" }],
+  "/reports/institutional-value": { dimensions: valueDims, value_index: 73 },
+  "/reports/succession": { critical_roles_total: 6, roles_at_risk: 2, roles_at_risk_pct: 33, ready_successors: 2, overall_readiness: 60.7, pipeline: { identified: 6, ready_now: 2, ready_6_12m: 2, ready_12m_plus: 2 } },
+  "/reports/department-readiness": { departments: [
+    { tenant_id: "opsa", name_en: "Operations Section A", name_ar: "قسم العمليات أ", avg_readiness: 71, employees: 3 },
+    { tenant_id: "opsb", name_en: "Operations Section B", name_ar: "قسم العمليات ب", avg_readiness: 49, employees: 3 },
+  ] },
+  "/reports/training-impact": { programs_measured: 3, avg_gap_closure_pct: 71, records: [] },
+  "/reports/governance-audit": { audit_chain_intact: true, decisions: [
+    { id: "d1", kind: "COMPETENCY_RESULT", status: "APPROVED", confidence: 0.86 },
+    { id: "d2", kind: "RECOMMENDATION", status: "PENDING_REVIEW", confidence: 0.62 },
+    { id: "d3", kind: "COMPETENCY_RESULT", status: "PENDING_REVIEW", confidence: 0.58 },
+  ] },
+  "/governance/decisions": [
+    { id: "d2", kind: "RECOMMENDATION", subject_ref: "recommendation:r1", ai_recommendation: "Targeted PSM development for Yusuf Al-Tayeb: raise level 2→5.", confidence: 0.62, governance_status: "PENDING_REVIEW" },
+    { id: "d3", kind: "COMPETENCY_RESULT", subject_ref: "assessment:a8", ai_recommendation: "Mariam Saleh — Process Safety assessed level 1.", confidence: 0.58, governance_status: "PENDING_REVIEW" },
+  ],
   "/governance/audit/verify": { intact: true },
   "/enablement/pilot-entry": {
     candidates: [
-      { id: "agoco", name_en: "Arabian Gulf Oil Co.", name_ar: "شركة الخليج العربي للنفط", readiness: 71, strategic_impact: 80, score: 75.5 },
-      { id: "waha", name_en: "Waha Oil Co.", name_ar: "شركة الواحة للنفط", readiness: 58, strategic_impact: 80, score: 69 },
+      { id: "agoco", name_en: "Arabian Gulf Oil Co.", name_ar: "شركة الخليج العربي للنفط", readiness: 76, strategic_impact: 88, score: 82 },
+      { id: "sirte", name_en: "Sirte Oil Co.", name_ar: "شركة سرت للنفط", readiness: 71, strategic_impact: 80, score: 75.5 },
+      { id: "waha", name_en: "Waha Oil Co.", name_ar: "شركة الواحة للنفط", readiness: 68, strategic_impact: 74, score: 71 },
     ],
-    best_starting_point: { id: "agoco", name_en: "Arabian Gulf Oil Co.", name_ar: "شركة الخليج العربي للنفط", readiness: 71, strategic_impact: 80, score: 75.5 },
+    best_starting_point: { id: "agoco", name_en: "Arabian Gulf Oil Co.", name_ar: "شركة الخليج العربي للنفط", readiness: 76, strategic_impact: 88, score: 82 },
     scopes: ["Subsidiary Company", "Technical Department", "Job Family", "Critical Roles", "Management Level", "Employee Group"],
     principle: "Start with the smartest, not the biggest.",
   },
-  "/enablement/calibration": { calibration_score: 88, target: 92, on_target: false, scale_up_roadmap: [{ phase: 1, en: "Expand Units", ar: "توسيع الوحدات" }, { phase: 2, en: "Additional Use Cases", ar: "حالات استخدام إضافية" }, { phase: 3, en: "Enterprise Rollout", ar: "النشر المؤسسي" }] },
+  "/enablement/calibration": { calibration_score: 89, target: 92, on_target: false, scale_up_roadmap: [{ phase: 1, en: "Expand Units", ar: "توسيع الوحدات" }, { phase: 2, en: "Additional Use Cases", ar: "حالات استخدام إضافية" }, { phase: 3, en: "Enterprise Rollout", ar: "النشر المؤسسي" }] },
   "/training/cohorts": [
-    { competency_id: "c-psm", target_level: 5, learners: ["e1", "e3"], size: 2 },
-    { competency_id: "c-well", target_level: 4, learners: ["e3"], size: 1 },
+    { competency_id: "c-psm", target_level: 5, learners: ["e5", "e6"], size: 2 },
+    { competency_id: "c-proc", target_level: 4, learners: ["e4"], size: 1 },
+    { competency_id: "c-data", target_level: 4, learners: ["e3", "e6"], size: 2 },
   ],
   "/training/programs": [
-    { id: "pr1", title_en: "Process Safety Management — Level 5 Development", title_ar: "إدارة سلامة العمليات — تطوير المستوى 5", method: "BLENDED", provider: "Murzuq Academy", impact_kpi: "Readiness Index uplift" },
+    { id: "pr1", title_en: "Process Safety Management — Level 5", title_ar: "إدارة سلامة العمليات — المستوى 5", method: "BLENDED", provider: "Murzuq Academy", impact_kpi: "Readiness uplift" },
+    { id: "pr2", title_en: "Digital & Data Literacy", title_ar: "الثقافة الرقمية والبيانات", method: "DIGITAL", provider: "Murzuq Academy", impact_kpi: "Digital maturity index" },
   ],
 };
 
@@ -121,7 +168,8 @@ function questionsFor(cid: string) {
 
 const ROLE_AR: Record<string, string> = {
   PLATFORM_ADMIN: "مسؤول المنصة", NOC_EXECUTIVE: "الإدارة العليا", HR_VALIDATOR: "الموارد البشرية",
-  LINE_MANAGER: "المدير المباشر", LD_MANAGER: "مدير التدريب والتطوير", EMPLOYEE: "الموظف",
+  LINE_MANAGER: "المدير المباشر", LD_MANAGER: "مدير التدريب والتطوير", DEPT_MANAGER: "مدير الإدارة",
+  EMPLOYEE: "الموظف", COMPANY_ADMIN: "مسؤول الشركة", CONSULTANT: "الفريق الاستشاري",
 };
 
 export function demoResponse(config: InternalAxiosRequestConfig): unknown {
@@ -131,8 +179,8 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   if (method === "post" && url === "/auth/login") {
     const email = (() => { try { return JSON.parse(config.data || "{}").email || ""; } catch { return ""; } })();
     const role = email.startsWith("exec") ? "NOC_EXECUTIVE" : email.startsWith("hr") ? "HR_VALIDATOR"
-      : email.startsWith("manager") ? "LINE_MANAGER" : email.startsWith("ld") ? "LD_MANAGER"
-      : email.startsWith("employee") ? "EMPLOYEE" : "PLATFORM_ADMIN";
+      : email.startsWith("manager") ? "LINE_MANAGER" : email.startsWith("dept") ? "DEPT_MANAGER"
+      : email.startsWith("ld") ? "LD_MANAGER" : email.startsWith("employee") ? "EMPLOYEE" : "PLATFORM_ADMIN";
     return { access_token: "demo-token", token_type: "bearer", role, role_ar: ROLE_AR[role], tenant_id: "*" };
   }
   if (url.startsWith("/assessments/questions/")) return questionsFor(url.split("/").pop() || "c-psm");

@@ -3,11 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import AppLayout from "./layouts/AppLayout";
+import { homeForRole } from "./lib/roles";
 import { useAuth } from "./store/auth";
 
-// Route-level code splitting: each page is its own chunk, loaded on demand.
 const Login = lazy(() => import("./pages/Login"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const MyWorkspace = lazy(() => import("./pages/MyWorkspace"));
+const MyTeam = lazy(() => import("./pages/MyTeam"));
+const Department = lazy(() => import("./pages/Department"));
 const Hierarchy = lazy(() => import("./pages/Hierarchy"));
 const Profiles = lazy(() => import("./pages/Profiles"));
 const ProfileDetail = lazy(() => import("./pages/ProfileDetail"));
@@ -23,6 +26,11 @@ const Diagnostic = lazy(() => import("./pages/Diagnostic"));
 function Protected({ children }: { children: React.ReactNode }) {
   const token = useAuth((s) => s.token);
   return token ? <>{children}</> : <Navigate to="/login" replace />;
+}
+
+function RoleHome() {
+  const role = useAuth((s) => s.role);
+  return <Navigate to={homeForRole(role)} replace />;
 }
 
 function Fallback() {
@@ -42,6 +50,9 @@ export default function App() {
             </Protected>
           }
         >
+          <Route path="/my-workspace" element={<MyWorkspace />} />
+          <Route path="/my-team" element={<MyTeam />} />
+          <Route path="/department" element={<Department />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/hierarchy" element={<Hierarchy />} />
           <Route path="/profiles" element={<Profiles />} />
@@ -55,7 +66,7 @@ export default function App() {
           <Route path="/enablement" element={<Enablement />} />
           <Route path="/diagnostic" element={<Diagnostic />} />
         </Route>
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Protected><RoleHome /></Protected>} />
       </Routes>
     </Suspense>
   );

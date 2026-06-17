@@ -17,6 +17,9 @@
   },
   "nav": {
     "primary": "التنقل الرئيسي",
+    "myWorkspace": "مساحتي",
+    "myTeam": "فريقي",
+    "department": "الإدارة",
     "dashboard": "لوحة الجاهزية التنفيذية",
     "hierarchy": "الهيكل المؤسسي",
     "competencies": "قاموس الجدارات",
@@ -66,7 +69,46 @@
     "highRisk": "الوظائف الحرجة عالية الخطورة",
     "topGaps": "أهم فجوات الجدارات الحرجة",
     "companies": "الشركات التابعة",
-    "modules": "وحدات اللوحة"
+    "modules": "وحدات اللوحة",
+    "trend": "اتجاه جاهزية القوى العاملة (12 شهرًا)",
+    "companyComparison": "مقارنة جاهزية الشركات",
+    "groupAvg": "متوسط المجموعة",
+    "familyRadar": "قوة عائلات الجدارة"
+  },
+  "workspace": {
+    "greeting": "مرحبًا بعودتك",
+    "developmentPath": "مسارك التطويري",
+    "pathLearn": "تعلّم",
+    "pathPractice": "ممارسة",
+    "pathApply": "تطبيق",
+    "pathExcel": "تميّز",
+    "competencyProfile": "ملف الجدارات",
+    "recommended": "الإجراءات الموصى بها",
+    "allMet": "جميع الجدارات تحقق المستوى المطلوب — عمل رائع!",
+    "startLearning": "ابدأ التعلّم ←",
+    "achievements": "الإنجازات"
+  },
+  "team": {
+    "subtitle": "جاهزية فريقك وفجواته واعتماداته.",
+    "members": "أعضاء الفريق",
+    "avgReadiness": "متوسط الجاهزية",
+    "readyNow": "جاهز الآن",
+    "pendingApprovals": "اعتمادات معلقة",
+    "roster": "قائمة الفريق",
+    "approvals": "قائمة الاعتمادات",
+    "noApprovals": "لا شيء بانتظار اعتمادك.",
+    "approve": "اعتماد"
+  },
+  "dept": {
+    "subtitle": "خريطة جاهزية الإدارة والوظائف الحرجة والإحلال.",
+    "readiness": "جاهزية الإدارة",
+    "headcount": "عدد الموظفين",
+    "sectionReadiness": "الجاهزية حسب القسم",
+    "pipeline": "خط الإحلال",
+    "readyNow": "جاهز الآن",
+    "ready6_12": "6–12 شهرًا",
+    "ready12": "12+ شهرًا",
+    "priorityGaps": "فجوات الجدارة ذات الأولوية"
   },
   "training": {
     "principle": "يبدأ التدريب من فجوة موثّقة وينتهي بأثر مقاس.",
