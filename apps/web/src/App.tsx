@@ -9,6 +9,8 @@ import Gaps from "./pages/Gaps";
 import Governance from "./pages/Governance";
 import Hierarchy from "./pages/Hierarchy";
 import Login from "./pages/Login";
+import ProfileDetail from "./pages/ProfileDetail";
+import Profiles from "./pages/Profiles";
 import Reports from "./pages/Reports";
 import { useAuth } from "./store/auth";
 
@@ -30,6 +32,8 @@ export default function App() {
       >
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/hierarchy" element={<Hierarchy />} />
+        <Route path="/profiles" element={<Profiles />} />
+        <Route path="/profiles/:id" element={<ProfileDetail />} />
         <Route path="/competencies" element={<Competencies />} />
         <Route path="/gaps" element={<Gaps />} />
         <Route path="/reports" element={<Reports />} />

@@ -45,6 +45,25 @@
     "companies": "الشركات التابعة",
     "modules": "وحدات اللوحة"
   },
+  "profiles": {
+    "employee": "الموظف",
+    "passport": "جواز الجدارة المهني",
+    "trustChain": "سلسلة الثقة (المدير المباشر + الموارد البشرية ⇐ موثوق)",
+    "competencies": "الجدارة والجاهزية",
+    "assessed": "المُقيَّم",
+    "required": "المطلوب",
+    "confidence": "مستوى الثقة",
+    "noResults": "لا توجد نتائج جدارات بعد — قم بإجراء تقييم.",
+    "approve": "اعتماد",
+    "status_TRUSTED": "موثوق",
+    "status_HR_VALIDATED": "معتمد من الموارد البشرية",
+    "status_MANAGER_APPROVED": "معتمد من المدير",
+    "status_DRAFT": "مسودة"
+  },
+  "roles": {
+    "LINE_MANAGER": "المدير المباشر",
+    "HR_VALIDATOR": "الموارد البشرية"
+  },
   "competencies": {
     "title": "قاموس الجدارات والمعايير المهنية",
     "family": "العائلة",

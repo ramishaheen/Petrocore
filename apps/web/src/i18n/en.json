@@ -45,6 +45,25 @@
     "companies": "Subsidiary Companies",
     "modules": "Dashboard Modules"
   },
+  "profiles": {
+    "employee": "Employee",
+    "passport": "Competency Passport · جواز الجدارة المهني",
+    "trustChain": "Trust Chain (Line Manager + HR ⇒ Trusted)",
+    "competencies": "Competency & Readiness",
+    "assessed": "Assessed",
+    "required": "Required",
+    "confidence": "Confidence",
+    "noResults": "No competency results yet — run an assessment.",
+    "approve": "Approve",
+    "status_TRUSTED": "Trusted",
+    "status_HR_VALIDATED": "HR Validated",
+    "status_MANAGER_APPROVED": "Manager Approved",
+    "status_DRAFT": "Draft"
+  },
+  "roles": {
+    "LINE_MANAGER": "Line Manager",
+    "HR_VALIDATOR": "HR Validation"
+  },
   "competencies": {
     "title": "Competency Dictionary & Professional Standards",
     "family": "Family",

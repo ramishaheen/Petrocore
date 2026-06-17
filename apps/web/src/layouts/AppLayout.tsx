@@ -7,6 +7,7 @@ import { useAuth } from "../store/auth";
 const NAV = [
   { to: "/dashboard", key: "dashboard" },
   { to: "/hierarchy", key: "hierarchy" },
+  { to: "/profiles", key: "profiles" },
   { to: "/competencies", key: "competencies" },
   { to: "/gaps", key: "gaps" },
   { to: "/reports", key: "reports" },
