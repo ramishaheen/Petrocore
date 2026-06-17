@@ -1,33 +1,16 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { ClipboardCheck, Loader2, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { Badge, Card, PageHeader, ProgressRing } from "../components/ui";
 import { api } from "../lib/api";
 
-interface Profile {
-  id: string;
-  employee_id: string;
-  name_en: string;
-  name_ar: string;
-}
-interface Competency {
-  id: string;
-  name_en: string;
-  name_ar: string;
-}
-interface Question {
-  id: string;
-  kind: string;
-  body_en: string;
-  body_ar: string;
-  options: { choices?: string[] };
-}
+interface Profile { id: string; employee_id: string; name_en: string; name_ar: string; }
+interface Competency { id: string; name_en: string; name_ar: string; }
+interface Question { id: string; kind: string; body_en: string; body_ar: string; options: { choices?: string[] }; }
 interface Result {
-  assessed_level: number;
-  required_level: number;
-  confidence: number;
-  status: string;
-  needs_human_review: boolean;
+  assessed_level: number; required_level: number; confidence: number; status: string; needs_human_review: boolean;
 }
 
 export default function Assessment() {
@@ -38,14 +21,8 @@ export default function Assessment() {
   const [responses, setResponses] = useState<Record<string, number>>({});
   const [result, setResult] = useState<Result | null>(null);
 
-  const profiles = useQuery<Profile[]>({
-    queryKey: ["profiles"],
-    queryFn: async () => (await api.get("/profiles")).data,
-  });
-  const comps = useQuery<Competency[]>({
-    queryKey: ["competencies"],
-    queryFn: async () => (await api.get("/competencies")).data,
-  });
+  const profiles = useQuery<Profile[]>({ queryKey: ["profiles"], queryFn: async () => (await api.get("/profiles")).data });
+  const comps = useQuery<Competency[]>({ queryKey: ["competencies"], queryFn: async () => (await api.get("/competencies")).data });
   const questions = useQuery<Question[]>({
     queryKey: ["questions", competencyId],
     queryFn: async () => (await api.get(`/assessments/questions/${competencyId}`)).data,
@@ -55,8 +32,7 @@ export default function Assessment() {
   const submit = useMutation({
     mutationFn: async () => {
       const payload = {
-        employee_id: employeeId,
-        competency_id: competencyId,
+        employee_id: employeeId, competency_id: competencyId,
         responses: (questions.data ?? []).map((q) => ({
           question_id: q.id,
           choice: q.kind === "MCQ" ? responses[q.id] ?? null : null,
@@ -65,116 +41,92 @@ export default function Assessment() {
       };
       return (await api.post("/assessments/grade", payload)).data as Result;
     },
-    onSuccess: (data) => setResult(data),
+    onSuccess: (d) => setResult(d),
   });
+
+  const selectCls = "w-full border border-slate-200 rounded-xl px-3 py-2.5 mt-1 bg-white focus:border-petro outline-none transition-colors";
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t("assessment.title")}</h1>
+      <PageHeader title={t("assessment.title")} subtitle={t("assessment.subtitle")} icon={ClipboardCheck} />
 
-      <div className="card grid grid-cols-1 md:grid-cols-2 gap-4">
-        <label className="text-sm">
+      <Card className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <label className="text-sm text-ink-soft">
           {t("profiles.employee")}
-          <select
-            className="w-full border rounded-lg px-3 py-2 mt-1"
-            value={employeeId}
-            onChange={(e) => { setEmployeeId(e.target.value); setResult(null); }}
-          >
+          <select className={selectCls} value={employeeId}
+                  onChange={(e) => { setEmployeeId(e.target.value); setResult(null); }}>
             <option value="">—</option>
-            {(profiles.data ?? []).map((p) => (
-              <option key={p.id} value={p.employee_id}>{ar ? p.name_ar : p.name_en}</option>
-            ))}
+            {(profiles.data ?? []).map((p) => <option key={p.id} value={p.employee_id}>{ar ? p.name_ar : p.name_en}</option>)}
           </select>
         </label>
-        <label className="text-sm">
+        <label className="text-sm text-ink-soft">
           {t("competencies.title")}
-          <select
-            className="w-full border rounded-lg px-3 py-2 mt-1"
-            value={competencyId}
-            onChange={(e) => { setCompetencyId(e.target.value); setResponses({}); setResult(null); }}
-          >
+          <select className={selectCls} value={competencyId}
+                  onChange={(e) => { setCompetencyId(e.target.value); setResponses({}); setResult(null); }}>
             <option value="">—</option>
-            {(comps.data ?? []).map((c) => (
-              <option key={c.id} value={c.id}>{ar ? c.name_ar : c.name_en}</option>
-            ))}
+            {(comps.data ?? []).map((c) => <option key={c.id} value={c.id}>{ar ? c.name_ar : c.name_en}</option>)}
           </select>
         </label>
-      </div>
+      </Card>
 
       {competencyId && questions.data && (
-        <div className="card space-y-4">
-          <div className="font-semibold">{t("assessment.questions")}</div>
+        <Card className="space-y-4">
+          <div className="font-semibold text-ink">{t("assessment.questions")}</div>
           {questions.data.map((q) => (
-            <div key={q.id} className="border-b last:border-0 pb-3">
-              <div className="text-sm mb-2">
-                <span className="text-[10px] bg-petro/10 text-petro px-1.5 py-0.5 rounded me-2">{q.kind}</span>
-                {ar ? q.body_ar : q.body_en}
+            <div key={q.id} className="border-b border-slate-50 last:border-0 pb-3">
+              <div className="text-sm mb-2 flex items-start gap-2">
+                <Badge tone={q.kind === "MCQ" ? "blue" : "gold"}>{q.kind}</Badge>
+                <span className="text-ink">{ar ? q.body_ar : q.body_en}</span>
               </div>
               {q.kind === "MCQ" ? (
-                <div className="flex gap-3 flex-wrap">
+                <div className="flex gap-3 flex-wrap ps-1">
                   {(q.options.choices ?? []).map((opt, idx) => (
-                    <label key={idx} className="text-sm flex items-center gap-1">
-                      <input
-                        type="radio"
-                        name={q.id}
-                        checked={responses[q.id] === idx}
-                        onChange={() => setResponses((r) => ({ ...r, [q.id]: idx }))}
-                      />
+                    <label key={idx} className="text-sm flex items-center gap-1.5 cursor-pointer">
+                      <input type="radio" name={q.id} className="accent-petro"
+                             checked={responses[q.id] === idx}
+                             onChange={() => setResponses((r) => ({ ...r, [q.id]: idx }))} />
                       {opt}
                     </label>
                   ))}
                 </div>
               ) : (
-                <label className="text-sm flex items-center gap-2">
+                <label className="text-sm flex items-center gap-3 ps-1">
                   {t("assessment.selfScore")}
-                  <input
-                    type="range" min={0} max={5} step={1}
-                    value={responses[q.id] ?? 0}
-                    onChange={(e) => setResponses((r) => ({ ...r, [q.id]: Number(e.target.value) }))}
-                  />
-                  <span className="font-semibold">{responses[q.id] ?? 0}/5</span>
+                  <input type="range" min={0} max={5} step={1} className="accent-petro"
+                         value={responses[q.id] ?? 0}
+                         onChange={(e) => setResponses((r) => ({ ...r, [q.id]: Number(e.target.value) }))} />
+                  <span className="font-semibold text-ink tabular-nums">{responses[q.id] ?? 0}/5</span>
                 </label>
               )}
             </div>
           ))}
-          <button
-            disabled={!employeeId || submit.isPending}
-            onClick={() => submit.mutate()}
-            className="bg-petro text-white px-4 py-2 rounded-lg hover:bg-petro-light disabled:opacity-50"
-          >
+          <button disabled={!employeeId || submit.isPending} onClick={() => submit.mutate()} className="btn-primary">
+            {submit.isPending ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
             {t("assessment.run")}
           </button>
-        </div>
+        </Card>
       )}
 
       {result && (
-        <div className="card">
-          <div className="font-semibold mb-3">{t("assessment.result")}</div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div>
-              <div className="text-3xl font-bold text-petro">{result.assessed_level}</div>
-              <div className="text-xs text-slate-500">{t("profiles.assessed")}</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-slate-400">{result.required_level}</div>
-              <div className="text-xs text-slate-500">{t("profiles.required")}</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-petro">{Math.round(result.confidence * 100)}%</div>
-              <div className="text-xs text-slate-500">{t("common.confidence")}</div>
-            </div>
-            <div>
-              <span className={`inline-block mt-2 text-xs px-2 py-1 rounded-full ${
-                result.needs_human_review ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
-              }`}>
-                {result.status}
-              </span>
+        <Card className="animate-slide-up">
+          <div className="font-semibold text-ink mb-4">{t("assessment.result")}</div>
+          <div className="flex items-center gap-8 flex-wrap">
+            <ProgressRing value={(result.assessed_level / 5) * 100} label={t("profiles.level")} size={116} />
+            <div className="space-y-2">
+              <div className="text-sm text-ink-soft">{t("profiles.level")}:
+                <b className="text-ink ms-1">{result.assessed_level}</b>
+                <span className="text-ink-muted"> / {result.required_level}</span>
+              </div>
+              <div className="text-sm text-ink-soft">{t("common.confidence")}:
+                <b className="text-ink ms-1">{Math.round(result.confidence * 100)}%</b>
+              </div>
+              <Badge tone={result.needs_human_review ? "amber" : "green"}>{result.status}</Badge>
+              {result.needs_human_review && (
+                <p className="text-xs text-amber-700 max-w-sm">{t("assessment.reviewNote")}</p>
+              )}
             </div>
           </div>
-          {result.needs_human_review && (
-            <p className="text-xs text-amber-700 mt-3">{t("assessment.reviewNote")}</p>
-          )}
-        </div>
+        </Card>
       )}
     </div>
   );

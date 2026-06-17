@@ -1,15 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Check, ShieldCheck, ShieldX, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { Badge, Card, EmptyState, PageHeader, PageSkeleton } from "../components/ui";
 import { api } from "../lib/api";
 
 interface Decision {
-  id: string;
-  kind: string;
-  subject_ref: string;
-  ai_recommendation: string;
-  confidence: number;
-  governance_status: string;
+  id: string; kind: string; subject_ref: string;
+  ai_recommendation: string; confidence: number; governance_status: string;
 }
 
 export default function Governance() {
@@ -30,55 +28,49 @@ export default function Governance() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["decisions"] }),
   });
 
-  if (isLoading || !data) return <div>{t("common.loading")}</div>;
+  if (isLoading || !data) return <PageSkeleton />;
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">{t("nav.governance")}</h1>
-
-      <div className="card flex items-center gap-2 text-sm">
-        <span>Audit chain:</span>
-        <span className={audit.data?.intact ? "text-emerald-600 font-medium" : "text-red-600 font-medium"}>
-          {audit.data?.intact ? "✓ intact / سليمة" : "✗ tampered"}
-        </span>
-      </div>
-
-      <div className="card">
-        <p className="text-xs text-slate-500 mb-3">
-          AI recommends · Humans review · Evidence validates · Governance assures.
-        </p>
+    <div className="space-y-6">
+      <PageHeader
+        title={t("nav.governance")} subtitle={t("governance.principle")} icon={ShieldCheck}
+        actions={
+          <Badge tone={audit.data?.intact ? "green" : "red"} icon={audit.data?.intact ? ShieldCheck : ShieldX}>
+            {audit.data?.intact ? t("governance.chainIntact") : t("governance.chainTampered")}
+          </Badge>
+        }
+      />
+      <Card>
         {data.length === 0 ? (
-          <p className="text-sm text-slate-500">No pending decisions.</p>
+          <EmptyState icon={ShieldCheck} title={t("governance.empty")} />
         ) : (
           <div className="space-y-2">
             {data.map((d) => (
-              <div key={d.id} className="flex items-center justify-between border rounded-lg p-3">
-                <div className="text-sm">
-                  <div className="font-medium">{d.kind}</div>
-                  <div className="text-slate-500 text-xs">{d.subject_ref}</div>
-                  <div className="text-xs">
-                    {t("common.confidence")}: {Math.round(d.confidence * 100)}% · {d.ai_recommendation}
+              <div key={d.id} className="flex items-center justify-between gap-4 rounded-xl border border-slate-100 p-3 hover:border-petro/20 transition-colors">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-ink">{d.kind}</span>
+                    <Badge tone={d.confidence >= 0.75 ? "green" : "amber"}>
+                      {t("common.confidence")}: {Math.round(d.confidence * 100)}%
+                    </Badge>
                   </div>
+                  <div className="text-xs text-ink-muted truncate">{d.subject_ref} · {d.ai_recommendation}</div>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => resolve.mutate({ id: d.id, approve: true })}
-                    className="px-3 py-1 text-xs rounded bg-emerald-600 text-white"
-                  >
-                    Approve
+                <div className="flex gap-2 shrink-0">
+                  <button onClick={() => resolve.mutate({ id: d.id, approve: true })}
+                          className="btn bg-emerald-600 text-white hover:bg-emerald-700">
+                    <Check size={15} /> {t("governance.approve")}
                   </button>
-                  <button
-                    onClick={() => resolve.mutate({ id: d.id, approve: false })}
-                    className="px-3 py-1 text-xs rounded bg-red-600 text-white"
-                  >
-                    Reject
+                  <button onClick={() => resolve.mutate({ id: d.id, approve: false })}
+                          className="btn bg-red-600 text-white hover:bg-red-700">
+                    <X size={15} /> {t("governance.reject")}
                   </button>
                 </div>
               </div>
             ))}
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

@@ -8,18 +8,38 @@
 
 body {
   margin: 0;
-  background: #f6f8f7;
+  background: #f1f5f4;
   color: #0f172a;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Logical-property helpers so layout mirrors automatically in RTL/LTR. */
-.card {
-  @apply bg-white rounded-xl shadow-sm border border-slate-100 p-5;
+@layer components {
+  .card {
+    @apply bg-white rounded-2xl shadow-soft border border-slate-100/80 p-5;
+  }
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lift hover:-translate-y-0.5;
+  }
+  /* Chips / badges */
+  .chip {
+    @apply inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full;
+  }
+  /* Primary button */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium
+           transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-petro text-white hover:bg-petro-light shadow-soft hover:shadow-lift;
+  }
+  .btn-ghost {
+    @apply btn bg-white/10 text-white hover:bg-white/20;
+  }
 }
 
 /* Accessibility: visible keyboard focus + skip-to-content link. */
 *:focus-visible {
-  outline: 2px solid #0d5c4a;
+  outline: 2px solid #1f8a6e;
   outline-offset: 2px;
 }
 
@@ -35,4 +55,41 @@ body {
 }
 .skip-link:focus {
   top: 0;
+}
+
+/* Skeleton shimmer for loading states. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e8edec;
+  border-radius: 0.5rem;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Slim, on-brand scrollbars. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5d1;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+  background-clip: content-box;
 }

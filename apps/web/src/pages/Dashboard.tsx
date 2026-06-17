@@ -1,7 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { AlertTriangle, Building2, LayoutDashboard, Target, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import {
+  Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis,
+} from "recharts";
 
+import { Badge, Card, PageHeader, PageSkeleton, ProgressRing, StatCard } from "../components/ui";
 import { api } from "../lib/api";
 
 interface ExecData {
@@ -15,77 +19,75 @@ interface ExecData {
   modules: string[];
 }
 
-function Kpi({ label, value, suffix }: { label: string; value: number | string; suffix?: string }) {
-  return (
-    <div className="card">
-      <div className="text-sm text-slate-500">{label}</div>
-      <div className="text-3xl font-bold text-petro mt-1">
-        {value}
-        {suffix && <span className="text-lg text-slate-400 ms-1">{suffix}</span>}
-      </div>
-    </div>
-  );
-}
-
 export default function Dashboard() {
   const { t, i18n } = useTranslation();
+  const ar = i18n.language === "ar";
   const { data, isLoading } = useQuery<ExecData>({
     queryKey: ["executive"],
     queryFn: async () => (await api.get("/dashboards/executive")).data,
   });
 
-  if (isLoading || !data) return <div>{t("common.loading")}</div>;
+  if (isLoading || !data) return <PageSkeleton />;
 
-  const ready = data.workforce_readiness_index;
-  const gauge = [
-    { name: "ready", value: ready },
-    { name: "rest", value: Math.max(0, 100 - ready) },
-  ];
+  const gapData = data.top_competency_gaps.map((g, i) => ({
+    name: `#${i + 1}`, count: g.count,
+  }));
+  const barColors = ["#0d5c4a", "#1f8a6e", "#3aa589", "#62bda6", "#8fd3c2"];
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t("nav.dashboard")}</h1>
+      <PageHeader title={t("nav.dashboard")} subtitle={t("app.subtitle")} icon={LayoutDashboard} />
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="card flex flex-col items-center">
-          <div className="text-sm text-slate-500">{t("dashboard.readinessIndex")}</div>
-          <ResponsiveContainer width="100%" height={140}>
-            <PieChart>
-              <Pie data={gauge} dataKey="value" innerRadius={45} outerRadius={60} startAngle={90} endAngle={-270}>
-                <Cell fill="#0d5c4a" />
-                <Cell fill="#e2e8f0" />
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="-mt-24 text-2xl font-bold text-petro">{ready}</div>
-        </div>
-        <Kpi label={t("dashboard.profiles")} value={data.profiles} />
-        <Kpi label={t("dashboard.criticalJobs")} value={data.critical_jobs_total} />
-        <Kpi label={t("dashboard.highRisk")} value={data.high_risk_critical_jobs} suffix={`(${data.high_risk_pct}%)`} />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="card">
-          <div className="font-semibold mb-3">{t("dashboard.companies")}</div>
-          <ul className="space-y-2 text-sm">
-            {data.companies.map((c) => (
-              <li key={c.id} className="flex justify-between border-b py-1">
-                <span>{i18n.language === "ar" ? c.name_ar : c.name_en}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="card">
-          <div className="font-semibold mb-3">{t("dashboard.modules")}</div>
-          <div className="flex flex-wrap gap-2">
-            {data.modules.map((m) => (
-              <span key={m} className="text-xs bg-petro/10 text-petro px-2 py-1 rounded-full">
-                {m}
-              </span>
-            ))}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        {/* Hero readiness gauge */}
+        <Card className="lg:col-span-1 flex flex-col items-center justify-center bg-petro-grad text-white border-0 animate-slide-up">
+          <div className="text-sm text-white/80 mb-3">{t("dashboard.readinessIndex")}</div>
+          <div className="bg-white rounded-full p-3 shadow-lift">
+            <ProgressRing value={data.workforce_readiness_index} label={t("common.readiness")} />
           </div>
+          <div className="mt-3 text-xs text-white/60">/ 100</div>
+        </Card>
+
+        {/* KPI cards */}
+        <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <StatCard label={t("dashboard.profiles")} value={data.profiles} icon={Users} tone="blue" />
+          <StatCard label={t("dashboard.criticalJobs")} value={data.critical_jobs_total} icon={Target} tone="gold" />
+          <StatCard
+            label={t("dashboard.highRisk")} value={data.high_risk_critical_jobs}
+            suffix={`(${data.high_risk_pct}%)`} icon={AlertTriangle} tone="red"
+          />
+          <StatCard
+            label={t("dashboard.companies")} value={data.companies.length}
+            icon={Building2} tone="green" hint={data.companies.map((c) => (ar ? c.name_ar : c.name_en)).join(" · ")}
+          />
+          <Card className="sm:col-span-2 animate-slide-up">
+            <div className="text-sm font-semibold text-ink mb-1">{t("dashboard.topGaps")}</div>
+            {gapData.length === 0 ? (
+              <div className="text-xs text-ink-muted py-6 text-center">—</div>
+            ) : (
+              <ResponsiveContainer width="100%" height={140}>
+                <BarChart data={gapData} margin={{ top: 8, right: 8, bottom: 0, left: -20 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eef2f1" />
+                  <XAxis dataKey="name" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis allowDecimals={false} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <Tooltip cursor={{ fill: "#f1f5f4" }} />
+                  <Bar dataKey="count" radius={[6, 6, 0, 0]}>
+                    {gapData.map((_, i) => <Cell key={i} fill={barColors[i % barColors.length]} />)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </Card>
         </div>
       </div>
+
+      {/* Executive modules */}
+      <Card className="animate-slide-up">
+        <div className="font-semibold text-ink mb-3">{t("dashboard.modules")}</div>
+        <div className="flex flex-wrap gap-2">
+          {data.modules.map((m) => <Badge key={m} tone="green">{m}</Badge>)}
+        </div>
+      </Card>
     </div>
   );
 }

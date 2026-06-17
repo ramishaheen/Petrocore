@@ -1,92 +1,84 @@
 import { useQuery } from "@tanstack/react-query";
+import { Crosshair, Gauge, Rocket, Trophy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { Badge, Card, PageHeader, PageSkeleton } from "../components/ui";
 import { api } from "../lib/api";
 
 interface Candidate {
-  id: string;
-  name_en: string;
-  name_ar: string;
-  readiness: number;
-  strategic_impact: number;
-  score: number;
+  id: string; name_en: string; name_ar: string;
+  readiness: number; strategic_impact: number; score: number;
 }
 interface PilotData {
-  candidates: Candidate[];
-  best_starting_point: Candidate | null;
-  scopes: string[];
-  principle: string;
+  candidates: Candidate[]; best_starting_point: Candidate | null; principle: string;
 }
 interface Calibration {
-  calibration_score: number;
-  target: number;
-  on_target: boolean;
+  calibration_score: number; target: number; on_target: boolean;
   scale_up_roadmap: { phase: number; en: string; ar: string }[];
 }
 
 export default function Enablement() {
   const { t, i18n } = useTranslation();
+  const ar = i18n.language === "ar";
   const pilot = useQuery<PilotData>({
-    queryKey: ["pilot"],
-    queryFn: async () => (await api.get("/enablement/pilot-entry")).data,
+    queryKey: ["pilot"], queryFn: async () => (await api.get("/enablement/pilot-entry")).data,
   });
   const calib = useQuery<Calibration>({
-    queryKey: ["calibration"],
-    queryFn: async () => (await api.get("/enablement/calibration")).data,
+    queryKey: ["calibration"], queryFn: async () => (await api.get("/enablement/calibration")).data,
   });
 
-  if (pilot.isLoading || calib.isLoading || !pilot.data || !calib.data)
-    return <div>{t("common.loading")}</div>;
+  if (pilot.isLoading || calib.isLoading || !pilot.data || !calib.data) return <PageSkeleton />;
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">{t("nav.enablement")}</h1>
+      <PageHeader title={t("nav.enablement")} icon={Rocket} />
 
-      <div className="card">
-        <div className="font-semibold mb-1">{t("enablement.pilotEntry")}</div>
-        <p className="text-xs text-slate-500 mb-3">{pilot.data.principle}</p>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-slate-500 border-b">
-              <th className="py-2 text-start">{t("enablement.scope")}</th>
-              <th className="py-2 text-start">{t("common.readiness")}</th>
-              <th className="py-2 text-start">{t("enablement.impact")}</th>
-              <th className="py-2 text-start">{t("enablement.score")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pilot.data.candidates.map((c) => (
-              <tr
-                key={c.id}
-                className={`border-b last:border-0 ${
-                  pilot.data!.best_starting_point?.id === c.id ? "bg-petro/5 font-medium" : ""
-                }`}
-              >
-                <td className="py-2">{i18n.language === "ar" ? c.name_ar : c.name_en}</td>
-                <td className="py-2">{c.readiness}</td>
-                <td className="py-2">{c.strategic_impact}</td>
-                <td className="py-2">{c.score}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="card">
-        <div className="flex items-center justify-between mb-3">
-          <div className="font-semibold">{t("enablement.calibration")}</div>
-          <div className={`text-2xl font-bold ${calib.data.on_target ? "text-emerald-600" : "text-amber-600"}`}>
-            {calib.data.calibration_score}% / {calib.data.target}%
-          </div>
+      <Card>
+        <div className="flex items-center gap-2 mb-1">
+          <Crosshair size={18} className="text-petro" />
+          <span className="font-semibold text-ink">{t("enablement.pilotEntry")}</span>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <p className="text-xs text-ink-muted mb-4">{pilot.data.principle}</p>
+        <div className="space-y-2">
+          {pilot.data.candidates.map((c) => {
+            const best = pilot.data!.best_starting_point?.id === c.id;
+            return (
+              <div key={c.id} className={`flex items-center gap-4 rounded-xl border p-3 ${
+                best ? "border-petro/40 bg-petro-50/50" : "border-slate-100"
+              }`}>
+                <div className="flex-1 font-medium text-ink flex items-center gap-2">
+                  {ar ? c.name_ar : c.name_en}
+                  {best && <Badge tone="green" icon={Trophy}>{t("enablement.best")}</Badge>}
+                </div>
+                <div className="text-xs text-ink-muted">{t("common.readiness")} <b className="text-ink">{c.readiness}</b></div>
+                <div className="text-xs text-ink-muted">{t("enablement.impact")} <b className="text-ink">{c.strategic_impact}</b></div>
+                <div className="w-14 text-end text-lg font-bold text-petro tabular-nums">{c.score}</div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      <Card>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Gauge size={18} className="text-petro" />
+            <span className="font-semibold text-ink">{t("enablement.calibration")}</span>
+          </div>
+          <Badge tone={calib.data.on_target ? "green" : "amber"}>
+            {calib.data.calibration_score}% / {calib.data.target}%
+          </Badge>
+        </div>
+        <div className="h-2 rounded-full bg-slate-100 overflow-hidden mb-4">
+          <div className={`h-full ${calib.data.on_target ? "bg-emerald-500" : "bg-amber-500"}`}
+               style={{ width: `${calib.data.calibration_score}%` }} />
+        </div>
+        <div className="flex flex-wrap gap-2">
           {calib.data.scale_up_roadmap.map((p) => (
-            <span key={p.phase} className="text-xs bg-petro/10 text-petro px-3 py-1.5 rounded-full">
-              {p.phase}. {i18n.language === "ar" ? p.ar : p.en}
-            </span>
+            <Badge key={p.phase} tone="green">{p.phase}. {ar ? p.ar : p.en}</Badge>
           ))}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
