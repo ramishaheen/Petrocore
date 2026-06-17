@@ -116,6 +116,7 @@ def measure_impact(db: Session, *, actor_user_id: str, tenant_id: str, nominatio
         post_level=post_level, gap_closure_pct=closure, performance_link=performance_link,
     )
     db.add(impact)
+    db.flush()  # populate impact.id before it is referenced by the audit log
     nom.stage = "AFTER"
     nom.status = "COMPLETED"
 
