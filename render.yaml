@@ -1,0 +1,32 @@
+# One-click backend deploy (Render Blueprint) for the 360° PETROCORE API + DB.
+# After it's live, point the web app at it: set VITE_API_BASE_URL on Vercel and
+# rebuild without VITE_DEMO (see docs/DEPLOY.md). pgvector ships with Render PG 16.
+databases:
+  - name: petrocore-db
+    plan: free
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: petrocore-api
+    runtime: docker
+    plan: free
+    dockerfilePath: apps/api/Dockerfile
+    dockerContext: apps/api
+    healthCheckPath: /health
+    # Apply migrations + (idempotent) seed before each release.
+    preDeployCommand: "alembic upgrade head && python -m app.seed.seed_all"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: petrocore-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PII_ENCRYPTION_KEY
+        sync: false        # paste a Fernet key: python -c "from cryptography.fernet import Fernet;print(Fernet.generate_key().decode())"
+      - key: AI_API_KEY
+        sync: false        # optional: set to enable live LLM calls; blank = deterministic stubs
+      - key: API_CORS_ORIGINS
+        value: "https://petrocore-y7ld.vercel.app"

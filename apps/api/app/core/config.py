@@ -32,6 +32,20 @@ class Settings(BaseSettings):
     def cors_origins(self) -> list[str]:
         return [o.strip() for o in self.API_CORS_ORIGINS.split(",") if o.strip()]
 
+    @property
+    def sqlalchemy_url(self) -> str:
+        """Normalize managed-Postgres URLs (e.g. Render/Neon/Heroku give
+        ``postgres://`` or ``postgresql://``) to the psycopg 3 driver."""
+        u = self.DATABASE_URL
+        for prefix in ("postgresql+psycopg://", "postgresql+psycopg2://"):
+            if u.startswith(prefix):
+                return u
+        if u.startswith("postgresql://"):
+            return "postgresql+psycopg://" + u[len("postgresql://"):]
+        if u.startswith("postgres://"):
+            return "postgresql+psycopg://" + u[len("postgres://"):]
+        return u
+
 
 @lru_cache
 def get_settings() -> Settings:
