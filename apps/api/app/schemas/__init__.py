@@ -156,6 +156,40 @@ class ImpactIn(BaseModel):
     performance_link: str = ""
 
 
+# ---- Integration (import/export) ----
+class CompetencyImport(BaseModel):
+    code: str
+    name_en: str
+    name_ar: str
+    family: str
+    description_en: str = ""
+    description_ar: str = ""
+
+
+class JobImport(BaseModel):
+    code: str
+    title_en: str
+    title_ar: str
+    job_family: str
+    admin_level: int
+    activity_segment: str | None = None
+
+
+class EmployeeImport(BaseModel):
+    employee_no: str
+    full_name_en: str
+    full_name_ar: str
+    years_experience: int = 0
+    email: str | None = None
+    national_id: str | None = None
+
+
+class ImportResult(BaseModel):
+    created: int
+    updated: int
+    total: int
+
+
 # ---- Governance ----
 class DecisionResolve(BaseModel):
     approve: bool

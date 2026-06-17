@@ -103,7 +103,12 @@ docs/             ARCHITECTURE.md · DATA_MODEL.md · DECISIONS.md
 
 Legend: ✅ complete · 🟡 substantial · 🟧 scaffolded · ⬜ planned.
 
-### Backend API surface (46 endpoints across the 10 layers)
+### Integration (§12 Scalable & Integrable)
+`integration` — bulk **import** (competencies, jobs, employees; idempotent upsert,
+PII encrypted on ingest, audit-logged) and **export** (employees JSON, readiness
+register CSV; RLS-scoped). The entry points for HR/ERP system integration.
+
+### Backend API surface (51 endpoints across the 10 layers + integration)
 `auth` · `org` (L1) · `competencies` (L3) · `profiles` (L5) · `assessments` (L7:
 questions, scenario, grade, run, evidence, evidence/match, audit) · `gaps` (L8:
 analyze, department, succession, recommend, reports) · `training` (L9: needs,

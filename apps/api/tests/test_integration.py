@@ -94,15 +94,27 @@ def test_training_lifecycle_targets_only_trained_competency(client):
 
     profiles = client.get("/api/v1/profiles", headers=admin).json()
     employee_id = profiles[0]["employee_id"]
+    comps = {c["id"]: c["name_en"] for c in client.get("/api/v1/competencies", headers=admin).json()}
 
-    # Ensure gaps exist for this employee, then pick a real gap.
+    def grade_low(competency_id: str) -> None:
+        """Graded assessment with wrong answers ⇒ a real competency result + gap."""
+        qs = client.get(f"/api/v1/assessments/questions/{competency_id}", headers=admin).json()
+        responses = [{"question_id": q["id"], "choice": 0, "score": 0.0} for q in qs]
+        client.post("/api/v1/assessments/grade", headers=admin, json={
+            "employee_id": employee_id, "competency_id": competency_id, "responses": responses,
+        })
+
+    # Seed real competency results for two distinct competencies, then analyze → gaps.
+    two_competency_ids = list(comps.keys())[:2]
+    assert len(two_competency_ids) == 2
+    for cid in two_competency_ids:
+        grade_low(cid)
     client.post(f"/api/v1/gaps/analyze/{employee_id}", headers=admin)
-    gaps = [g for g in client.get("/api/v1/gaps", headers=admin).json() if g["gap_size"] > 0]
+
+    gaps = [g for g in client.get("/api/v1/gaps", headers=admin).json()
+            if g["gap_size"] > 0 and g["subject_id"] == employee_id]
     assert gaps, "expected at least one real gap"
     gap = gaps[0]
-
-    # Name of the competency we're about to train (report panels key by name, not id).
-    comps = {c["id"]: c["name_en"] for c in client.get("/api/v1/competencies", headers=admin).json()}
     trained_name = comps.get(gap["competency_id"])
 
     # Other competencies with a real gap — these must NOT move when we train a different one.
