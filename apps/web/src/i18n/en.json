@@ -1,0 +1,58 @@
+{
+  "app": {
+    "name": "360° PETROCORE",
+    "tagline": "Intelligent Readiness. Trusted Decisions.",
+    "subtitle": "Competency & Workforce Readiness Intelligence Platform"
+  },
+  "nav": {
+    "dashboard": "Executive Readiness Dashboard",
+    "hierarchy": "Institutional Hierarchy",
+    "competencies": "Competency Dictionary",
+    "profiles": "360° Profiles",
+    "gaps": "Gap Analysis",
+    "governance": "Governance & Audit",
+    "diagnostic": "Layer Readiness Diagnostic",
+    "logout": "Log out"
+  },
+  "login": {
+    "title": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "error": "Invalid credentials"
+  },
+  "dashboard": {
+    "readinessIndex": "Workforce Readiness Index",
+    "profiles": "Profiles",
+    "criticalJobs": "Critical Jobs",
+    "highRisk": "High-Risk Critical Jobs",
+    "topGaps": "Top Critical Competency Gaps",
+    "companies": "Subsidiary Companies",
+    "modules": "Dashboard Modules"
+  },
+  "competencies": {
+    "title": "Competency Dictionary & Professional Standards",
+    "family": "Family",
+    "code": "Code",
+    "name": "Name",
+    "adminLevels": "Administrative Levels",
+    "bands": "Proficiency Bands"
+  },
+  "diagnostic": {
+    "title": "Layer & Document Readiness Diagnostic",
+    "layer": "Layer",
+    "status": "Status",
+    "detail": "Detail",
+    "READY": "Ready",
+    "NEEDS_REVIEW": "Needs Review",
+    "NEEDS_BUILD": "Needs Build"
+  },
+  "common": {
+    "loading": "Loading…",
+    "language": "العربية",
+    "confidence": "Confidence",
+    "priority": "Priority",
+    "status": "Status",
+    "readiness": "Readiness"
+  }
+}

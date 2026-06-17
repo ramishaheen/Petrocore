@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: #f6f8f7;
+  color: #0f172a;
+}
+
+/* Logical-property helpers so layout mirrors automatically in RTL/LTR. */
+.card {
+  @apply bg-white rounded-xl shadow-sm border border-slate-100 p-5;
+}
