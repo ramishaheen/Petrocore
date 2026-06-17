@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import ProfileDetail from "./pages/ProfileDetail";
 import Profiles from "./pages/Profiles";
 import Reports from "./pages/Reports";
+import Training from "./pages/Training";
 import { useAuth } from "./store/auth";
 
 function Protected({ children }: { children: React.ReactNode }) {
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="/competencies" element={<Competencies />} />
         <Route path="/assessment" element={<Assessment />} />
         <Route path="/gaps" element={<Gaps />} />
+        <Route path="/training" element={<Training />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/governance" element={<Governance />} />
         <Route path="/enablement" element={<Enablement />} />

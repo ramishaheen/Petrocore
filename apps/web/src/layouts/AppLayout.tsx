@@ -11,6 +11,7 @@ const NAV = [
   { to: "/competencies", key: "competencies" },
   { to: "/assessment", key: "assessment" },
   { to: "/gaps", key: "gaps" },
+  { to: "/training", key: "training" },
   { to: "/reports", key: "reports" },
   { to: "/governance", key: "governance" },
   { to: "/enablement", key: "enablement" },

@@ -11,6 +11,7 @@
     "profiles": "360° Profiles",
     "assessment": "Assessment",
     "gaps": "Gap Analysis",
+    "training": "Training Governance",
     "reports": "Reports & Decision Support",
     "governance": "Governance & Audit",
     "enablement": "Enablement & Pilot",
@@ -21,7 +22,15 @@
     "institutionalValue": "Institutional Strategic Value",
     "criticalRoles": "Critical Roles",
     "atRisk": "Roles at Risk",
-    "readySuccessors": "Ready Successors"
+    "readySuccessors": "Ready Successors",
+    "departmentReadiness": "Department Readiness Map",
+    "trainingImpact": "Training Impact",
+    "gapClosure": "Avg Gap Closure",
+    "programsMeasured": "Programs Measured",
+    "governanceAudit": "Governance & Audit",
+    "chainIntact": "✓ Audit chain intact",
+    "chainTampered": "✗ Audit chain tampered",
+    "noDecisions": "No governance decisions yet."
   },
   "enablement": {
     "pilotEntry": "Pilot Entry Decision Matrix",
@@ -45,6 +54,21 @@
     "topGaps": "Top Critical Competency Gaps",
     "companies": "Subsidiary Companies",
     "modules": "Dashboard Modules"
+  },
+  "training": {
+    "principle": "Training starts from a verified gap and ends with measured impact.",
+    "before": "Before — Program Design",
+    "during": "During — Learning Monitoring",
+    "after": "After — Impact Measurement",
+    "deriveNeeds": "Derive needs from gaps",
+    "needsCount": "{{count}} training need(s) derived from verified gaps.",
+    "cohorts": "Learner Cohorts",
+    "noCohorts": "No cohorts yet — derive needs from gaps first.",
+    "learners": "Learners",
+    "designProgram": "Design program",
+    "programs": "Programs",
+    "noPrograms": "No programs designed yet.",
+    "impactNote": "Impact is measured against performance & readiness — not attendance — and written back to the profile."
   },
   "assessment": {
     "title": "AI-Driven Assessment",
