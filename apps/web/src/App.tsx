@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import AppLayout from "./layouts/AppLayout";
+import Assessment from "./pages/Assessment";
 import Competencies from "./pages/Competencies";
 import Dashboard from "./pages/Dashboard";
 import Diagnostic from "./pages/Diagnostic";
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/profiles" element={<Profiles />} />
         <Route path="/profiles/:id" element={<ProfileDetail />} />
         <Route path="/competencies" element={<Competencies />} />
+        <Route path="/assessment" element={<Assessment />} />
         <Route path="/gaps" element={<Gaps />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/governance" element={<Governance />} />

@@ -9,6 +9,7 @@ const NAV = [
   { to: "/hierarchy", key: "hierarchy" },
   { to: "/profiles", key: "profiles" },
   { to: "/competencies", key: "competencies" },
+  { to: "/assessment", key: "assessment" },
   { to: "/gaps", key: "gaps" },
   { to: "/reports", key: "reports" },
   { to: "/governance", key: "governance" },

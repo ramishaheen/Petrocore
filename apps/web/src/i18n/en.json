@@ -9,6 +9,7 @@
     "hierarchy": "Institutional Hierarchy",
     "competencies": "Competency Dictionary",
     "profiles": "360° Profiles",
+    "assessment": "Assessment",
     "gaps": "Gap Analysis",
     "reports": "Reports & Decision Support",
     "governance": "Governance & Audit",
@@ -44,6 +45,14 @@
     "topGaps": "Top Critical Competency Gaps",
     "companies": "Subsidiary Companies",
     "modules": "Dashboard Modules"
+  },
+  "assessment": {
+    "title": "AI-Driven Assessment",
+    "questions": "Assessment Items",
+    "selfScore": "Self / assessor score",
+    "run": "Run Assessment",
+    "result": "Result",
+    "reviewNote": "Confidence below threshold — routed to human governance review."
   },
   "profiles": {
     "employee": "Employee",
