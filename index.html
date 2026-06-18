@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PETROCORE — Instruments of Time</title>
+  <meta name="description" content="PETROCORE crafts precision automatic timepieces — Swiss-grade movements, hand-finished cases, engineered to outlast generations. Scroll to watch the story unfold." />
+  <meta name="theme-color" content="#06080c" />
+  <meta property="og:title" content="PETROCORE — Instruments of Time" />
+  <meta property="og:description" content="Precision automatic timepieces, engineered to outlast generations." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Scroll progress -->
+  <div id="progress"></div>
+  <div class="cursor"></div>
+
+  <!-- Preloader -->
+  <div id="preload">
+    <div style="text-align:center">
+      <div class="pl-logo"><span>PETRO</span><span>CORE</span></div>
+      <div class="pl-bar"><i></i></div>
+      <div class="pl-count">000</div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <header>
+    <a class="brand" href="#top"><span class="dot"></span> PETROCORE</a>
+    <nav>
+      <a class="link" href="#heritage">Heritage</a>
+      <a class="link" href="#craft">Craft</a>
+      <a class="link" href="#collection">Collection</a>
+      <a class="link" href="#materials">Materials</a>
+      <a class="btn ghost" href="#contact">Account</a>
+      <a class="btn flame" href="#collection">Explore →</a>
+    </nav>
+  </header>
+
+  <!-- ============ HERO: scroll-scrub "video" ============ -->
+  <section id="hero" data-top>
+    <a id="top"></a>
+    <div class="hero-sticky">
+      <canvas id="scrub"></canvas>
+      <div class="hero-grade"></div>
+      <div class="hero-noise"></div>
+
+      <div class="hero-content">
+        <div class="wrap">
+          <span class="kicker"><span class="ln"></span><span class="eyebrow">Maison since 1971</span></span>
+          <h1 class="hero-title">
+            <span class="row"><span>Time,</span></span>
+            <span class="row"><span>engineered.</span></span>
+          </h1>
+          <p class="hero-sub">A precision automatic chronograph, finished entirely by hand. Scroll to turn the timepiece in the light and reveal every detail.</p>
+          <div class="hero-cta">
+            <a class="btn flame" href="#collection">View the collection</a>
+            <a class="btn ghost" href="#heritage">The story</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-stage">
+        <div class="lbl">Now viewing</div>
+        <div class="val">The Case</div>
+      </div>
+
+      <div class="scroll-hint"><span class="mouse"></span><span>Scroll</span></div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee" aria-hidden="true">
+    <div class="track">
+      <span>Swiss-grade movement</span><span>Hand-finished</span><span>120m water resistant</span>
+      <span>Sapphire crystal</span><span>Engineered to last</span><span>Swiss-grade movement</span>
+      <span>Hand-finished</span><span>120m water resistant</span><span>Sapphire crystal</span>
+    </div>
+  </div>
+
+  <!-- ============ Heritage / intro ============ -->
+  <section class="block" id="heritage">
+    <div class="wrap intro">
+      <div>
+        <span class="eyebrow reveal">The Maison</span>
+        <h2 class="lines" style="margin-top:18px">
+          <span class="ln-row"><b>Half a century of</b></span>
+          <span class="ln-row"><b><span class="big">obsession</span> with</b></span>
+          <span class="ln-row"><b>the <span class="big">measure</span> of time.</b></span>
+        </h2>
+        <p class="body reveal d1">Founded in a small atelier in 1971, PETROCORE was built on a single conviction — that a watch should be an instrument first and an ornament second. Every caliber is assembled, regulated and finished by hand, then tested for fifteen days before it earns our name on the dial.</p>
+        <div class="hero-cta reveal d2" style="margin-top:30px">
+          <a class="btn ghost" href="#craft">How we build →</a>
+        </div>
+      </div>
+      <div class="intro-media reveal d1">
+        <img data-frame="1" alt="PETROCORE timepiece, three-quarter view" />
+        <span class="tag">Caliber PC-71 · Automatic</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Stats ============ -->
+  <section class="block" id="numbers" style="padding-top:0">
+    <div class="wrap stats">
+      <div class="stat reveal">
+        <div class="num"><span data-to="28800" data-suffix="">0</span></div>
+        <div class="lbl">Vibrations / hour</div>
+      </div>
+      <div class="stat reveal d1">
+        <div class="num"><span data-to="120" data-suffix="m">0</span></div>
+        <div class="lbl">Water resistance</div>
+      </div>
+      <div class="stat reveal d2">
+        <div class="num"><span data-to="208" data-suffix="">0</span></div>
+        <div class="lbl">Hand-finishing hours</div>
+      </div>
+      <div class="stat reveal d3">
+        <div class="num"><span data-to="72" data-suffix="h">0</span></div>
+        <div class="lbl">Power reserve</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Craft / capabilities ============ -->
+  <section class="block" id="craft">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="lines">
+          <span class="ln-row"><b>The craft</b></span>
+          <span class="ln-row"><b>behind the dial</b></span>
+        </h2>
+        <p class="reveal">Four disciplines, one timepiece. Each pillar is held to a standard that takes years to master and seconds to feel.</p>
+      </div>
+      <div class="grid-cap">
+        <article class="cap reveal">
+          <div class="ix">01</div><h3>In-house movement</h3>
+          <p>The PC-71 automatic caliber — 27 jewels, 72-hour reserve, free-sprung balance — designed, machined and regulated under our own roof.</p>
+          <div class="arc">→</div>
+        </article>
+        <article class="cap reveal d1">
+          <div class="ix">02</div><h3>Hand finishing</h3>
+          <p>Anglage, Côtes de Genève and perlage applied by hand. Over 200 hours of finishing on surfaces you will rarely see — but always sense.</p>
+          <div class="arc">→</div>
+        </article>
+        <article class="cap reveal d2">
+          <div class="ix">03</div><h3>Materials</h3>
+          <p>316L and grade-5 titanium cases, box-sapphire crystal, and luminescent indices engineered to glow through the darkest hours.</p>
+          <div class="arc">→</div>
+        </article>
+        <article class="cap reveal d3">
+          <div class="ix">04</div><h3>Precision testing</h3>
+          <p>Fifteen days on the timing machine across six positions. Chronometer-grade accuracy, certified before it ever reaches your wrist.</p>
+          <div class="arc">→</div>
+        </article>
+        <article class="cap reveal">
+          <div class="ix">05</div><h3>Architecture</h3>
+          <p>An exhibition caseback frames a skeletonised rotor in motion — the engine of the watch, on permanent display.</p>
+          <div class="arc">→</div>
+        </article>
+        <article class="cap reveal d1">
+          <div class="ix">06</div><h3>Guarantee</h3>
+          <p>A five-year international warranty and a promise of service for the lifetime of the timepiece. Built to be inherited.</p>
+          <div class="arc">→</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Pinned horizontal collection ============ -->
+  <section id="ops">
+    <div class="ops-sticky">
+      <div class="ops-track">
+        <div class="ops-intro">
+          <span class="eyebrow">The Collection</span>
+          <h2 style="margin-top:16px">Four<br>references.</h2>
+          <p>Scroll to move through the line — each a different expression of the same obsession with precision. Keep scrolling.</p>
+        </div>
+
+        <article class="ops-card">
+          <img data-frame="0" alt="PETROCORE Apex" />
+          <div class="meta"><div class="n">Ref. 01 · Apex</div><h3>The Apex Chronograph</h3><p>Steel & champagne gold · blue sunburst dial</p></div>
+        </article>
+        <article class="ops-card">
+          <img data-frame="3" alt="PETROCORE Meridian" />
+          <div class="meta"><div class="n">Ref. 02 · Meridian</div><h3>The Meridian Dial</h3><p>Top-down clarity · applied gold indices</p></div>
+        </article>
+        <article class="ops-card">
+          <img data-frame="4" alt="PETROCORE Caliber" />
+          <div class="meta"><div class="n">Ref. 03 · Caliber</div><h3>Exhibition Caseback</h3><p>Skeletonised rotor · PC-71 movement</p></div>
+        </article>
+        <article class="ops-card">
+          <img data-frame="5" alt="PETROCORE Nocturne" />
+          <div class="meta"><div class="n">Ref. 04 · Nocturne</div><h3>The Nocturne Lume</h3><p>Super-luminous · engineered for darkness</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Materials / future ============ -->
+  <section class="block" id="materials">
+    <div class="wrap future-grid">
+      <div class="future-visual reveal">
+        <img data-frame="2" alt="PETROCORE case profile" />
+      </div>
+      <div>
+        <span class="eyebrow reveal">Materials & innovation</span>
+        <h2 class="lines" style="font-size:clamp(1.8rem,4.4vw,3.2rem);margin-top:16px;text-transform:none">
+          <span class="ln-row"><b>Engineered down</b></span>
+          <span class="ln-row"><b>to the micron.</b></span>
+        </h2>
+        <ul class="future-list">
+          <li class="reveal"><span class="p">01</span><div><h3>Box sapphire crystal</h3><p>Anti-reflective on both faces, scratch-resistant to 9 Mohs — clarity that disappears.</p></div></li>
+          <li class="reveal d1"><span class="p">02</span><div><h3>Grade-5 titanium</h3><p>40% lighter than steel, hypoallergenic, brushed to a satin finish that resists the years.</p></div></li>
+          <li class="reveal d2"><span class="p">03</span><div><h3>Super-LumiNova X1</h3><p>A proprietary luminescent compound that holds its glow from dusk until dawn.</p></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="block" id="contact">
+    <div class="wrap" id="cta">
+      <h2 class="lines">
+        <span class="ln-row"><b>Own a piece</b></span>
+        <span class="ln-row"><b>of <span class="glow">time.</span></b></span>
+      </h2>
+      <p class="reveal d1">Reserve a private viewing, or join the waitlist for the next limited series of the Apex Chronograph.</p>
+      <div class="hero-cta reveal d2">
+        <a class="btn flame" href="#">Reserve a viewing</a>
+        <a class="btn ghost" href="#">Join the waitlist</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Footer ============ -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <div class="foot-brand">PETROCORE
+            <p>Precision automatic timepieces, hand-finished and engineered to outlast generations. Maison since 1971.</p>
+          </div>
+        </div>
+        <div><h4>Collection</h4><ul>
+          <li><a href="#collection">Apex Chronograph</a></li>
+          <li><a href="#collection">Meridian</a></li>
+          <li><a href="#collection">Nocturne</a></li>
+          <li><a href="#collection">Limited series</a></li>
+        </ul></div>
+        <div><h4>Maison</h4><ul>
+          <li><a href="#heritage">Heritage</a></li>
+          <li><a href="#craft">The craft</a></li>
+          <li><a href="#materials">Materials</a></li>
+          <li><a href="#">Service</a></li>
+        </ul></div>
+        <div><h4>Connect</h4><ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Journal</a></li>
+          <li><a href="#contact">Book a viewing</a></li>
+          <li><a href="#">Boutiques</a></li>
+        </ul></div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 1971–2026 PETROCORE Manufacture. All rights reserved.</span>
+        <span>Crafted with precision · Visuals generated with Higgsfield</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/frames.js"></script>
+  <script>
+    /* Captions that update live as the hero "video" scrubs */
+    window.PETROCORE_STAGES = ["The Case", "The Profile", "The Dial", "The Movement", "The Lume", "On the Wrist"];
+  </script>
+  <script src="js/main.js"></script>
+  <script>
+    /* Bind section images to generated frames once frames.js has loaded */
+    (function () {
+      var F = window.PETROCORE_FRAMES || [];
+      document.querySelectorAll("img[data-frame]").forEach(function (img) {
+        var i = parseInt(img.getAttribute("data-frame"), 10);
+        if (F[i]) img.src = F[i]; else if (F.length) img.src = F[F.length - 1];
+      });
+    })();
+  </script>
+</body>
+</html>
