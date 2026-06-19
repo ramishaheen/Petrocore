@@ -409,3 +409,13 @@ header.shrink {
 @media (prefers-reduced-motion: reduce) {
   .marquee .track { animation: scrollx 70s linear infinite !important; }
 }
+
+/* =========================================================================
+   "Our process" timeline — more compact (smaller numbers, headings, text)
+   ========================================================================= */
+.timeline::before { top: 18px; }
+.tl { padding: 0 12px; }
+.tl .tn { width: 38px; height: 38px; font-size: 0.78rem; }
+.tl h3 { font-size: 0.95rem; margin: 14px 0 6px; line-height: 1.2; }
+.tl p { font-size: 0.8rem; line-height: 1.5; }
+@media (max-width: 960px) { .timeline { row-gap: 24px; column-gap: 14px; } }
