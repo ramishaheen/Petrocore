@@ -7,6 +7,7 @@ import {
   PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer,
 } from "recharts";
 
+import MethodInfo from "../components/MethodInfo";
 import { Badge, Card, PageSkeleton, ProgressRing } from "../components/ui";
 import { api } from "../lib/api";
 
@@ -74,7 +75,10 @@ export default function MyWorkspace() {
             <ProgressRing value={d.readiness_index} label={t("common.readiness")} />
           </div>
           <div className="flex-1 text-center md:text-start">
-            <div className="text-white/70 text-sm">{t("workspace.greeting")}</div>
+            <div className="flex items-center justify-center md:justify-start gap-1.5 text-white/70 text-sm">
+              {t("workspace.greeting")}
+              <MethodInfo module="workspace" tone="onDark" />
+            </div>
             <h1 className="text-2xl font-bold">{ar ? d.name_ar : d.name_en}</h1>
             <div className="text-white/70 text-sm">{ar ? d.job_ar : d.job_en}</div>
             <div className="mt-3 flex flex-wrap gap-2 justify-center md:justify-start">

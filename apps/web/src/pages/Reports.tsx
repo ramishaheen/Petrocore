@@ -5,7 +5,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-import MethodPanel from "../components/MethodPanel";
 import { Badge, Card, EmptyState, PageHeader, PageSkeleton, StatCard } from "../components/ui";
 import { api } from "../lib/api";
 
@@ -36,8 +35,6 @@ export default function Reports() {
   return (
     <div className="space-y-6">
       <PageHeader title={t("nav.reports")} icon={BarChart3} />
-
-      <MethodPanel module="value" defaultOpen={false} />
 
       <Card className="animate-slide-up">
         <div className="flex items-center justify-between mb-3">

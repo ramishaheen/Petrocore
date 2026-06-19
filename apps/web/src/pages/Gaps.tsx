@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Activity } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import MethodPanel from "../components/MethodPanel";
 import { Badge, Card, EmptyState, PageHeader, PageSkeleton } from "../components/ui";
 import { api } from "../lib/api";
 
@@ -28,7 +27,6 @@ export default function Gaps() {
   return (
     <div className="space-y-6">
       <PageHeader title={t("nav.gaps")} icon={Activity} />
-      <MethodPanel module="gaps" defaultOpen={false} />
       <Card className="p-0 overflow-hidden">
         {data.length === 0 ? (
           <EmptyState icon={Activity} title={t("gaps.empty")} hint={t("gaps.emptyHint")} />

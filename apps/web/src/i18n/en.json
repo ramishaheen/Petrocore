@@ -603,6 +603,351 @@
         "next": [
           "Track the index over time to evidence the program's impact to leadership."
         ]
+      },
+      "dashboard": {
+        "what": "The organization-wide readiness picture for leadership: workforce readiness, where risk concentrates, and the value the program is creating.",
+        "process": [
+          "Every employee's readiness index is aggregated across the organization.",
+          "Critical-role and low-evidence risks are surfaced.",
+          "The six-dimension value index is computed from live data."
+        ],
+        "measure": [
+          { "label": "Workforce readiness", "value": "distribution of 0–100 readiness indices" },
+          { "label": "Risk", "value": "critical roles at high loss risk + low-evidence results" },
+          { "label": "Value index", "value": "mean of the six ROI dimensions (0–100)" }
+        ],
+        "next": [
+          "Drill from any tile into a department, role or competency."
+        ]
+      },
+      "workspace": {
+        "what": "Your personal readiness cockpit: your competency profile, where you stand against your role, your development path and what to do next.",
+        "process": [
+          "Your approved assessment results build your competency radar.",
+          "Your readiness index and status are computed from those results.",
+          "Unmet competencies become your recommended actions and learning."
+        ],
+        "measure": [
+          { "label": "Readiness", "value": "0–100 index — same engine as the executive dashboard" },
+          { "label": "Competency radar", "value": "assessed ÷ required, per competency" },
+          { "label": "Development path", "value": "Learn → Practice → Apply → Excel, set by readiness band" }
+        ],
+        "next": [
+          "Open a recommended action to start closing a gap.",
+          "Completed assessments and training update this view automatically."
+        ]
+      },
+      "team": {
+        "what": "Your team's readiness at a glance: each member's status, their open gaps, and the approvals waiting on you.",
+        "process": [
+          "Each member's readiness and gaps are rolled up from their profiles.",
+          "Critical gaps and low-confidence results are flagged for attention.",
+          "Approvals (assessments, plans) are queued for your review."
+        ],
+        "measure": [
+          { "label": "Member readiness", "value": "per-person 0–100 index" },
+          { "label": "Team rollup", "value": "spread across Ready / minor gaps / development" },
+          { "label": "Approvals", "value": "items routed to you by the workflow engine" }
+        ],
+        "next": [
+          "Approve or return items; assign assessments or development."
+        ]
+      },
+      "dept": {
+        "what": "The department's readiness map: critical roles, their coverage, and succession depth across its sections.",
+        "process": [
+          "Profiles in the department are aggregated by section and role.",
+          "Critical roles are matched against ready candidates.",
+          "Coverage and concentration of risk are summarized."
+        ],
+        "measure": [
+          { "label": "Department readiness", "value": "mean member readiness, weighted by role criticality" },
+          { "label": "Critical-role coverage", "value": "ready candidates ÷ critical roles" },
+          { "label": "Succession depth", "value": "candidates within reach per critical role" }
+        ],
+        "next": [
+          "Drill into a section or role; act on uncovered critical roles."
+        ]
+      },
+      "hierarchy": {
+        "what": "The organizational backbone — NOC → subsidiaries → activities → departments → sections — that every record is scoped to.",
+        "process": [
+          "Define org nodes and their parent–child relationships.",
+          "Bind jobs, roles and employees to nodes.",
+          "Tenancy and access then follow the tree (row-level security)."
+        ],
+        "measure": [
+          { "label": "Node", "value": "an l1 org unit with a parent and a type" },
+          { "label": "Scope", "value": "every tenant-scoped record carries tenant_id = a node" },
+          { "label": "Access", "value": "the request's role + node decide what's visible (RLS)" }
+        ],
+        "next": [
+          "Readiness, gaps and planning all roll up along this tree."
+        ]
+      },
+      "profiles": {
+        "what": "The verified 360° picture of each person — competencies, qualifications, certifications, experience and evidence — plus their readiness.",
+        "process": [
+          "Pull the person's competency results, qualifications, certs and experience.",
+          "Validate records and weight by verification (data quality).",
+          "Compute readiness and surface remaining gaps."
+        ],
+        "measure": [
+          { "label": "Readiness", "value": "0–100 index from the readiness engine" },
+          { "label": "Data quality", "value": "share of approved / verified records" },
+          { "label": "Evidence", "value": "records matched to competencies at similarity ≥ 0.5" }
+        ],
+        "next": [
+          "Trusted profiles flow into succession and workforce planning."
+        ]
+      },
+      "blueprint": {
+        "what": "Governed assessment templates derived from the approved role-competency matrix — AI drafts the items, humans approve before use.",
+        "process": [
+          "Select a role / competency set from the approved matrix.",
+          "AI drafts items (MCQ, scenario) with difficulty and expected evidence.",
+          "A reviewer approves; only approved blueprints can be assigned."
+        ],
+        "measure": [
+          { "label": "Source", "value": "the approved role-competency requirement matrix" },
+          { "label": "AI draft", "value": "items via the model gateway, each with a confidence" },
+          { "label": "Gate", "value": "human approval required before a blueprint is usable" }
+        ],
+        "next": [
+          "Approved blueprints power assessments and campaigns."
+        ]
+      },
+      "succession": {
+        "what": "Ranked successors for critical roles, scored by readiness and remaining gaps, so scarce knowledge is protected.",
+        "process": [
+          "List critical roles and their required competencies.",
+          "Score candidates by readiness and weighted remaining gaps.",
+          "Rank, then flag bench depth and single points of failure."
+        ],
+        "measure": [
+          { "label": "Candidate score", "value": "readiness (≥ 75 = ready) minus weighted remaining gaps" },
+          { "label": "Bench depth", "value": "ready candidates per critical role" },
+          { "label": "Risk", "value": "critical roles with no ready successor" }
+        ],
+        "next": [
+          "Target development at near-ready candidates to deepen the bench."
+        ]
+      },
+      "training": {
+        "what": "Training tied to verified gaps, with before / during / after tracking and measured gap-closure.",
+        "process": [
+          "A verified gap defines the learning need.",
+          "Training is assigned and moves through stages (before → during → after).",
+          "Post-training re-assessment measures the gap closure."
+        ],
+        "measure": [
+          { "label": "Need", "value": "from an approved gap (required − assessed)" },
+          { "label": "Stage", "value": "BEFORE / DURING / AFTER, with % closure" },
+          { "label": "Training ROI", "value": "average gap-closure % (feeds the value index)" }
+        ],
+        "next": [
+          "Closure updates the person's readiness and development plan."
+        ]
+      },
+      "strategy": {
+        "what": "Cascade strategic objectives to the competencies that deliver them, and measure the strategic readiness gap.",
+        "process": [
+          "Define objectives and cascade them down the hierarchy.",
+          "Map each objective to the competencies it depends on.",
+          "Compare required vs available competency to size the strategic gap."
+        ],
+        "measure": [
+          { "label": "Alignment", "value": "objectives mapped to enabling competencies" },
+          { "label": "Strategic gap", "value": "competency required by objectives − current competency" }
+        ],
+        "next": [
+          "Drives where to invest assessment and development."
+        ]
+      },
+      "ops": {
+        "what": "Sites, equipment, procedures and critical tasks — linked to the competencies that de-risk operating them.",
+        "process": [
+          "Register assets, procedures and critical tasks.",
+          "Link each critical task to the competencies it requires.",
+          "Expose where operations are at risk from unmet competencies."
+        ],
+        "measure": [
+          { "label": "Critical task", "value": "an operation that requires specific competencies" },
+          { "label": "Exposure", "value": "tasks whose required competencies are unmet by assigned staff" }
+        ],
+        "next": [
+          "Operational risk feeds gap and planning priorities."
+        ]
+      },
+      "campaigns": {
+        "what": "Run assessments at scale: enroll participants, run attempts, score, and review results under governance.",
+        "process": [
+          "Create a campaign from an approved blueprint and enroll participants.",
+          "Participants complete attempts; items are auto-scored.",
+          "Low-confidence results route to review before they count."
+        ],
+        "measure": [
+          { "label": "Enrollment", "value": "participants in the campaign" },
+          { "label": "Scoring", "value": "same engine as assessment — level and confidence" },
+          { "label": "Review gate", "value": "confidence < 0.75 → governance" }
+        ],
+        "next": [
+          "Approved results update profiles and gaps in bulk."
+        ]
+      },
+      "devplan": {
+        "what": "Turn verified gaps into a development plan of concrete items, then track completion to closure.",
+        "process": [
+          "Approved gaps generate learning needs.",
+          "Needs become plan items with owners and target dates.",
+          "Completion is tracked; re-assessment confirms closure."
+        ],
+        "measure": [
+          { "label": "Source", "value": "verified gaps (required − assessed)" },
+          { "label": "Plan item", "value": "an action with an owner, due date and status" },
+          { "label": "Completion", "value": "% of items done; closure confirmed by re-assessment" }
+        ],
+        "next": [
+          "Closure raises readiness and clears the gap."
+        ]
+      },
+      "workflows": {
+        "what": "Configurable multi-step approvals over any entity, plus scoped permission roles.",
+        "process": [
+          "Define a workflow: its steps, approvers and the entity it governs.",
+          "An action enters the workflow and routes step by step.",
+          "Each decision is recorded; final approval applies the change."
+        ],
+        "measure": [
+          { "label": "Steps", "value": "ordered approver stages" },
+          { "label": "Permission roles", "value": "scoped grants deciding who can act" },
+          { "label": "Audit", "value": "every decision appended to the audit hash chain" }
+        ],
+        "next": [
+          "Approved changes take effect; rejected ones are returned."
+        ]
+      },
+      "aistudio": {
+        "what": "Every AI request is logged with its input and model version; every output carries a confidence and passes human review.",
+        "process": [
+          "A request goes through the model gateway (the model is swappable).",
+          "Input, model version and output are logged.",
+          "Outputs below the threshold open a governance decision."
+        ],
+        "measure": [
+          { "label": "Logged", "value": "input + model version + output, per request" },
+          { "label": "Confidence", "value": "attached to every output (0–1)" },
+          { "label": "Gate", "value": "confidence < 0.75 → human review" }
+        ],
+        "next": [
+          "Approved outputs flow into the relevant module."
+        ]
+      },
+      "groups": {
+        "what": "Build arbitrary workforce groups with a readiness rollup, and curate talent pools.",
+        "process": [
+          "Define a group by any criteria, or curate a pool by hand.",
+          "Member readiness is rolled up for the group.",
+          "Pools are tracked for targeted development."
+        ],
+        "measure": [
+          { "label": "Rollup", "value": "distribution / mean of member readiness" },
+          { "label": "Pool", "value": "a curated set of people for a purpose" }
+        ],
+        "next": [
+          "Use pools to target assessment, development or succession."
+        ]
+      },
+      "wfp": {
+        "what": "Supply vs demand for competencies, critical-role coverage, forecasting and benchmarking — readiness turned into a plan.",
+        "process": [
+          "Aggregate current competency supply across the workforce.",
+          "Compare it to demand from roles and strategy.",
+          "Forecast coverage and benchmark against targets."
+        ],
+        "measure": [
+          { "label": "Supply", "value": "available competency at required levels" },
+          { "label": "Demand", "value": "competency required by roles and objectives" },
+          { "label": "Coverage", "value": "supply ÷ demand, per critical role" }
+        ],
+        "next": [
+          "Coverage gaps drive hiring, development and succession."
+        ]
+      },
+      "graph": {
+        "what": "The relationships across the platform — roles, competencies, evidence, assets and strategy — as one connected graph.",
+        "process": [
+          "Entities and their links are assembled into nodes and edges.",
+          "You can traverse from any node to related ones.",
+          "Paths reveal how strategy connects to people and evidence."
+        ],
+        "measure": [
+          { "label": "Nodes", "value": "entities: roles, competencies, people, assets, objectives" },
+          { "label": "Edges", "value": "typed relationships between them" }
+        ],
+        "next": [
+          "Trace impact — e.g. which people an objective depends on."
+        ]
+      },
+      "integrations": {
+        "what": "Connectors to HR, LMS, ERP, CMMS, HSE and BI systems — each with an audited sync log.",
+        "process": [
+          "Configure a connector and its credentials.",
+          "Sync pulls or pushes records on a schedule or on demand.",
+          "Every sync is logged for audit."
+        ],
+        "measure": [
+          { "label": "Connector", "value": "a typed link to an external system" },
+          { "label": "Sync log", "value": "records moved, status and timestamp — audited" }
+        ],
+        "next": [
+          "Synced data feeds profiles, training and evidence."
+        ]
+      },
+      "enablement": {
+        "what": "Onboarding and guidance to get teams using the platform — playbooks, role guides and rollout support.",
+        "process": [
+          "Pick the role-based guide for your part of the rollout.",
+          "Follow the playbook steps to configure and adopt.",
+          "Track adoption and the readiness of the rollout itself."
+        ],
+        "measure": [
+          { "label": "Guides", "value": "role-based how-to content" },
+          { "label": "Adoption", "value": "progress through the rollout playbook" }
+        ],
+        "next": [
+          "Move teams from setup to active use."
+        ]
+      },
+      "diagnostic": {
+        "what": "A self-check of how complete each of the 10 platform layers and its documents are — what's ready, needs review, or needs building.",
+        "process": [
+          "Each layer is checked against its expected entities and documents.",
+          "Status is classified Ready / Needs review / Needs build.",
+          "Gaps in the platform's own setup are surfaced."
+        ],
+        "measure": [
+          { "label": "Status", "value": "READY / NEEDS_REVIEW / NEEDS_BUILD, per layer" },
+          { "label": "Coverage", "value": "expected vs present entities and documents" }
+        ],
+        "next": [
+          "Prioritize what to configure or document next."
+        ]
+      },
+      "settings": {
+        "what": "Configure integrations and connections; Save & Test applies them live, with no redeploy.",
+        "process": [
+          "Enter connection details for a service (e.g. SMTP, an API).",
+          "Save & Test validates and applies the change immediately.",
+          "Settings take effect live and are recorded."
+        ],
+        "measure": [
+          { "label": "Connection", "value": "a service config — endpoint and credentials" },
+          { "label": "Save & Test", "value": "validates, then applies without a redeploy" }
+        ],
+        "next": [
+          "Configured services activate features — e.g. email notifications."
+        ]
       }
     }
   }

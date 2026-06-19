@@ -3,7 +3,6 @@ import { BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import MethodPanel from "../components/MethodPanel";
 import { Badge, Card, PageHeader, PageSkeleton } from "../components/ui";
 import { api } from "../lib/api";
 
@@ -33,7 +32,6 @@ export default function Competencies() {
   return (
     <div className="space-y-6">
       <PageHeader title={t("competencies.title")} icon={BookOpen} />
-      <MethodPanel module="competencies" defaultOpen={false} />
       {families.map((fam) => (
         <Card key={fam} className="animate-slide-up">
           <div className="flex items-center gap-2 mb-3">

@@ -1,5 +1,9 @@
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { useLocation } from "react-router-dom";
+
+import MethodInfo from "./MethodInfo";
+import { methodModuleForPath } from "../lib/methodMap";
 
 /* ------------------------------------------------------------------ Card */
 export function Card({ children, className = "", hover = false }: {
@@ -9,9 +13,11 @@ export function Card({ children, className = "", hover = false }: {
 }
 
 /* ------------------------------------------------------------ PageHeader */
-export function PageHeader({ title, subtitle, icon: Icon, actions }: {
-  title: string; subtitle?: string; icon?: LucideIcon; actions?: ReactNode;
+export function PageHeader({ title, subtitle, icon: Icon, actions, methodModule }: {
+  title: string; subtitle?: string; icon?: LucideIcon; actions?: ReactNode; methodModule?: string;
 }) {
+  const { pathname } = useLocation();
+  const mod = methodModule ?? methodModuleForPath(pathname);
   return (
     <div className="flex items-start justify-between gap-4 animate-slide-up">
       <div className="flex items-center gap-3">
@@ -21,7 +27,10 @@ export function PageHeader({ title, subtitle, icon: Icon, actions }: {
           </span>
         )}
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-ink">{title}</h1>
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-2xl font-bold tracking-tight text-ink">{title}</h1>
+            {mod && <MethodInfo module={mod} />}
+          </div>
           {subtitle && <p className="text-sm text-ink-soft mt-0.5">{subtitle}</p>}
         </div>
       </div>
