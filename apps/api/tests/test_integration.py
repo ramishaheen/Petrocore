@@ -795,3 +795,37 @@ def test_strategy_cascade(client):
     employee = _login(client, "employee@noc.ly")
     assert client.post("/api/v1/strategy/objectives", headers=employee, json={
         "title_en": "x", "title_ar": "x"}).status_code == 403
+
+
+def test_workflow_engine_and_permissions(client):
+    """P-K: a multi-step approval workflow advances step-by-step to APPROVED, and
+    scoped permission roles can be created and assigned."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # Seeded permission roles + blueprint workflow.
+    roles = client.get("/api/v1/permission-roles", headers=admin).json()
+    assert any(r["role_scope"] == "Enterprise" for r in roles)
+    assert client.get("/api/v1/workflows", headers=admin).json()
+
+    # Start a 2-step workflow and drive it to APPROVED.
+    wf = client.post("/api/v1/workflows", headers=admin, json={
+        "workflow_type": "ResultApproval", "entity_type": "AssessmentResult", "entity_id": "demo-1",
+        "steps": [{"step_name": "SME Review", "approver_role": "SME"},
+                  {"step_name": "HR Review", "approver_role": "HR_VALIDATOR"}]}).json()
+    assert wf["status"] == "OPEN" and len(wf["steps"]) == 2
+    step1 = client.post(f"/api/v1/workflows/{wf['id']}/act", headers=admin, json={"decision": "Approved"}).json()
+    assert step1["status"] == "OPEN" and step1["current_step"] == 2
+    step2 = client.post(f"/api/v1/workflows/{wf['id']}/act", headers=admin, json={"decision": "Approved"}).json()
+    assert step2["status"] == "APPROVED"
+
+    # Create + assign a permission role.
+    pr = client.post("/api/v1/permission-roles", headers=admin, json={
+        "role_name": "Pilot Reviewer", "role_scope": "Company"}).json()
+    assigned = client.post("/api/v1/permission-roles/assign", headers=admin, json={
+        "user_id": "u-demo", "permission_role_id": pr["id"]}).json()
+    assert assigned["permission_role_id"] == pr["id"]
+
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+    employee = _login(client, "employee@noc.ly")
+    assert client.post("/api/v1/workflows", headers=employee, json={
+        "workflow_type": "x", "entity_type": "x", "entity_id": "x", "steps": []}).status_code == 403

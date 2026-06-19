@@ -206,6 +206,9 @@ def seed() -> None:
         # ---- Strategy cascade (P-J) ----
         from app.seed.seed_j import seed_j
         seed_j(db)
+        # ---- Workflow engine + permission roles (P-K) ----
+        from app.seed.seed_k import seed_k
+        seed_k(db)
 
         db.commit()
         print("Seed complete.")

@@ -50,6 +50,9 @@ from app.models.operations import (
 from app.models.strategy import (
     StrategicObjective, StrategicKpi, ObjectiveCompetency, StrategicReadinessGap,
 )
+from app.models.workflow import (
+    WorkflowInstance, WorkflowStep, Approval, PermissionRole, UserPermissionRole,
+)
 
 __all__ = [
     "AppUser",
@@ -78,4 +81,5 @@ __all__ = [
     "LearningNeed", "DevelopmentPlan", "DevelopmentPlanItem",
     "Site", "ProcessUnit", "Equipment", "Procedure", "CriticalTask", "TaskRisk",
     "StrategicObjective", "StrategicKpi", "ObjectiveCompetency", "StrategicReadinessGap",
+    "WorkflowInstance", "WorkflowStep", "Approval", "PermissionRole", "UserPermissionRole",
 ]
