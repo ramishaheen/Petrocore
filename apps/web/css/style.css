@@ -357,3 +357,9 @@ footer { padding: 54px 0 34px; }
   #hero { height: 200vh; }
   #ops { height: 300vh; }
 }
+
+/* Stats numbers were too large — scale down further */
+.stat .num { font-size: clamp(1.5rem, 2.8vw, 2.2rem); }
+.stats { gap: 18px; padding-top: 34px; }
+/* keep the shop hero stat figures modest too */
+.shs .num { font-size: clamp(1.4rem, 2.4vw, 2rem); }
