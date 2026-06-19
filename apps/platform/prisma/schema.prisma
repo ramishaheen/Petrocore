@@ -1,0 +1,316 @@
+// HORO PRIVÉ — platform data model (Phase 1 core; grows per roadmap).
+// Sensitive commercial records carry created/updated/source/verification fields.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------------------------------
+// Identity & access
+// ----------------------------------------------------------------------------
+
+enum Role {
+  CLIENT
+  CONSULTANT
+  SOURCING
+  PORTFOLIO_MGR
+  VERIFIER
+  CONTENT
+  SUPPORT
+  FINANCE
+  AUDITOR
+  SUPER_ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  // Credentials provider stores a bcrypt hash; OAuth users may have none.
+  passwordHash  String?
+  role          Role      @default(CLIENT)
+  image         String?
+  mfaEnabled    Boolean   @default(false)
+
+  client    Client?
+  accounts  Account[]
+  sessions  Session[]
+  auditLogs AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Auth.js adapter models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ----------------------------------------------------------------------------
+// Clients & collector profile
+// ----------------------------------------------------------------------------
+
+model Client {
+  id        String  @id @default(cuid())
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  phone        String?
+  country      String?
+  timezone     String?
+  preferredTime String?  // morning | afternoon | evening | any
+  preferredChannel String? // email | phone | whatsapp
+  privateMode  Boolean  @default(false)
+
+  profile       CollectorProfile?
+  watches       Watch[]
+  requests      Request[]
+  consultations Consultation[]
+  documents     Document[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CollectorProfile {
+  id              String   @id @default(cuid())
+  clientId        String   @unique
+  client          Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  firstWatch      Boolean?
+  budgetMin       Int?
+  budgetMax       Int?
+  budgetFlexible  Boolean?
+  preferredBrands String[]
+  avoidBrands     String[]
+  conditionPref   String?  // open | unworn | preowned | vintage
+  resaleImportant Boolean?
+  rarityImportant Boolean?
+  notes           String?  @db.Text
+
+  updatedAt DateTime @updatedAt
+}
+
+// ----------------------------------------------------------------------------
+// Portfolio
+// ----------------------------------------------------------------------------
+
+enum WatchStatus {
+  HOLD
+  REVIEW_VALUATION
+  CONSIDER_SALE
+  SOURCE_COMPANION
+}
+
+model Watch {
+  id           String      @id @default(cuid())
+  clientId     String
+  client       Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  brand        String
+  model        String
+  reference    String?
+  // Sensitive — never exposed in list endpoints, only to the owner on detail.
+  serialNumber String?
+  year         Int?
+  purchaseDate DateTime?
+  purchasePrice Int?
+  purchaseCurrency String? @default("USD")
+  condition    String?
+  boxPapers    String?
+  warrantyExpiry DateTime?
+  insuranceValue Int?
+  location     String?
+  status       WatchStatus @default(HOLD)
+  desiredSalePrice Int?
+
+  valuations   Valuation[]
+  serviceRecords ServiceRecord[]
+  documents    Document[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clientId])
+}
+
+model Valuation {
+  id          String   @id @default(cuid())
+  watchId     String
+  watch       Watch    @relation(fields: [watchId], references: [id], onDelete: Cascade)
+
+  lowEstimate  Int
+  highEstimate Int
+  currency     String   @default("USD")
+  confidence   String?  // indicative | comparable-backed | appraised
+  source       String?  // sample | market-feed | human
+  sourceDate   DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@index([watchId])
+}
+
+model ServiceRecord {
+  id        String    @id @default(cuid())
+  watchId   String
+  watch     Watch     @relation(fields: [watchId], references: [id], onDelete: Cascade)
+  type      String    // service | warranty
+  date      DateTime?
+  dueDate   DateTime?
+  notes     String?
+  createdAt DateTime  @default(now())
+}
+
+// ----------------------------------------------------------------------------
+// Requests, mandates & consultations
+// ----------------------------------------------------------------------------
+
+enum RequestKind {
+  RECOMMENDATION
+  EXACT_WATCH
+  RARE_PIECE
+  BEST_DEAL
+  TRADE
+}
+
+enum RequestStatus {
+  NEW
+  QUALIFICATION
+  CONSULTATION_SCHEDULED
+  SEARCHING
+  OPPORTUNITIES_IDENTIFIED
+  CLIENT_REVIEW
+  NEGOTIATION
+  VERIFICATION
+  PAYMENT
+  SHIPPING
+  COMPLETED
+  PAUSED
+  CLOSED
+}
+
+model Request {
+  id        String        @id @default(cuid())
+  clientId  String
+  client    Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  kind      RequestKind
+  status    RequestStatus @default(NEW)
+  brand     String?
+  model     String?
+  reference String?
+  budgetMin Int?
+  budgetMax Int?
+  conditionPref String?
+  boxPapersRequired Boolean?
+  preferredYear String?
+  deliveryCountry String?
+  timeframe String?
+  notes     String?       @db.Text
+
+  assignedToId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clientId])
+  @@index([status])
+}
+
+// First-touch consultation intake (may exist before a Client account).
+model Consultation {
+  id        String   @id @default(cuid())
+  clientId  String?
+  client    Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  name      String
+  email     String
+  phone     String?
+  country   String?
+  timezone  String?
+  preferredTime String?
+  preferredChannel String?
+  objective String?
+  brief     Json?    // captured wizard answers
+  consent   Boolean  @default(false)
+  status    RequestStatus @default(NEW)
+
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+// ----------------------------------------------------------------------------
+// Documents vault (metadata only; bytes live in object storage)
+// ----------------------------------------------------------------------------
+
+model Document {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  watchId   String?
+  watch     Watch?   @relation(fields: [watchId], references: [id], onDelete: SetNull)
+
+  kind      String   // invoice | warranty | certificate | service | insurance | appraisal | image
+  storageKey String  // private object-storage key; served via signed URL only
+  filename  String
+  mimeType  String?
+  sizeBytes Int?
+  createdAt DateTime @default(now())
+
+  @@index([clientId])
+}
+
+// ----------------------------------------------------------------------------
+// Audit
+// ----------------------------------------------------------------------------
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String?
+  entityId  String?
+  meta      Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([entity, entityId])
+}
