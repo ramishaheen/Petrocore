@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, ShieldCheck, ShieldX, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import MethodPanel from "../components/MethodPanel";
 import { Badge, Card, EmptyState, PageHeader, PageSkeleton } from "../components/ui";
 import { api } from "../lib/api";
 
@@ -40,6 +41,8 @@ export default function Governance() {
           </Badge>
         }
       />
+
+      <MethodPanel module="governance" defaultOpen={false} />
       <Card>
         {data.length === 0 ? (
           <EmptyState icon={ShieldCheck} title={t("governance.empty")} />

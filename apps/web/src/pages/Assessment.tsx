@@ -3,6 +3,7 @@ import { ClipboardCheck, Loader2, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import MethodPanel from "../components/MethodPanel";
 import { Badge, Card, PageHeader, ProgressRing } from "../components/ui";
 import { api } from "../lib/api";
 
@@ -49,6 +50,8 @@ export default function Assessment() {
   return (
     <div className="space-y-6">
       <PageHeader title={t("assessment.title")} subtitle={t("assessment.subtitle")} icon={ClipboardCheck} />
+
+      <MethodPanel module="assessment" />
 
       <Card className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <label className="text-sm text-ink-soft">

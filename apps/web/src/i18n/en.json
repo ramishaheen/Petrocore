@@ -482,5 +482,128 @@
     "readiness": "Readiness",
     "skipToContent": "Skip to content",
     "theme": "Toggle theme"
+  },
+  "method": {
+    "show": "How it works",
+    "hide": "Hide details",
+    "whatTitle": "What this measures",
+    "processTitle": "The process — how it's done",
+    "measureTitle": "How it's measured",
+    "nextTitle": "What happens with the result",
+    "modules": {
+      "assessment": {
+        "what": "An employee's real proficiency in a competency on a 1–5 scale, scored from their own answers plus supporting evidence — with a confidence value, never a bare guess.",
+        "process": [
+          "An assessor assigns the assessment for one or more competencies to the employee.",
+          "The employee is notified and completes it in their own account — multiple-choice and scenario items.",
+          "The engine auto-scores each item (MCQ: correct = 1, scenario: a 0–1 rubric score) and estimates the level.",
+          "Matching evidence is pulled in and a confidence score is computed from signal, evidence and consistency.",
+          "If confidence is below the threshold, the result is routed to a human governance review before it counts."
+        ],
+        "measure": [
+          { "label": "Assessed level", "value": "round(mean of item scores × 5), clamped to 1–5" },
+          { "label": "Confidence", "value": "0.5 × proficiency signal + 0.3 × evidence (0–3 sources) + 0.2 × consistency" },
+          { "label": "Consistency", "value": "1 − variance across items — how much the answers agree" },
+          { "label": "Review gate", "value": "confidence < 0.75 → routed to human review (governance)" },
+          { "label": "Level scale", "value": "P1 Awareness · P2 Basic · P3 Working · P4 Advanced · P5 Expert" }
+        ],
+        "next": [
+          "Approved results update the employee's 360° profile and readiness index.",
+          "The gap (required − assessed) flows into the development plan and training.",
+          "Low-confidence results wait for a reviewer's approve / reject in Governance."
+        ]
+      },
+      "readiness": {
+        "what": "How ready a person is for their role right now, on a 0–100 index that fuses competency, evidence, data quality, risk, role criticality and recency.",
+        "process": [
+          "Every approved competency result for the employee is collected with its confidence.",
+          "Six factors are computed and each normalized to 0–1.",
+          "They are combined as a geometric mean, so one weak factor can't be masked by strong ones.",
+          "Floors and bands then assign a readiness status."
+        ],
+        "measure": [
+          { "label": "Index", "value": "100 × (competency × evidence × data-quality × risk × role-criticality × recency) ^ (1/6)" },
+          { "label": "Competency", "value": "evidence-weighted attainment: assessed ÷ required, weighted by risk" },
+          { "label": "Recency", "value": "0.5 ^ (age in days ÷ 365) — evidence decays over time" },
+          { "label": "Risk adjustment", "value": "penalty for unmet high-risk competencies, floored at 0.4" },
+          { "label": "Status bands", "value": "≥ 85 Ready · ≥ 70 Ready, minor gaps · else Development required" },
+          { "label": "Floors", "value": "evidence or recency below 0.40 forces re-assessment" }
+        ],
+        "next": [
+          "Critical-role shortfalls surface in Succession and Workforce Planning.",
+          "Insufficient evidence or a stale assessment triggers a re-assessment request."
+        ]
+      },
+      "gaps": {
+        "what": "The distance between the level a role requires and the level a person actually has — ranked by how risky each gap is.",
+        "process": [
+          "For each competency, compare the required (target) level to the assessed (current) level.",
+          "Compute the gap and weight it by the competency's risk weight.",
+          "Sort so the most critical gaps come first."
+        ],
+        "measure": [
+          { "label": "Gap size", "value": "target level − current level (0–5)" },
+          { "label": "Weighted gap", "value": "gap size × risk weight" },
+          { "label": "Priority", "value": "weighted ≥ 3 Very high · ≥ 2 High · else Medium" },
+          { "label": "Confidence", "value": "same model as assessment — signal + evidence + consistency" }
+        ],
+        "next": [
+          "High-priority gaps drive the individual development plan and training assignment.",
+          "Aggregated gaps feed department and company workforce planning."
+        ]
+      },
+      "competencies": {
+        "what": "The shared standard: each competency, the level each job requires, and what behaviour looks like at every one of the five proficiency levels.",
+        "process": [
+          "Define the competency (bilingual) and link it to professional standards.",
+          "Set the required level (P1–P5) per job, with a risk weight.",
+          "Describe each level — knowledge, skill, behaviour and the evidence expected."
+        ],
+        "measure": [
+          { "label": "Level scale", "value": "P1 Awareness · P2 Basic · P3 Working · P4 Advanced · P5 Expert" },
+          { "label": "Required level", "value": "the target level a specific job demands for this competency (1–5)" },
+          { "label": "Risk weight", "value": "multiplier (≥ 1) that raises a competency's priority in gaps and readiness" }
+        ],
+        "next": [
+          "These requirements become the benchmark for every assessment and gap calculation."
+        ]
+      },
+      "governance": {
+        "what": "The human-in-the-loop gate: no AI result enters a workforce decision without review, and every consequential change is recorded in a tamper-evident log.",
+        "process": [
+          "Any AI output below the confidence threshold opens a pending decision.",
+          "A reviewer sees the recommendation, its confidence and the evidence behind it.",
+          "They approve or reject — only approved results take effect.",
+          "Every action is appended to the audit hash chain."
+        ],
+        "measure": [
+          { "label": "Trigger", "value": "AI confidence < 0.75 → decision opened as PENDING_REVIEW" },
+          { "label": "Statuses", "value": "PENDING_REVIEW → APPROVED or REJECTED" },
+          { "label": "Audit chain", "value": "each entry = SHA-256(previous hash + change) — any edit breaks the chain" }
+        ],
+        "next": [
+          "Approved results flow on to profiles, readiness and planning.",
+          "The full audit log can be re-verified end-to-end at any time."
+        ]
+      },
+      "value": {
+        "what": "The institutional value the platform delivers, as a single 0–100 index across six dimensions, computed from live data.",
+        "process": [
+          "Each of the six dimensions is measured directly from current records.",
+          "The six scores are averaged into one value index you can track over time."
+        ],
+        "measure": [
+          { "label": "Readiness visibility", "value": "% of the workforce with an assessed readiness index" },
+          { "label": "Risk control", "value": "% of critical roles not at high loss risk (≥ 0.6)" },
+          { "label": "Training ROI", "value": "average gap-closure % across training interventions" },
+          { "label": "Succession strength", "value": "ready people (≥ 75) ÷ critical roles, capped at 100%" },
+          { "label": "Decision speed", "value": "% of governance decisions resolved" },
+          { "label": "Fairness & transparency", "value": "average confidence of gap assessments" }
+        ],
+        "next": [
+          "Track the index over time to evidence the program's impact to leadership."
+        ]
+      }
+    }
   }
 }

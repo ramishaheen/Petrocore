@@ -3,6 +3,7 @@ import { Building2, Gauge, ShieldAlert, UserCircle } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import MethodPanel from "../components/MethodPanel";
 import { Badge, Card, EmptyState, PageHeader, PageSkeleton, ProgressRing, StatCard } from "../components/ui";
 import { api } from "../lib/api";
 
@@ -65,6 +66,8 @@ export default function Readiness() {
   return (
     <div className="space-y-6">
       <PageHeader title={t("readiness.title")} subtitle={t("readiness.subtitle")} icon={Gauge} />
+
+      <MethodPanel module="readiness" defaultOpen={false} />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatCard label={t("readiness.avgIndex")} value={avg} icon={Gauge} tone="green" />
