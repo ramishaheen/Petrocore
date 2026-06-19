@@ -363,3 +363,22 @@ footer { padding: 54px 0 34px; }
 .stats { gap: 18px; padding-top: 34px; }
 /* keep the shop hero stat figures modest too */
 .shs .num { font-size: clamp(1.4rem, 2.4vw, 2rem); }
+
+/* =========================================================================
+   Breathing room — open the layout back up (editorial negative space)
+   Appended last so it wins over the earlier compact pass.
+   ========================================================================= */
+body { line-height: 1.62; }
+.wrap { width: min(90%, var(--max)); }
+section.block { padding: clamp(66px, 9.5vh, 128px) 0; }
+.sec-head { margin-bottom: 54px; }
+.intro { gap: 64px; }
+.stats { padding-top: 48px; gap: 26px; }
+.grid-cap { gap: 22px; }
+.cap { padding: 32px 30px; }
+.cap p { line-height: 1.6; }
+.future-grid { gap: 60px; }
+#cta p { margin-top: 24px; }
+footer { padding: 74px 0 44px; }
+.foot-bottom { margin-top: 56px; }
+.hero-sub { margin-top: 24px; }

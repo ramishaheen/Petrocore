@@ -66,3 +66,12 @@ body.privacy .money, body.privacy .pf-total strong, body.privacy .ps-val { filte
 @media (max-width: 900px) {
   .pf-cols, .pf-addgrid { grid-template-columns: 1fr; }
 }
+
+/* ===== Breathing room ===== */
+.pf-main { padding: 52px 0 96px; }
+.pf-panel > .dash { margin-bottom: 8px; }
+.pf-block, .pf-form, .pf-vault, .pf-result { padding: 30px; }
+.pf-cols { gap: 22px; }
+.pf-addgrid { gap: 22px; }
+.pf-table th, .pf-table td { padding: 17px 20px; }
+.pf-strat li { padding: 16px 18px; }
