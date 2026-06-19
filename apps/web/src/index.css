@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: #f1f5f4;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-2xl shadow-soft border border-slate-100/80 p-5;
+  }
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lift hover:-translate-y-0.5;
+  }
+  /* Chips / badges */
+  .chip {
+    @apply inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full;
+  }
+  /* Primary button */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium
+           transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-petro text-white hover:bg-petro-light shadow-soft hover:shadow-lift;
+  }
+  .btn-ghost {
+    @apply btn bg-white/10 text-white hover:bg-white/20;
+  }
+}
+
+/* ---------------------------------------------------------------- Dark theme
+   Curated overrides for the utilities actually used across the app, so every
+   page themes without per-component edits. The petroleum gradient sidebar and
+   white-on-color text already read well on dark. */
+.dark body { background: #0a1512; color: #e6efec; }
+.dark .card { background: #0f1e1a !important; border-color: #1d322c !important; }
+.dark .bg-white { background-color: #0f1e1a !important; }
+.dark .bg-slate-50, .dark .bg-slate-50\/50, .dark .bg-slate-50\/60 { background-color: #13241f !important; }
+.dark .bg-slate-100 { background-color: #1a2e28 !important; }
+.dark .bg-petro-50, .dark .bg-petro-50\/40, .dark .bg-petro-50\/50, .dark .bg-petro-50\/60 { background-color: #11271f !important; }
+.dark .text-ink { color: #e6efec !important; }
+.dark .text-ink-soft { color: #a8bcb5 !important; }
+.dark .text-ink-muted { color: #71867f !important; }
+.dark .text-slate-600, .dark .text-slate-500 { color: #94a3b8 !important; }
+.dark .border-slate-100, .dark .border-slate-200, .dark .border-slate-50 { border-color: #1d322c !important; }
+.dark .divide-slate-50 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) { border-color: #1d322c !important; }
+.dark .bg-petro-mesh { background: #0a1512; }
+.dark .skeleton { background: #18302a; }
+.dark .chip.bg-slate-100 { background-color: #1a2e28 !important; color: #a8bcb5 !important; }
+
+/* Accessibility: visible keyboard focus + skip-to-content link. */
+*:focus-visible {
+  outline: 2px solid #1f8a6e;
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: 0;
+  top: -48px;
+  background: #083c30;
+  color: #fff;
+  padding: 8px 16px;
+  z-index: 50;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* ---------------------------------------------------------------- Org chart
+   Classic top-down CSS org chart with connector lines. */
+.orgchart { --org-line: #cbd5d1; }
+.dark .orgchart { --org-line: #2a3f38; }
+.orgchart ul { display: flex; justify-content: center; padding-top: 22px; position: relative; list-style: none; margin: 0; }
+.orgchart li { position: relative; padding: 22px 10px 0; text-align: center; }
+.orgchart li::before, .orgchart li::after {
+  content: ""; position: absolute; top: 0; right: 50%; width: 50%; height: 22px; border-top: 2px solid var(--org-line);
+}
+.orgchart li::after { right: auto; left: 50%; border-left: 2px solid var(--org-line); }
+.orgchart li:only-child::before, .orgchart li:only-child::after { display: none; }
+.orgchart li:only-child { padding-top: 22px; }
+.orgchart li:first-child::before, .orgchart li:last-child::after { border: 0 none; }
+.orgchart li:last-child::before { border-right: 2px solid var(--org-line); border-radius: 0 8px 0 0; }
+.orgchart li:first-child::after { border-radius: 8px 0 0 0; }
+.orgchart ul ul::before {
+  content: ""; position: absolute; top: 0; left: 50%; border-left: 2px solid var(--org-line); width: 0; height: 22px;
+}
+.orgchart .org-node { display: inline-flex; }
+
+/* Skeleton shimmer for loading states. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e8edec;
+  border-radius: 0.5rem;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Slim, on-brand scrollbars. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5d1;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+  background-clip: content-box;
+}

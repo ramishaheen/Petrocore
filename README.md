@@ -1,0 +1,106 @@
+# 360° PETROCORE
+
+**AI-Driven Competency & Workforce Readiness Intelligence Platform**
+
+*From Competency Assessment to Workforce Readiness Intelligence.*
+
+Built for the National Oil Corporation (Libya) ecosystem · Delivered by Murzuq Training Academy / Dr. Rami Shaheen Group.
+
+360° PETROCORE is an **integrated institutional intelligence architecture** — not a single
+assessment tool. It turns employee, competency, and training data into **readiness
+intelligence**: it measures readiness, exposes gaps, and governs development end-to-end,
+with every result tied to a **source + evidence + confidence score**, and every decision
+gated by **human-in-the-loop governance**.
+
+## Non-negotiable principles
+
+1. **Integrated intelligence** — every feature traces back to one of the 10 layers (`docs/ARCHITECTURE.md`).
+2. **Bilingual by design** — full Arabic (RTL, primary) + English (LTR). Domain terms keep Arabic labels.
+3. **Human-in-the-loop AI** — AI recommends, humans review, evidence validates, governance approves. Never auto-commit a workforce decision.
+4. **Evidence-based** — every competency result, gap, and recommendation links to a source, supporting evidence, and a confidence score.
+5. **Multi-tenant** — NOC is the parent; subsidiaries → activities → departments are nested tenants with PostgreSQL Row-Level Security (RLS).
+
+## Architecture at a glance — the 10 layers
+
+| Group | Layers |
+|-------|--------|
+| **Foundation** (الطبقات التأسيسية) | L1 Strategy & Institutional Context · L2 HR/Jobs/Performance · L3 Competency Dictionary & Standards · L4 Department Planning & Operational Requirements |
+| **Intelligence** (طبقات الذكاء) | L5 Employee 360° Profile · L6 Asset/Equipment & Critical Role · L7 AI Assessment & Evidence Validation · L8 AI Data Fusion & Gap Analysis |
+| **Decision** (طبقات القرار) | L9 Training & Development Governance · L10 Dashboards, Reports & Decision Support |
+
+See `docs/ARCHITECTURE.md`, `docs/DATA_MODEL.md`, and `docs/DECISIONS.md`.
+
+## Workforce Competency & Readiness Core (System Analysis)
+
+The 10-layer baseline has been evolved into the **extensible, configurability-first core** from
+`docs/SYSTEM_ANALYSIS.md` — a scalable platform rather than a closed tool. Increments P-A…P-F:
+
+| Increment | Capability |
+|-----------|------------|
+| **P-A** | Extensible core — configurable master data (LookupType/Value), generic EntityLink, custom fields; workforce segmentation (Family / Stream / RoleLevel / Archetype). |
+| **P-B** | Competency depth (Domain → Cluster → Proficiency → Descriptor), versioned Role Competency Matrix, Employee-360 qualifications / certifications / experience. |
+| **P-C** | Governed Assessment Blueprints + AI question generation → human review (SME/HR/Governance) → promotion into the live bank. |
+| **P-D** | Multi-factor, explainable ReadinessScore per entity (employee / dept / company / family / level), six configurable factors + status catalog. |
+| **P-E** | Talent segmentation, succession planning (candidates ranked by readiness + gaps), and knowledge continuity (holders + transfer plans). |
+| **P-F** | Workforce planning, predictive readiness, knowledge graph (over EntityLink), psychometrics & calibration, cross-company benchmarking, integration registry (HR/LMS/ERP/CMMS/HSE/IAM/BI). |
+
+Every increment keeps the non-negotiables: bilingual, evidence + confidence, human-in-the-loop
+governance, tamper-evident `audit_log` hash chain, and multi-tenant RLS. The web app surfaces these
+across dedicated bilingual pages (Blueprints, Readiness, Succession & Talent, Workforce Planning,
+Knowledge Graph, Integrations) and a backend-free **demo mode** (`VITE_DEMO=1`).
+
+## Tech stack
+
+- **Frontend:** React + Vite + TypeScript, Tailwind, i18next (AR-RTL / EN-LTR), TanStack Query, Zustand, Recharts.
+- **Backend:** Python FastAPI + SQLAlchemy 2.0 + Alembic.
+- **Database:** PostgreSQL 16 + pgvector + Row-Level Security.
+- **AI orchestration:** LangGraph-style engine graphs + LiteLLM model gateway (DeepSeek/Claude swappable) + pgvector evidence matching.
+- **Workers:** Celery/RQ + Redis.
+- **Infra:** Docker Compose (dev), OpenAPI docs, `.env`-driven config.
+
+## Quick start (dev)
+
+```bash
+cp .env.example .env
+docker compose up --build
+# API   → http://localhost:8000/docs
+# Web   → http://localhost:5173
+```
+
+Seed the database (foundation layers + bilingual reference data):
+
+```bash
+docker compose exec api python -m app.seed.seed_all
+```
+
+Run backend tests:
+
+```bash
+docker compose exec api pytest
+```
+
+## Build status
+
+All 8 phases are implemented (see `docs/ARCHITECTURE.md` §Build Plan); decisions are logged in
+`docs/DECISIONS.md`. CI runs unit, integration (Postgres+pgvector), and web-typecheck jobs.
+
+### Definition of Done (§17) — status
+
+- ✅ All 10 layers exist as modules with APIs, UIs, migrations, and seed data.
+- ✅ Institutional hierarchy (NOC → … → Employee) is navigable and drives comparisons.
+- ✅ L7 produces a competency result with evidence + confidence + audit trail, gated by governance.
+- ✅ L8 produces every gap output and feeds L9 training governance with verified gaps.
+- ✅ Before/During/After training writes impact back to the 360° Profile + Readiness Index.
+- ✅ The 8 reports + Executive Dashboard render with seeded data, bilingual, RTL-correct.
+- ✅ Layer Readiness Diagnostic, Pilot Entry Matrix, and Calibration/Scale-Up workflows function.
+- ✅ RBAC, multi-tenant RLS, PII encryption, and audit logging are implemented and tested.
+- ✅ Full Arabic (RTL) / English (LTR) parity across UI and reports.
+- ✅ Accessibility baseline: skip-to-content link, keyboard focus-visible styling, ARIA-labelled
+  navigation, `lang`/`dir` mirroring; route-level code-splitting for fast loads.
+- ✅ Load test for simultaneous nationwide assessment (`tools/loadtest/`, k6) with p95/error thresholds.
+- ⏳ Operational follow-ups (need a staging cluster): execute the load test at national scale and a
+  formal third-party a11y/RTL audit.
+
+---
+
+**Intelligent Readiness. Trusted Decisions.** · *الجاهزية الذكية. القرارات الموثوقة.*
