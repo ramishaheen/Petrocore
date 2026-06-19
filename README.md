@@ -30,6 +30,25 @@ gated by **human-in-the-loop governance**.
 
 See `docs/ARCHITECTURE.md`, `docs/DATA_MODEL.md`, and `docs/DECISIONS.md`.
 
+## Workforce Competency & Readiness Core (System Analysis)
+
+The 10-layer baseline has been evolved into the **extensible, configurability-first core** from
+`docs/SYSTEM_ANALYSIS.md` — a scalable platform rather than a closed tool. Increments P-A…P-F:
+
+| Increment | Capability |
+|-----------|------------|
+| **P-A** | Extensible core — configurable master data (LookupType/Value), generic EntityLink, custom fields; workforce segmentation (Family / Stream / RoleLevel / Archetype). |
+| **P-B** | Competency depth (Domain → Cluster → Proficiency → Descriptor), versioned Role Competency Matrix, Employee-360 qualifications / certifications / experience. |
+| **P-C** | Governed Assessment Blueprints + AI question generation → human review (SME/HR/Governance) → promotion into the live bank. |
+| **P-D** | Multi-factor, explainable ReadinessScore per entity (employee / dept / company / family / level), six configurable factors + status catalog. |
+| **P-E** | Talent segmentation, succession planning (candidates ranked by readiness + gaps), and knowledge continuity (holders + transfer plans). |
+| **P-F** | Workforce planning, predictive readiness, knowledge graph (over EntityLink), psychometrics & calibration, cross-company benchmarking, integration registry (HR/LMS/ERP/CMMS/HSE/IAM/BI). |
+
+Every increment keeps the non-negotiables: bilingual, evidence + confidence, human-in-the-loop
+governance, tamper-evident `audit_log` hash chain, and multi-tenant RLS. The web app surfaces these
+across dedicated bilingual pages (Blueprints, Readiness, Succession & Talent, Workforce Planning,
+Knowledge Graph, Integrations) and a backend-free **demo mode** (`VITE_DEMO=1`).
+
 ## Tech stack
 
 - **Frontend:** React + Vite + TypeScript, Tailwind, i18next (AR-RTL / EN-LTR), TanStack Query, Zustand, Recharts.

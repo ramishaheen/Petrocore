@@ -588,3 +588,49 @@ def test_phase4_planning_prediction_and_intelligence(client):
 
     # The audit chain remained intact through all the P-F writes.
     assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+
+
+def test_uat_acceptance_criteria(client):
+    """Breadth check mapping the spec's §36 UAT criteria — the comprehensive
+    product answers across every layer, end to end, with the audit chain intact."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    def ok(path: str):
+        r = client.get(path, headers=admin)
+        assert r.status_code == 200, f"{path} → {r.status_code}"
+        return r.json()
+
+    # Setup: institution → company → org units (hierarchy navigable).
+    assert ok("/api/v1/org/tree")[0]["node_type"] == "NOC"
+    # Workforce segmentation: families, streams, levels, archetypes.
+    assert len(ok("/api/v1/workforce/families")) >= 8
+    assert len(ok("/api/v1/workforce/levels")) >= 8
+    # Competency dictionary + depth (domains, proficiency ladder).
+    assert ok("/api/v1/competency-domains")
+    assert [l["level_code"] for l in ok("/api/v1/competencies/proficiency-levels")] == ["P1", "P2", "P3", "P4", "P5"]
+    # Jobs + role competency matrix.
+    job = next(j for j in ok("/api/v1/jobs") if j["has_approved_profile"])
+    assert ok(f"/api/v1/jobs/{job['id']}/competency-profile")["requirements"]
+    # Employee 360 (profile + qualifications/certifications/experience).
+    emp_id = ok("/api/v1/profiles")[0]["employee_id"]
+    assert ok(f"/api/v1/employees/{emp_id}/qualifications") is not None
+    # Assessment blueprint + AI questions in the review workflow.
+    assert ok("/api/v1/blueprints")
+    assert ok("/api/v1/ai-questions") is not None
+    # Readiness (explainable) + statuses.
+    assert ok("/api/v1/readiness/statuses")
+    rs = client.post(f"/api/v1/readiness/employees/{emp_id}/compute", headers=admin).json()
+    assert "raw_product" in rs["breakdown"]  # explainable
+    # Predictive readiness + workforce planning.
+    assert ok(f"/api/v1/readiness/forecast/{emp_id}")["projected_index"] is not None
+    assert "ready_pct" in ok("/api/v1/workforce-planning/overview")
+    # Talent & succession + knowledge graph + benchmarking + integrations.
+    assert ok("/api/v1/talent/pipeline")["critical_roles_total"] >= 1
+    assert ok("/api/v1/knowledge-graph")["edge_count"] >= 1
+    assert ok("/api/v1/benchmarking/companies")
+    assert ok("/api/v1/integration/connectors")
+    # Executive dashboard + institutional value + diagnostic.
+    assert "workforce_readiness_index" in ok("/api/v1/dashboards/executive")
+    assert "value_index" in ok("/api/v1/reports/institutional-value")
+    # Governance + tamper-evident audit chain.
+    assert ok("/api/v1/governance/audit/verify")["intact"] is True
