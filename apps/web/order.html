@@ -20,14 +20,14 @@
 
   <div id="preload">
     <div style="text-align:center">
-      <div class="pl-logo"><span>HORO</span><span>&nbsp;PRIVÉ</span></div>
+      <img class="pl-mark" src="assets/logo.svg" alt="HORO PRIVÉ" />
       <div class="pl-bar"><i></i></div>
       <div class="pl-count">000</div>
     </div>
   </div>
 
   <header>
-    <a class="brand" href="index.html"><span class="dot"></span> HORO&nbsp;PRIVÉ</a>
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/mark.svg" alt="" width="30" height="30" /> HORO&nbsp;PRIVÉ</a>
     <nav>
       <a class="link" href="services.html">Advisory</a>
       <a class="link" href="shop.html">Opportunities</a>
@@ -72,6 +72,11 @@
       <div class="sec-head">
         <h2 class="serif lines"><span class="ln-row"><b>Your private consultation</b></span></h2>
         <p class="reveal">Three steps. A few minutes. Reviewed by a human.</p>
+      </div>
+
+      <div class="selective reveal">
+        <span class="si">❖</span>
+        <p>We currently receive <strong>more consultation requests than we can accept</strong>. Clients are taken on selectively — matched to profile, objective and fit. Share your details and a preferred time below; a consultant will review your brief and reach out by email if there is a match.</p>
       </div>
 
       <div class="config">
@@ -124,9 +129,14 @@
               <div><label for="email">Email <span class="req">*</span></label><input type="email" id="email" name="email" autocomplete="email" required placeholder="you@example.com" /><small class="err" data-for="email">Please enter a valid email.</small></div>
             </div>
             <div class="field two">
-              <div><label for="country">Delivery country <span class="req">*</span></label><input type="text" id="country" name="country" autocomplete="country-name" required placeholder="Country" /><small class="err" data-for="country">Please enter your country.</small></div>
-              <div><label>Preferred contact</label><div class="pills" data-group="channel"></div></div>
+              <div><label for="phone">Phone / WhatsApp <span class="muted">(optional)</span></label><input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="+1 555 000 0000" /></div>
+              <div><label for="country">Country <span class="req">*</span></label><input type="text" id="country" name="country" autocomplete="country-name" required placeholder="Country" /><small class="err" data-for="country">Please enter your country.</small></div>
             </div>
+            <div class="field two">
+              <div><label>Preferred contact method</label><div class="pills" data-group="channel"></div></div>
+              <div><label for="tz">Your time zone <span class="muted">(optional)</span></label><input type="text" id="tz" name="tz" placeholder="e.g. GMT, EST, GST" /></div>
+            </div>
+            <div class="field"><label>Preferred time to be contacted</label><div class="pills" data-group="when"></div></div>
             <label class="consent"><input type="checkbox" id="consent" required /><span>I'd like a HORO&nbsp;PRIVÉ consultant to contact me about this enquiry. My details are kept private and never shared. <span class="req">*</span></span></label>
             <small class="err block" data-for="consent">Please confirm to continue.</small>
             <div class="step-nav"><button type="button" class="btn ghost" data-prev>← Back</button><button type="submit" class="btn flame" id="submitBtn">Submit my brief</button></div>

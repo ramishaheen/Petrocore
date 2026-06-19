@@ -20,10 +20,11 @@
     condition: ["Open", "Unworn", "Pre-owned", "Vintage"],
     papers: ["Full set preferred", "Not essential"],
     timeframe: ["No rush", "Within weeks", "As soon as possible"],
-    channel: ["Email", "Phone", "WhatsApp"]
+    channel: ["Email", "Phone", "WhatsApp"],
+    when: ["Morning", "Afternoon", "Evening", "Any time"]
   };
 
-  var sel = { intent: GROUPS.intent[0], first: "", flex: "", condition: "Open", papers: "Full set preferred", timeframe: "No rush", channel: "Email" };
+  var sel = { intent: GROUPS.intent[0], first: "", flex: "", condition: "Open", papers: "Full set preferred", timeframe: "No rush", channel: "Email", when: "Any time" };
 
   /* opportunities deep-link (?ref=) */
   var REF = {
@@ -56,7 +57,7 @@
     });
   });
 
-  var fields = ["brand", "model", "budget", "year", "notes"];
+  var fields = ["brand", "model", "budget", "year", "notes", "phone", "tz"];
   fields.forEach(function (id) { var el = document.getElementById(id); if (el) el.addEventListener("input", renderBrief); });
 
   if (prefill) {
@@ -79,7 +80,9 @@
       ["Box & papers", sel.papers],
       ["Year / era", val("year") || "—"],
       ["Timeframe", sel.timeframe],
-      ["Contact", sel.channel]
+      ["Contact via", sel.channel],
+      ["Phone", val("phone") || "—"],
+      ["Best time", sel.when + (val("tz") ? " · " + val("tz") : "")]
     ];
     var list = $("#sumList");
     if (list) list.innerHTML = rows.map(function (r) {
@@ -130,7 +133,7 @@
     var ref = "HP-" + Date.now().toString(36).slice(-6).toUpperCase();
     var first = $("#fname").value.trim().split(" ")[0];
     var msg = $("#confirmMsg"), refEl = $("#confirmRef");
-    if (msg) msg.textContent = "Thank you, " + first + ". Your collector brief — “" + sel.intent.toLowerCase() + "” — is with us. A dedicated consultant will review it and respond privately, usually within one business day.";
+    if (msg) msg.textContent = "Thank you, " + first + ". Your brief is with us for review. As we accept clients selectively, a consultant will assess your profile and — if there is a match — reach out by email" + (val("phone") ? " or phone" : "") + " around your preferred time (" + sel.when.toLowerCase() + ").";
     if (refEl) refEl.textContent = ref;
     var confirm = $("#confirm");
     if (confirm) { confirm.hidden = false; document.body.style.overflow = "hidden"; }

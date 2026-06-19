@@ -28,7 +28,7 @@
   <!-- Preloader -->
   <div id="preload">
     <div style="text-align:center">
-      <div class="pl-logo"><span>HORO</span><span>&nbsp;PRIVÉ</span></div>
+      <img class="pl-mark" src="assets/logo.svg" alt="HORO PRIVÉ" />
       <div class="pl-bar"><i></i></div>
       <div class="pl-count">000</div>
     </div>
@@ -36,7 +36,7 @@
 
   <!-- Navigation -->
   <header>
-    <a class="brand" href="index.html"><span class="dot"></span> HORO&nbsp;PRIVÉ</a>
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/mark.svg" alt="" width="30" height="30" /> HORO&nbsp;PRIVÉ</a>
     <nav>
       <a class="link" href="services.html">Advisory</a>
       <a class="link" href="shop.html">Opportunities</a>
@@ -177,6 +177,7 @@
         <span class="eyebrow">Private watch request</span>
         <h2 class="serif">Tell us what you're looking for.</h2>
         <p>Share as little or as much as you wish. A consultant reviews every request personally — there is no obligation, and no payment at this stage.</p>
+        <p class="rm-note"><strong>By application.</strong> We receive more requests than we can accept and take on clients selectively, by profile and fit. Leave your email and a preferred time, and we'll be in touch if there's a match.</p>
         <ul class="rm-modes">
           <li>I know the exact watch</li>
           <li>I need recommendations</li>
@@ -207,6 +208,12 @@
           <label>Email <span class="req">*</span><input type="email" name="email" required placeholder="you@example.com" /></label>
           <label>Preferred contact
             <select name="channel"><option>Email</option><option>Phone</option><option>WhatsApp</option></select>
+          </label>
+        </div>
+        <div class="rmf two">
+          <label>Phone / WhatsApp <span class="muted">(optional)</span><input name="phone" placeholder="+1 555 000 0000" /></label>
+          <label>Preferred time to be contacted
+            <select name="when"><option>Any time</option><option>Morning</option><option>Afternoon</option><option>Evening</option></select>
           </label>
         </div>
         <small class="err" data-for="qrEmail">Please enter a valid email.</small>
