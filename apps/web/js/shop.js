@@ -231,6 +231,8 @@
     document.getElementById("qvSpecs").innerHTML = Object.keys(w.specs).map(function (k) {
       return "<div><dt>" + k + "</dt><dd>" + w.specs[k] + "</dd></div>";
     }).join("");
+    var commission = document.getElementById("qvCommission");
+    if (commission) commission.href = "order.html?ref=" + encodeURIComponent(w.id);
     var avail = document.getElementById("qvAvail");
     avail.innerHTML = w.stock <= 5
       ? '<span class="low">●</span> Only ' + w.stock + " pieces remaining — reserve promptly."

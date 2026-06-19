@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PETROCORE — Commission a Timepiece</title>
+  <meta name="description" content="Commission a bespoke PETROCORE timepiece in three simple steps. Configure your case, dial and strap, add a personal engraving, and reserve with a dedicated client advisor — secure, certified, and guaranteed for five years." />
+  <meta name="theme-color" content="#06080c" />
+  <meta property="og:title" content="PETROCORE — Commission a Timepiece" />
+  <meta property="og:description" content="Design and order your bespoke automatic timepiece. Certified, secure, guaranteed." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/order.css" />
+</head>
+<body class="order-page">
+
+  <div id="progress"></div>
+  <div class="cursor"></div>
+
+  <div id="preload">
+    <div style="text-align:center">
+      <div class="pl-logo"><span>PETRO</span><span>CORE</span></div>
+      <div class="pl-bar"><i></i></div>
+      <div class="pl-count">000</div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <header>
+    <a class="brand" href="index.html"><span class="dot"></span> PETROCORE</a>
+    <nav>
+      <a class="link" href="index.html#heritage">Heritage</a>
+      <a class="link" href="index.html#craft">Craft</a>
+      <a class="link" href="shop.html">Shop</a>
+      <a class="link" href="order.html" aria-current="page">Commission</a>
+      <a class="btn ghost" href="index.html#contact">Account</a>
+      <a class="btn flame" href="#configurator">Start your order →</a>
+    </nav>
+  </header>
+
+  <!-- ============ Hero ============ -->
+  <section class="order-hero">
+    <div class="shop-hero-glow"></div>
+    <div class="hero-noise"></div>
+    <div class="wrap">
+      <span class="kicker"><span class="ln"></span><span class="eyebrow">Bespoke Atelier</span></span>
+      <h1 class="order-title lines">
+        <span class="ln-row"><b>Commission a piece</b></span>
+        <span class="ln-row"><b>that is <span class="glow">only yours.</span></b></span>
+      </h1>
+      <p class="order-lead reveal d1">Design your timepiece in three simple steps — choose a foundation, configure every detail, and reserve it with a dedicated client advisor. No payment is taken online; your commission is confirmed personally, certified before it ships, and guaranteed for five years.</p>
+      <div class="hero-cta reveal d2">
+        <a class="btn flame" href="#configurator">Begin your commission</a>
+        <a class="btn ghost" href="#advisor">Speak with an advisor</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Trust bar ============ -->
+  <div class="trustbar">
+    <div class="wrap trustbar-inner">
+      <div class="tb"><span class="ti">◈</span><div><strong>Chronometer-certified</strong><span>15-day, six-position testing</span></div></div>
+      <div class="tb"><span class="ti">🔒</span><div><strong>Secure &amp; private</strong><span>Encrypted · no online payment</span></div></div>
+      <div class="tb"><span class="ti">✦</span><div><strong>5-year warranty</strong><span>Lifetime servicing</span></div></div>
+      <div class="tb"><span class="ti">★</span><div><strong>4.9 / 5</strong><span>2,400+ verified owners</span></div></div>
+    </div>
+  </div>
+
+  <!-- ============ How it works ============ -->
+  <section class="block" id="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="lines"><span class="ln-row"><b>How it works</b></span></h2>
+        <p class="reveal">A transparent, white-glove process — from first sketch to the moment it reaches your wrist.</p>
+      </div>
+      <div class="steps3">
+        <article class="s3 reveal"><div class="s3n">01</div><h3>Design</h3><p>Configure your timepiece below, or start from a signature reference. Add a personal engraving and tell us your story.</p></article>
+        <article class="s3 reveal d1"><div class="s3n">02</div><h3>Craft</h3><p>A master watchmaker assembles, regulates and hand-finishes your caliber, then certifies it across fifteen days of testing.</p></article>
+        <article class="s3 reveal d2"><div class="s3n">03</div><h3>Delivered</h3><p>Insured, signature-required delivery in a hand-finished case — with lifetime servicing and a five-year international warranty.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Configurator ============ -->
+  <section class="block" id="configurator">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="lines"><span class="ln-row"><b>Design your timepiece</b></span></h2>
+        <p class="reveal">Three steps. Two minutes. Zero obligation.</p>
+      </div>
+
+      <div class="config">
+        <!-- Form column -->
+        <form class="config-form" id="orderForm" novalidate>
+          <!-- progress -->
+          <ol class="stepper" id="stepper">
+            <li class="active" data-step="1"><span>1</span> Foundation</li>
+            <li data-step="2"><span>2</span> Configure</li>
+            <li data-step="3"><span>3</span> Your details</li>
+          </ol>
+
+          <!-- STEP 1 — base -->
+          <fieldset class="step active" data-step="1">
+            <legend>Choose your foundation</legend>
+            <p class="step-hint">Start from a signature reference, or design a bespoke piece from a blank canvas.</p>
+            <div class="opt-grid" id="baseGrid"><!-- injected --></div>
+            <div class="step-nav">
+              <span></span>
+              <button type="button" class="btn flame" data-next>Continue →</button>
+            </div>
+          </fieldset>
+
+          <!-- STEP 2 — configure -->
+          <fieldset class="step" data-step="2">
+            <legend>Configure every detail</legend>
+
+            <div class="field">
+              <label>Case material</label>
+              <div class="pills" data-group="case"></div>
+            </div>
+            <div class="field">
+              <label>Dial colour</label>
+              <div class="pills" data-group="dial"></div>
+            </div>
+            <div class="field">
+              <label>Complication</label>
+              <div class="pills" data-group="complication"></div>
+            </div>
+            <div class="field">
+              <label>Strap</label>
+              <div class="pills" data-group="strap"></div>
+            </div>
+            <div class="field two">
+              <div>
+                <label>Case size</label>
+                <div class="pills" data-group="size"></div>
+              </div>
+              <div>
+                <label for="engraving">Caseback engraving <span class="muted">(optional · +$250)</span></label>
+                <input type="text" id="engraving" name="engraving" maxlength="40" placeholder="e.g. Per aspera ad astra · 2026" />
+              </div>
+            </div>
+
+            <div class="step-nav">
+              <button type="button" class="btn ghost" data-prev>← Back</button>
+              <button type="button" class="btn flame" data-next>Continue →</button>
+            </div>
+          </fieldset>
+
+          <!-- STEP 3 — details -->
+          <fieldset class="step" data-step="3">
+            <legend>Where shall we reach you?</legend>
+            <p class="step-hint">A dedicated advisor will confirm availability and finalise your commission personally — usually within one business day.</p>
+
+            <div class="field two">
+              <div>
+                <label for="fname">Full name <span class="req">*</span></label>
+                <input type="text" id="fname" name="fname" autocomplete="name" required placeholder="Your name" />
+                <small class="err" data-for="fname">Please enter your name.</small>
+              </div>
+              <div>
+                <label for="email">Email <span class="req">*</span></label>
+                <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@example.com" />
+                <small class="err" data-for="email">Please enter a valid email.</small>
+              </div>
+            </div>
+            <div class="field two">
+              <div>
+                <label for="phone">Phone <span class="muted">(optional)</span></label>
+                <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="+1 555 000 0000" />
+              </div>
+              <div>
+                <label for="country">Country <span class="req">*</span></label>
+                <input type="text" id="country" name="country" autocomplete="country-name" required placeholder="Country" />
+                <small class="err" data-for="country">Please enter your country.</small>
+              </div>
+            </div>
+            <div class="field">
+              <label for="message">Notes for your advisor <span class="muted">(optional)</span></label>
+              <textarea id="message" name="message" rows="3" placeholder="Sizing, delivery timing, a special occasion…"></textarea>
+            </div>
+            <label class="consent">
+              <input type="checkbox" id="consent" required />
+              <span>I'd like a PETROCORE advisor to contact me about this commission. My details are kept private and never shared. <span class="req">*</span></span>
+            </label>
+            <small class="err block" data-for="consent">Please confirm to continue.</small>
+
+            <div class="step-nav">
+              <button type="button" class="btn ghost" data-prev>← Back</button>
+              <button type="submit" class="btn flame" id="submitBtn">Reserve my commission</button>
+            </div>
+          </fieldset>
+        </form>
+
+        <!-- Live summary -->
+        <aside class="summary" id="summary">
+          <div class="sum-media">
+            <img id="sumImg" alt="Your configured PETROCORE timepiece" />
+            <span class="sum-tag" id="sumTag">Bespoke</span>
+          </div>
+          <div class="sum-body">
+            <h3>Your commission</h3>
+            <dl class="sum-list" id="sumList"><!-- injected --></dl>
+            <div class="sum-total">
+              <span>Estimated from</span>
+              <strong id="sumPrice">$0</strong>
+            </div>
+            <p class="sum-secure"><span>🔒</span> Secure &amp; encrypted · no payment taken online</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Trust: testimonials ============ -->
+  <section class="block" id="voices">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="lines"><span class="ln-row"><b>Owners, in their</b></span><span class="ln-row"><b>own words</b></span></h2>
+        <p class="reveal">A reputation built over half a century — and verified by the people who wear it.</p>
+      </div>
+      <div class="quotes" id="quotes"><!-- injected --></div>
+      <div class="quote-dots" id="quoteDots"></div>
+    </div>
+  </section>
+
+  <!-- ============ Trust: certifications + press ============ -->
+  <section class="block" id="credentials" style="padding-top:0">
+    <div class="wrap">
+      <div class="creds">
+        <div class="cred reveal"><div class="cv">◈</div><h4>Chronometer certified</h4><p>Every caliber is regulated to chronometer-grade accuracy across six positions and fifteen days.</p></div>
+        <div class="cred reveal d1"><div class="cv">⛰</div><h4>Swiss-grade manufacture</h4><p>Designed, machined and finished under one roof — the mark of a true manufacture.</p></div>
+        <div class="cred reveal d2"><div class="cv">♻</div><h4>Responsibly sourced</h4><p>Conflict-free metals and fully traceable materials, certified at every stage.</p></div>
+        <div class="cred reveal d3"><div class="cv">🛡</div><h4>Authenticity guaranteed</h4><p>Each piece ships with a numbered certificate and a digital passport you can verify.</p></div>
+      </div>
+      <div class="press reveal">
+        <span class="press-label">As featured in</span>
+        <div class="press-logos">
+          <span>HODINKEE</span><span>GQ</span><span>Monochrome</span><span>Revolution</span><span>WatchTime</span><span>Robb Report</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Advisor / concierge ============ -->
+  <section class="block" id="advisor">
+    <div class="wrap advisor-grid">
+      <div class="advisor-media reveal">
+        <img data-frame="6" alt="A PETROCORE client advisor" />
+      </div>
+      <div>
+        <span class="eyebrow reveal">Private client services</span>
+        <h2 class="lines" style="font-size:clamp(1.8rem,4.4vw,3.2rem);margin-top:16px;text-transform:none">
+          <span class="ln-row"><b>A dedicated advisor,</b></span>
+          <span class="ln-row"><b>at your service.</b></span>
+        </h2>
+        <p class="reveal d1" style="color:var(--muted);max-width:460px;margin-top:18px">Prefer a human touch? Our atelier advisors guide every commission personally — from sizing and material choices to delivery and after-care. Discreet, unhurried, and entirely yours.</p>
+        <ul class="advisor-list">
+          <li class="reveal"><span>↳</span> Replies within one business day, guaranteed</li>
+          <li class="reveal d1"><span>↳</span> Private virtual or in-boutique appointments</li>
+          <li class="reveal d2"><span>↳</span> Lifetime servicing and care for your timepiece</li>
+        </ul>
+        <div class="hero-cta reveal d2" style="margin-top:28px">
+          <a class="btn flame" href="#configurator">Start your commission</a>
+          <a class="btn ghost" href="mailto:advisors@petrocore.example?subject=PETROCORE%20commission%20enquiry">Email an advisor</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="block" id="faq" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="lines"><span class="ln-row"><b>Good to know</b></span></h2>
+        <p class="reveal">Everything you might want to ask before you commission.</p>
+      </div>
+      <div class="faq" id="faqList">
+        <details class="faq-item"><summary>Do I pay when I place the order?</summary><div>No. Your commission is a reservation. A client advisor confirms availability, specification and pricing with you personally before any payment is arranged — securely and at your pace.</div></details>
+        <details class="faq-item"><summary>How long does a commission take?</summary><div>Signature references typically ship within 3–6 weeks. Fully bespoke pieces and grand complications are hand-built to order and usually take 8–16 weeks. Your advisor will confirm an exact timeline.</div></details>
+        <details class="faq-item"><summary>Is my information secure?</summary><div>Always. Your details are transmitted over an encrypted connection, used only to fulfil your commission, and never shared or sold. You can request deletion at any time.</div></details>
+        <details class="faq-item"><summary>What does the warranty cover?</summary><div>Every PETROCORE carries a five-year international warranty against manufacturing defects, plus lifetime access to servicing by our own watchmakers.</div></details>
+        <details class="faq-item"><summary>Can I return or exchange?</summary><div>Yes — any unworn reference may be returned within 14 days for a full refund or exchange. Engraved bespoke pieces are assessed individually by your advisor.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Footer ============ -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <div class="foot-brand">PETROCORE
+            <p>Precision automatic timepieces, hand-finished and engineered to outlast generations. Maison since 1971.</p>
+          </div>
+        </div>
+        <div><h4>Order</h4><ul>
+          <li><a href="order.html#configurator">Commission a piece</a></li>
+          <li><a href="shop.html">Shop the collection</a></li>
+          <li><a href="order.html#advisor">Speak with an advisor</a></li>
+          <li><a href="order.html#faq">Ordering &amp; returns</a></li>
+        </ul></div>
+        <div><h4>Maison</h4><ul>
+          <li><a href="index.html#heritage">Heritage</a></li>
+          <li><a href="index.html#craft">The craft</a></li>
+          <li><a href="index.html#materials">Materials</a></li>
+          <li><a href="order.html#credentials">Certifications</a></li>
+        </ul></div>
+        <div><h4>Connect</h4><ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Journal</a></li>
+          <li><a href="order.html#advisor">Book a viewing</a></li>
+          <li><a href="#">Boutiques</a></li>
+        </ul></div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 1971–2026 PETROCORE Manufacture. All rights reserved.</span>
+        <span>Secure &amp; encrypted · Crafted with precision · Visuals generated with Higgsfield</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Confirmation overlay -->
+  <div class="confirm" id="confirm" hidden>
+    <div class="confirm-card">
+      <div class="confirm-mark">✓</div>
+      <h2>Your commission is reserved</h2>
+      <p id="confirmMsg">Thank you. A dedicated PETROCORE advisor will contact you within one business day to confirm every detail.</p>
+      <div class="confirm-ref">Reference <strong id="confirmRef">—</strong></div>
+      <div class="hero-cta" style="justify-content:center">
+        <a class="btn flame" href="shop.html">Explore the collection</a>
+        <button class="btn ghost" type="button" id="confirmClose">Start another</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/frames.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/order.js"></script>
+</body>
+</html>

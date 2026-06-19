@@ -268,3 +268,37 @@ footer { border-top: 1px solid var(--line); background: var(--bg-2); padding: 70
   * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* =========================================================================
+   Trust / credibility block (home page)
+   ========================================================================= */
+#trust .trust-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+#trust .trust-item { padding: 28px 24px; border: 1px solid var(--line); border-radius: 16px;
+  background: linear-gradient(180deg, var(--panel), rgba(13,19,32,0.35)); transition: transform 0.5s var(--ease), border-color 0.5s; }
+#trust .trust-item:hover { transform: translateY(-6px); border-color: rgba(201,162,74,0.45); }
+#trust .trust-item .ti { font-size: 1.5rem; color: var(--flame); }
+#trust .trust-item strong { display: block; font-family: "Syne", sans-serif; font-size: 1.08rem; margin: 14px 0 8px; }
+#trust .trust-item span { color: var(--muted); font-size: 0.86rem; }
+
+#trust .trust-quote { margin: 30px 0; text-align: center; border: 1px solid var(--line); border-radius: 20px;
+  padding: clamp(30px, 5vw, 56px); background:
+    radial-gradient(80% 120% at 50% 0%, rgba(201,162,74,0.08), transparent 60%), var(--bg-2); }
+#trust .trust-quote .stars { color: var(--flame); letter-spacing: 4px; margin-bottom: 18px; }
+#trust .trust-quote blockquote { font-family: "Syne", sans-serif; font-weight: 700; letter-spacing: -0.01em;
+  font-size: clamp(1.3rem, 3.2vw, 2.3rem); line-height: 1.3; max-width: 22ch; margin: 0 auto; }
+#trust .trust-quote figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 22px; }
+#trust .trust-quote .rate { color: var(--flame-2); font-weight: 600; }
+
+#trust .trust-press { border-top: 1px solid var(--line); padding-top: 30px; text-align: center; }
+.press-label { font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+.press-logos { display: flex; flex-wrap: wrap; gap: clamp(18px, 4vw, 52px); justify-content: center; align-items: center; margin-top: 20px; }
+.press-logos span { font-family: "Syne", sans-serif; font-weight: 800; font-size: clamp(1rem, 2vw, 1.5rem);
+  letter-spacing: 0.04em; color: var(--ink); opacity: 0.4; transition: opacity 0.3s; }
+.press-logos span:hover { opacity: 0.85; }
+
+@media (max-width: 920px) {
+  #trust .trust-row { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  #trust .trust-row { grid-template-columns: 1fr; }
+}
