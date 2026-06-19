@@ -44,6 +44,9 @@ from app.models.assessment_exec import (
     AssessmentAttempt, AssessmentResponse, AssessmentResultRow, EvidenceReview,
 )
 from app.models.development import LearningNeed, DevelopmentPlan, DevelopmentPlanItem
+from app.models.operations import (
+    Site, ProcessUnit, Equipment, Procedure, CriticalTask, TaskRisk,
+)
 
 __all__ = [
     "AppUser",
@@ -70,4 +73,5 @@ __all__ = [
     "QuestionBank", "QuestionTag", "AssessmentCampaign", "AssessmentParticipant",
     "AssessmentAttempt", "AssessmentResponse", "AssessmentResultRow", "EvidenceReview",
     "LearningNeed", "DevelopmentPlan", "DevelopmentPlanItem",
+    "Site", "ProcessUnit", "Equipment", "Procedure", "CriticalTask", "TaskRisk",
 ]

@@ -732,3 +732,33 @@ def test_development_planning(client):
     employee = _login(client, "employee@noc.ly")
     assert client.post("/api/v1/development/plans", headers=employee, json={
         "entity_id": employee_id, "plan_name": "x"}).status_code == 403
+
+
+def test_operations_and_asset_context(client):
+    """P-I: site → equipment, procedures, critical tasks + risks, and the
+    competency-exposure link to the competency engine."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # Seeded operational backbone is present.
+    assert client.get("/api/v1/operations/sites", headers=admin).json()
+    assert client.get("/api/v1/operations/equipment", headers=admin).json()
+    exposure = client.get("/api/v1/operations/competency-exposure", headers=admin).json()
+    assert exposure and any(t["competency_id"] for t in exposure)
+
+    # Create a new equipment + critical task + risk.
+    comp_id = client.get("/api/v1/competencies", headers=admin).json()[0]["id"]
+    eq = client.post("/api/v1/operations/equipment", headers=admin, json={
+        "tag": "P-200", "name_en": "Export Pump", "name_ar": "مضخة التصدير",
+        "criticality": "HIGH"}).json()
+    task = client.post("/api/v1/operations/critical-tasks", headers=admin, json={
+        "name_en": "Pump changeover", "name_ar": "تبديل المضخة", "competency_id": comp_id,
+        "equipment_id": eq["id"], "criticality": "HIGH"}).json()
+    risk = client.post(f"/api/v1/operations/critical-tasks/{task['id']}/risks", headers=admin, json={
+        "risk_type": "Operational", "severity": 0.6, "likelihood": 0.5}).json()
+    assert risk["risk_type"] == "Operational"
+    assert any(t["task_id"] == task["id"] for t in client.get("/api/v1/operations/competency-exposure", headers=admin).json())
+
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+    employee = _login(client, "employee@noc.ly")
+    assert client.post("/api/v1/operations/equipment", headers=employee, json={
+        "tag": "X", "name_en": "x", "name_ar": "x"}).status_code == 403

@@ -200,6 +200,9 @@ def seed() -> None:
         # ---- Development plans (P-H) ----
         from app.seed.seed_h import seed_h
         seed_h(db)
+        # ---- Operational & asset context (P-I) ----
+        from app.seed.seed_i import seed_i
+        seed_i(db)
 
         db.commit()
         print("Seed complete.")
