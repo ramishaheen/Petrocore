@@ -398,3 +398,14 @@ header.shrink {
   0%,100% { filter: drop-shadow(0 0 4px rgba(201,162,74,0)); }
   50% { filter: drop-shadow(0 0 18px rgba(201,162,74,0.32)); }
 }
+
+/* =========================================================================
+   Marquee — guaranteed continuous right-to-left scroll (seamless 2x track)
+   ========================================================================= */
+.marquee { overflow: hidden; }
+.marquee .track { width: max-content; animation: scrollx 34s linear infinite; }
+@keyframes scrollx { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+/* keep it gently moving even with reduced motion (owner request) */
+@media (prefers-reduced-motion: reduce) {
+  .marquee .track { animation: scrollx 70s linear infinite !important; }
+}
