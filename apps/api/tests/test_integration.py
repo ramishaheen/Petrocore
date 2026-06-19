@@ -249,3 +249,40 @@ def test_import_forbidden_for_employee_role(client):
     employee = _login(client, "employee@noc.ly")
     r = client.post("/api/v1/integration/import/competencies", headers=employee, json=[])
     assert r.status_code == 403
+
+
+def test_extensible_core_and_workforce_segmentation(client):
+    """P-A: master data, workforce segmentation, and generic entity links."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # Workforce segmentation seeded.
+    families = client.get("/api/v1/workforce/families", headers=admin).json()
+    assert len(families) >= 8 and any(f["code"] == "OPS" for f in families)
+    levels = client.get("/api/v1/workforce/levels", headers=admin).json()
+    assert [l["level_code"] for l in levels][:3] == ["L1", "L2", "L3"]
+    assert len(client.get("/api/v1/workforce/streams", headers=admin).json()) >= 6
+    assert len(client.get("/api/v1/workforce/archetypes", headers=admin).json()) >= 6
+
+    # Configurable master data.
+    types = client.get("/api/v1/config/lookup-types", headers=admin).json()
+    assert any(t["code"] == "EVIDENCE_TYPE" for t in types)
+    evid = client.get("/api/v1/config/lookups?type_code=EVIDENCE_TYPE", headers=admin).json()
+    assert evid and all("name_ar" in v for v in evid)  # bilingual
+    assert any(e["code"] == "Competency" for e in client.get("/api/v1/config/entity-types", headers=admin).json())
+
+    # Generic entity link round-trip (link an employee to a project).
+    created = client.post("/api/v1/config/entity-links", headers=admin, json={
+        "source_entity_type": "Employee", "source_entity_id": "e1",
+        "target_entity_type": "Project", "target_entity_id": "prj-1",
+        "link_type": "Supports", "relationship_weight": 0.8,
+    }).json()
+    assert created["link_type"] == "Supports"
+    links = client.get("/api/v1/config/entity-links?source_entity_type=Employee&source_entity_id=e1", headers=admin).json()
+    assert any(l["target_entity_id"] == "prj-1" for l in links)
+
+    # RBAC: a plain employee cannot create links.
+    employee = _login(client, "employee@noc.ly")
+    assert client.post("/api/v1/config/entity-links", headers=employee, json={
+        "source_entity_type": "Employee", "source_entity_id": "e1",
+        "target_entity_type": "Project", "target_entity_id": "prj-2",
+    }).status_code == 403

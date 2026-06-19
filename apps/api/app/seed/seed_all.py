@@ -176,6 +176,10 @@ def seed() -> None:
                 employee_id=employees[0].id if role == Role.EMPLOYEE else None,
             ))
 
+        # ---- Extensible core + workforce segmentation (System Analysis P-A) ----
+        from app.seed.seed_core import seed_core
+        seed_core(db)
+
         db.commit()
         print("Seed complete.")
         print("  Login: admin@petrocore.ly / petrocore123 (and exec@/hr@/manager@/ld@/employee@noc.ly)")

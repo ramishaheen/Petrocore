@@ -2,8 +2,8 @@
 from fastapi import APIRouter
 
 from app.api.v1.endpoints import (
-    assessment, auth, competency, dashboards, enablement, gaps, governance,
-    integration, org, profile, reports, training,
+    assessment, auth, competency, config, dashboards, enablement, gaps, governance,
+    integration, org, profile, reports, training, workforce,
 )
 
 api_router = APIRouter()
@@ -19,3 +19,5 @@ api_router.include_router(dashboards.router)
 api_router.include_router(reports.router)
 api_router.include_router(enablement.router)
 api_router.include_router(integration.router)
+api_router.include_router(config.router)
+api_router.include_router(workforce.router)

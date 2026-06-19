@@ -16,6 +16,12 @@ from app.models.l7_l8 import (
 from app.models.l9_gov import (
     TrainingNeed, Program, Nomination, TrainingImpact, GovDecision, AuditLog,
 )
+from app.models.core_ext import (
+    LookupType, LookupValue, EntityType, EntityLink, CustomFieldDefinition, CustomFieldValue,
+)
+from app.models.workforce import (
+    WorkforceFamily, CareerStream, RoleLevel, RoleArchetype,
+)
 
 __all__ = [
     "AppUser",
@@ -25,4 +31,7 @@ __all__ = [
     "Question", "Assessment", "AssessmentItem", "Evidence", "AuditTrail",
     "Gap", "GapReport", "Recommendation",
     "TrainingNeed", "Program", "Nomination", "TrainingImpact", "GovDecision", "AuditLog",
+    "LookupType", "LookupValue", "EntityType", "EntityLink",
+    "CustomFieldDefinition", "CustomFieldValue",
+    "WorkforceFamily", "CareerStream", "RoleLevel", "RoleArchetype",
 ]
