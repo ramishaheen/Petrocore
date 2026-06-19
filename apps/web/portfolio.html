@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HORO PRIVÉ — Portfolio Intelligence</title>
+  <meta name="description" content="A private dashboard that values, organises and watches over your collection — with service reminders, valuation estimates and collection strategy. Demonstration with sample data." />
+  <meta name="theme-color" content="#0a0b0d" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/hp.css" />
+  <link rel="stylesheet" href="css/portfolio.css" />
+</head>
+<body class="order-page">
+
+  <div id="progress"></div>
+  <div class="cursor"></div>
+  <div id="preload"><div style="text-align:center"><div class="pl-logo"><span>HORO</span><span>&nbsp;PRIVÉ</span></div><div class="pl-bar"><i></i></div><div class="pl-count">000</div></div></div>
+
+  <header>
+    <a class="brand" href="index.html"><span class="dot"></span> HORO&nbsp;PRIVÉ</a>
+    <nav>
+      <a class="link" href="services.html">Advisory</a>
+      <a class="link" href="shop.html">Opportunities</a>
+      <a class="link" href="portfolio.html" aria-current="page">Portfolio</a>
+      <a class="link" href="about.html">About</a>
+      <a class="btn ghost" href="#" data-login>Client Login</a>
+      <a class="btn flame" href="order.html">Start a Consultation</a>
+    </nav>
+  </header>
+
+  <!-- Portfolio header -->
+  <section class="pf-hero">
+    <div class="wrap">
+      <div class="pf-hero-row">
+        <div>
+          <span class="eyebrow">Private portfolio <span class="demo-tag">Demonstration · sample data</span></span>
+          <h1 class="serif">The Aldridge Collection</h1>
+          <p>An illustrative portfolio. In the live platform this is a secure, logged-in space; serial numbers and documents are never publicly visible. All valuations are estimates, not guaranteed returns.</p>
+        </div>
+        <div class="pf-controls">
+          <label class="pf-ctl">Currency
+            <select id="ccy"><option value="USD">USD $</option><option value="EUR">EUR €</option><option value="GBP">GBP £</option><option value="AED">AED د.إ</option><option value="CHF">CHF</option></select>
+          </label>
+          <button class="pf-private" id="privateToggle" type="button" aria-pressed="false">◌ Private mode</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tabs -->
+  <div class="pf-tabs" id="pfTabs">
+    <div class="wrap pf-tabs-inner">
+      <button class="pf-tab active" data-tab="overview">Overview</button>
+      <button class="pf-tab" data-tab="watches">My Watches</button>
+      <button class="pf-tab" data-tab="add">Add a Watch</button>
+      <button class="pf-tab" data-tab="valuation">Valuation</button>
+      <button class="pf-tab" data-tab="service">Service &amp; Warranty</button>
+      <button class="pf-tab" data-tab="strategy">Strategy</button>
+      <button class="pf-tab" data-tab="calculator">Deal Calculator</button>
+    </div>
+  </div>
+
+  <main class="pf-main">
+    <div class="wrap">
+
+      <!-- Overview -->
+      <section class="pf-panel active" data-panel="overview">
+        <div class="dash">
+          <div class="dash-top">
+            <div class="dk"><span class="dl">Pieces</span><span class="dv">7</span></div>
+            <div class="dk"><span class="dl">Cost basis</span><span class="dv money" data-usd="402000">—</span></div>
+            <div class="dk"><span class="dl">Estimated value</span><span class="dv money" data-usd="486000">—</span></div>
+            <div class="dk up"><span class="dl">Unrealised (est.)</span><span class="dv money" data-usd="92000" data-sign="+">—</span></div>
+            <div class="dk"><span class="dl">Insurance value</span><span class="dv money" data-usd="540000">—</span></div>
+          </div>
+          <div class="dash-grid">
+            <div class="dash-card">
+              <h4>Brand allocation</h4>
+              <div class="bar"><span style="width:34%"></span><span style="width:31%"></span><span style="width:18%"></span><span style="width:17%"></span></div>
+              <ul class="legend"><li><i class="c1"></i>Rolex 34%</li><li><i class="c2"></i>Patek 31%</li><li><i class="c3"></i>AP / Lange 18%</li><li><i class="c4"></i>Other 17%</li></ul>
+            </div>
+            <div class="dash-card">
+              <h4>Collection categories</h4>
+              <ul class="legend" style="grid-template-columns:1fr"><li><i class="c1"></i>Steel sports · 5</li><li><i class="c3"></i>Travel / GMT · 1</li><li><i class="c4"></i>Dress / complication · 1</li></ul>
+            </div>
+            <div class="dash-card">
+              <h4>Needs attention</h4>
+              <ul class="obs"><li>↳ 1 piece due for revaluation</li><li>↳ 1 service due this quarter</li><li>↳ Documentation incomplete on 1 piece</li></ul>
+            </div>
+          </div>
+          <div class="dash-foot"><span class="demo-tag">Valuations are estimates · not guaranteed returns</span><a class="btn flame" href="order.html">Request a valuation review</a></div>
+        </div>
+      </section>
+
+      <!-- My Watches -->
+      <section class="pf-panel" data-panel="watches">
+        <div class="pf-tablewrap">
+          <table class="pf-table" id="watchTable">
+            <thead><tr><th>Brand &amp; model</th><th>Reference</th><th>Year</th><th>Cost</th><th>Est. value</th><th>Status</th></tr></thead>
+            <tbody id="watchRows"></tbody>
+          </table>
+        </div>
+        <p class="legal">Estimated values are indicative ranges drawn from sample market data and are not offers, appraisals or guarantees. Serial numbers are stored securely and never displayed publicly.</p>
+      </section>
+
+      <!-- Add a Watch -->
+      <section class="pf-panel" data-panel="add">
+        <div class="pf-addgrid">
+          <form id="addForm" class="pf-form">
+            <h3 class="serif">Add a watch to your portfolio</h3>
+            <p class="pf-sub">A quick demonstration — entries are held in this browser session only.</p>
+            <div class="rmf two"><label>Brand <input name="brand" placeholder="e.g. Cartier" required /></label><label>Model <input name="model" placeholder="e.g. Santos" required /></label></div>
+            <div class="rmf two"><label>Reference <input name="ref" placeholder="e.g. WSSA0018" /></label><label>Year <input name="year" placeholder="e.g. 2022" /></label></div>
+            <div class="rmf two"><label>Purchase price (USD) <input name="cost" type="number" min="0" placeholder="e.g. 7500" /></label><label>Est. value (USD) <input name="value" type="number" min="0" placeholder="e.g. 8200" /></label></div>
+            <label>Status
+              <select name="status"><option>Hold</option><option>Review valuation</option><option>Consider sale</option><option>Source companion piece</option></select>
+            </label>
+            <button class="btn flame" type="submit">Add to portfolio</button>
+            <p class="pf-confirm-extract">In the live platform, invoice and certificate uploads are read automatically — you confirm every extracted field before saving.</p>
+          </form>
+          <aside class="pf-vault">
+            <h4>Documents vault</h4>
+            <p>Invoices, warranty cards, certificates and service records — encrypted at rest and in transit, with signed access URLs.</p>
+            <ul><li>📄 Invoice · Daytona 2024</li><li>📄 Warranty · Nautilus</li><li>📄 Service record · Submariner</li><li class="locked">🔒 Serials hidden in private mode</li></ul>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Valuation -->
+      <section class="pf-panel" data-panel="valuation">
+        <div class="pf-cols">
+          <div class="pf-block">
+            <h3 class="serif">Valuation centre</h3>
+            <ul class="pf-kv"><li><span>Last valuation</span><b>March 2026</b></li><li><span>Method</span><b>Sample comparables</b></li><li><span>Confidence</span><b>Indicative</b></li><li><span>Data-source date</span><b>2026-03-01</b></li></ul>
+            <a class="btn flame" href="order.html">Request human review</a>
+          </div>
+          <div class="pf-block">
+            <h4>Estimated value over time <span class="demo-tag">Illustrative</span></h4>
+            <svg class="spark" viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
+              <polyline points="0,96 53,90 106,82 160,70 213,58 266,50 320,40" fill="none" stroke="var(--flame)" stroke-width="2.5"/>
+              <polyline points="0,96 53,90 106,82 160,70 213,58 266,50 320,40 320,120 0,120" fill="rgba(201,162,74,0.12)" stroke="none"/>
+            </svg>
+            <p class="legal">Historical performance does not guarantee future appreciation. Estimates are not offers or appraisals.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Service & Warranty -->
+      <section class="pf-panel" data-panel="service">
+        <div class="pf-cols">
+          <div class="pf-block"><h3 class="serif">Service calendar</h3>
+            <ul class="cal"><li><span>Datejust 126334</span><b class="soon">Service due · Aug 2026</b></li><li><span>Submariner 126610LN</span><b>Last service · 2024</b></li><li><span>Speedmaster 310.30</span><b>Service · 2028</b></li></ul>
+          </div>
+          <div class="pf-block"><h3 class="serif">Warranty</h3>
+            <ul class="cal"><li><span>Nautilus 5711</span><b>Expires · 2027</b></li><li><span>Royal Oak 15500</span><b>Expires · 2026</b></li><li><span>Odysseus 363.179</span><b class="soon">Expires · this year</b></li></ul>
+          </div>
+        </div>
+        <p class="legal" style="margin-top:20px">Service intervals are general guidance; the manufacturer's recommendation and the watch's condition take precedence.</p>
+      </section>
+
+      <!-- Strategy -->
+      <section class="pf-panel" data-panel="strategy">
+        <div class="pf-block">
+          <h3 class="serif">Collection strategy <span class="demo-tag">Advisory observations</span></h3>
+          <ul class="pf-strat">
+            <li><span class="ps-tag warn">Concentration</span> Five of seven pieces are steel sports models — consider diversifying category or brand.</li>
+            <li><span class="ps-tag">Gap</span> No dress or complication piece; a candidate for a future acquisition.</li>
+            <li><span class="ps-tag">Upgrade</span> Two entry references could be consolidated toward a single grail piece.</li>
+            <li><span class="ps-tag warn">Revaluation</span> One piece has not been valued in over twelve months.</li>
+            <li><span class="ps-tag">Insurance</span> Estimated value now exceeds the documented insurance sum — review advised.</li>
+          </ul>
+          <p class="legal">These are advisory observations, not financial instructions or guarantees.</p>
+          <a class="btn flame" href="order.html">Discuss your strategy</a>
+        </div>
+      </section>
+
+      <!-- Deal calculator -->
+      <section class="pf-panel" data-panel="calculator">
+        <div class="pf-addgrid">
+          <form class="pf-form" id="calcForm">
+            <h3 class="serif">International landed-cost calculator</h3>
+            <p class="pf-sub">An estimate only — not final tax or customs advice. Rates are illustrative and configurable.</p>
+            <div class="rmf two"><label>Watch price <input id="cWatch" type="number" min="0" value="38500" /></label><label>Currency
+              <select id="cCur"><option>USD</option><option>EUR</option><option>GBP</option><option>CHF</option><option>AED</option></select></label></div>
+            <div class="rmf two"><label>Seller country <input id="cSeller" value="Switzerland" /></label><label>Buyer country <input id="cBuyer" value="United Kingdom" /></label></div>
+            <div class="rmf two"><label>Shipping &amp; insurance <input id="cShip" type="number" min="0" value="450" /></label><label>Inspection fee <input id="cInspect" type="number" min="0" value="250" /></label></div>
+            <div class="rmf two"><label>Import duty % <input id="cDuty" type="number" min="0" step="0.1" value="0" /></label><label>VAT / sales tax % <input id="cTax" type="number" min="0" step="0.1" value="20" /></label></div>
+            <div class="rmf two"><label>Payment fee % <input id="cPay" type="number" min="0" step="0.1" value="1.0" /></label><label>Advisory fee % <input id="cAdv" type="number" min="0" step="0.1" value="2.5" /></label></div>
+          </form>
+          <aside class="pf-result" id="calcResult">
+            <h4>Estimated landed cost</h4>
+            <ul class="pf-kv" id="calcLines"></ul>
+            <div class="pf-total"><span>Total landed (est.)</span><strong id="calcTotal">—</strong></div>
+            <p class="pf-stamp" id="calcStamp"></p>
+            <p class="legal">Estimate only. Customs, duties and taxes depend on the destination and applicable law; figures are not final tax advice. Exchange rates are illustrative.</p>
+          </aside>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div><div class="foot-brand">HORO&nbsp;PRIVÉ<p>An independent international watch advisory. We represent the collector — sourcing, verifying and managing exceptional watches with discretion.</p></div></div>
+        <div><h4>Advisory</h4><ul><li><a href="services.html#advisory">Private advisory</a></li><li><a href="services.html#sourcing">Global sourcing</a></li><li><a href="services.html#portfolio">Portfolio management</a></li><li><a href="services.html#verify">Verification</a></li></ul></div>
+        <div><h4>Clients</h4><ul><li><a href="shop.html">Curated opportunities</a></li><li><a href="order.html">Start a consultation</a></li><li><a href="order.html#mandate">Submit a mandate</a></li><li><a href="about.html">About</a></li></ul></div>
+        <div><h4>House</h4><ul><li><a href="about.html#name">The name</a></li><li><a href="about.html#independent">Why independent</a></li><li><a href="#" data-wa>Private line</a></li></ul></div>
+      </div>
+      <p class="legal">HORO&nbsp;PRIVÉ is an advisory and sourcing service. Portfolio figures shown here are illustrative sample data. Market valuations are estimates; historical performance does not guarantee future appreciation and watches are not guaranteed investments. In the live platform, client data is private, encrypted and never publicly exposed.</p>
+      <div class="foot-bottom"><span>© 2026 HORO&nbsp;PRIVÉ. All rights reserved.</span><span>Discreet by design · Visuals generated with Higgsfield</span></div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <a class="wa-fab" href="#" data-wa aria-label="Private line on WhatsApp"><span>Private line</span> ◵</a>
+
+  <script src="js/frames.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/hp.js"></script>
+  <script src="js/portfolio.js"></script>
+</body>
+</html>

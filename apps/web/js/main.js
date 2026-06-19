@@ -6,7 +6,7 @@
 (function () {
   "use strict";
 
-  var FRAMES = window.PETROCORE_FRAMES || [];
+  var FRAMES = window.HP_FRAMES || window.PETROCORE_FRAMES || [];
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var lerp = function (a, b, t) { return a + (b - a) * t; };
   var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
@@ -77,7 +77,7 @@
   /* ---------------- Scroll-linked state ---------------- */
   var hero = document.getElementById("hero");
   var stageVal = document.querySelector(".hero-stage .val");
-  var STAGES = window.PETROCORE_STAGES || [];
+  var STAGES = window.HP_STAGES || window.PETROCORE_STAGES || [];
 
   function onScroll() {
     var sy = window.scrollY || window.pageYOffset;

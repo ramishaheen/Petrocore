@@ -1,89 +1,80 @@
 /* =========================================================================
-   PETROCORE — The Shop
-   Renders the timepiece catalogue, handles filtering / sorting, the 3D-tilt
-   cards, the quick-view modal and a working cart. Vanilla JS, no deps.
-   Reuses window.PETROCORE_FRAMES (from frames.js) for product imagery.
+   HORO PRIVÉ — Curated Opportunities
+   Renders advisory "watch opportunities", filtering / sorting, a quick-view
+   with the consultant's assessment, and a private Shortlist (replaces cart).
+   Vanilla JS. Reuses window.HP_FRAMES for imagery and HP_toast from hp.js.
    ========================================================================= */
 (function () {
   "use strict";
 
-  var F = window.PETROCORE_FRAMES || [];
+  var F = window.HP_FRAMES || window.PETROCORE_FRAMES || [];
   var frame = function (i) { return F[i] || F[F.length - 1] || ""; };
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var money = function (n) { return "$" + n.toLocaleString("en-US"); };
+  var toast = window.HP_toast || function (m) { console.log(m); };
 
-  /* ----------------------- The catalogue ----------------------- */
-  /* Each timepiece reuses one of the cinematic hero frames as its photo. */
+  /* ----------------------- Opportunity catalogue -----------------------
+     Illustrative opportunities for demonstration. Prices are indicative and
+     every record is subject to verification, availability and assessment. */
   var WATCHES = [
-    {
-      id: "apex",   ref: "Ref. 01", name: "Apex Chronograph", frame: 0,
-      price: 12400, cats: ["chronograph"], badge: "Signature", tagline: "Steel & champagne gold · blue sunburst dial",
-      stock: 9, year: 2024,
-      desc: "The reference that defines the maison. A column-wheel chronograph beating at 28,800 vph, its blue sunburst dial framed in champagne gold and finished entirely by hand.",
-      specs: { Movement: "PC-71 automatic", Case: "40mm · 316L steel", Dial: "Blue sunburst", Crystal: "Box sapphire", Water: "120m", Reserve: "72 hours", Frequency: "28,800 vph" }
-    },
-    {
-      id: "meridian", ref: "Ref. 02", name: "Meridian GMT", frame: 3,
-      price: 9800, cats: ["gmt"], badge: "steel:GMT", tagline: "Titanium · second time-zone · applied indices",
-      stock: 14, year: 2023,
-      desc: "Built for those who keep two homes. A true-GMT caliber with an independent local hour hand and a 24-hour scale, cased in feather-light grade-5 titanium.",
-      specs: { Movement: "PC-71 GMT automatic", Case: "41mm · titanium", Dial: "Slate grey", Crystal: "Box sapphire", Water: "100m", Reserve: "70 hours", Frequency: "28,800 vph" }
-    },
-    {
-      id: "caliber", ref: "Ref. 03", name: "Caliber Skeleton", frame: 4,
-      price: 18600, cats: ["skeleton"], badge: "Atelier", tagline: "Exhibition caseback · skeletonised rotor",
-      stock: 6, year: 2025,
-      desc: "The engine, on permanent display. Bridges are openworked, bevelled and black-polished by hand to reveal the PC-71 in motion from both sides of the case.",
-      specs: { Movement: "PC-71 skeleton", Case: "40mm · steel", Dial: "Openworked", Crystal: "Double sapphire", Water: "50m", Reserve: "72 hours", Frequency: "28,800 vph" }
-    },
-    {
-      id: "nocturne", ref: "Ref. 04", name: "Nocturne Lume", frame: 5,
-      price: 7950, cats: ["dive"], badge: "steel:Dive", tagline: "Super-LumiNova X1 · engineered for darkness",
-      stock: 18, year: 2024,
-      desc: "A dive instrument that owns the night. A unidirectional bezel and a fully luminous dial coated in proprietary Super-LumiNova X1 that glows from dusk until dawn.",
-      specs: { Movement: "PC-71 automatic", Case: "42mm · steel", Dial: "Matte black / full lume", Crystal: "Sapphire", Water: "300m", Reserve: "72 hours", Frequency: "28,800 vph" }
-    },
-    {
-      id: "atelier", ref: "Ref. 05", name: "Atelier Tourbillon", frame: 1,
-      price: 48000, cats: ["limited", "skeleton"], badge: "Limited · 25", tagline: "Flying tourbillon · 25 pieces worldwide",
-      stock: 3, year: 2025,
-      desc: "The summit of the collection. A one-minute flying tourbillon suspended in an openworked dial, each of the twenty-five pieces individually numbered and signed.",
-      specs: { Movement: "PC-71T flying tourbillon", Case: "39mm · titanium", Dial: "Openworked anthracite", Crystal: "Box sapphire", Water: "50m", Reserve: "80 hours", Frequency: "21,600 vph" }
-    },
-    {
-      id: "profil", ref: "Ref. 06", name: "Profil Ultra-Thin", frame: 2,
-      price: 11200, cats: ["dress"], badge: "steel:Dress", tagline: "6.5mm profile · the dress reference",
-      stock: 11, year: 2023,
-      desc: "Restraint, perfected. A 6.5mm case slips beneath any cuff, its silvered dial carrying only what it must — applied indices, a railroad minute track, and time.",
-      specs: { Movement: "PC-70 micro-rotor", Case: "38mm · 6.5mm thin", Dial: "Silvered opaline", Crystal: "Flat sapphire", Water: "30m", Reserve: "65 hours", Frequency: "28,800 vph" }
-    },
-    {
-      id: "sovereign", ref: "Ref. 07", name: "Sovereign Day-Date", frame: 6,
-      price: 6400, cats: ["dress"], badge: "steel:Everyday", tagline: "Day & date · the everyday automatic",
-      stock: 22, year: 2022,
-      desc: "The one you never take off. A robust everyday automatic with an instantaneous day-and-date, a brushed steel bracelet, and the certified accuracy of every PETROCORE.",
-      specs: { Movement: "PC-70 automatic", Case: "40mm · steel", Dial: "Graphite", Crystal: "Sapphire", Water: "100m", Reserve: "65 hours", Frequency: "28,800 vph" }
-    },
-    {
-      id: "aurum", ref: "Ref. 08", name: "Aurum Perpetual", frame: 0,
-      price: 26500, cats: ["limited", "chronograph"], badge: "Limited · 50", tagline: "Perpetual calendar · solid 18k gold",
-      stock: 4, year: 2025,
-      desc: "A grand complication for the collector. A perpetual calendar tracking the date, day, month and leap year — needing no correction until the year 2100 — in solid 18k gold.",
-      specs: { Movement: "PC-72 perpetual calendar", Case: "41mm · 18k gold", Dial: "Champagne", Crystal: "Box sapphire", Water: "50m", Reserve: "72 hours", Frequency: "28,800 vph" }
-    }
+    { id: "daytona", brand: "Rolex", name: "Cosmograph Daytona", ref: "126500LN", year: 2024, frame: 0,
+      price: 38500, cats: ["available", "rolex"], status: "Available Now", live: true,
+      cond: "Unworn", papers: "Full set", loc: "Switzerland",
+      specs: { Reference: "126500LN", Year: "2024", Case: "40mm Oystersteel", Movement: "Cal. 4131, automatic", Dial: "White lacquer", "Box & papers": "Full set, 2024", Condition: "Unworn", Location: "Switzerland", Delivery: "Worldwide, insured" },
+      why: "A fresh full set of the current-generation ceramic Daytona, ready to deliver. Among the most liquid references in the market.",
+      consider: "Trades above retail; we will confirm seller standing and warranty card date before any commitment.", verify: "Seller vetted · papers consistent · pending physical inspection" },
+    { id: "nautilus", brand: "Patek Philippe", name: "Nautilus", ref: "5711/1A-010", year: 2021, frame: 3,
+      price: null, cats: ["por", "rare", "patek"], status: "Price on Request", live: false,
+      cond: "Excellent", papers: "Full set", loc: "Singapore",
+      specs: { Reference: "5711/1A-010", Year: "2021", Case: "40mm steel", Movement: "Cal. 26-330 S C", Dial: "Blue gradient", "Box & papers": "Full set", Condition: "Excellent", Location: "Singapore", Delivery: "Subject to assessment" },
+      why: "The discontinued blue-dial 5711 — a defining modern grail. Offered privately against verified ownership.",
+      consider: "Pricing is dynamic and quoted privately; provenance and service history reviewed in full before introduction.", verify: "Private seller · documentation under review" },
+    { id: "royaloak", brand: "Audemars Piguet", name: "Royal Oak", ref: "15500ST", year: 2023, frame: 4,
+      price: 41200, cats: ["available", "ap"], status: "Recently Located", live: true,
+      cond: "Mint", papers: "Full set", loc: "United Arab Emirates",
+      specs: { Reference: "15500ST.OO.1220ST.01", Year: "2023", Case: "41mm steel", Movement: "Cal. 4302, automatic", Dial: "Blue Grande Tapisserie", "Box & papers": "Full set", Condition: "Mint", Location: "UAE", Delivery: "Worldwide, insured" },
+      why: "Located against current demand — the blue 41mm Royal Oak with minimal wear and complete documentation.",
+      consider: "We will confirm the bracelet stretch and case sharpness on inspection before recommending.", verify: "Dealer vetted · reference & serial consistent" },
+    { id: "odysseus", brand: "A. Lange & Söhne", name: "Odysseus", ref: "363.179", year: 2022, frame: 1,
+      price: null, cats: ["por", "rare", "lange"], status: "Under Review", live: false,
+      cond: "Excellent", papers: "Full set", loc: "Germany",
+      specs: { Reference: "363.179", Year: "2022", Case: "40.5mm steel", Movement: "Cal. L155.1 Datomatic", Dial: "Blue", "Box & papers": "Full set", Condition: "Excellent", Location: "Germany", Delivery: "Subject to assessment" },
+      why: "Lange's steel sports watch — quietly one of the most compelling propositions in modern collecting.",
+      consider: "Condition report and service status are being finalised before this is offered for acquisition.", verify: "Condition report in progress" },
+    { id: "speedmaster", brand: "Omega", name: "Speedmaster Moonwatch", ref: "310.30.42", year: 2023, frame: 5,
+      price: 7400, cats: ["available", "omega"], status: "Available Now", live: true,
+      cond: "Unworn", papers: "Full set", loc: "United Kingdom",
+      specs: { Reference: "310.30.42.50.01.001", Year: "2023", Case: "42mm steel", Movement: "Cal. 3861, manual", Dial: "Black, Hesalite", "Box & papers": "Sealed full set", Condition: "Unworn", Location: "United Kingdom", Delivery: "Worldwide, insured" },
+      why: "An ideal first significant watch — the moonwatch, sealed, at a sensible entry into serious horology.",
+      consider: "Excellent value and liquidity; minimal downside risk for a first acquisition.", verify: "Dealer vetted · sealed full set" },
+    { id: "overseas", brand: "Vacheron Constantin", name: "Overseas", ref: "4500V", year: 2020, frame: 2,
+      price: null, cats: ["por", "client"], status: "Client Mandate", live: false,
+      cond: "Excellent", papers: "Full set", loc: "Hong Kong",
+      specs: { Reference: "4500V/110A-B128", Year: "2020", Case: "41mm steel", Movement: "Cal. 5100, automatic", Dial: "Blue", "Box & papers": "Full set", Condition: "Excellent", Location: "Hong Kong", Delivery: "Subject to assessment" },
+      why: "Sourced against an active collector mandate; a discreet route to one of the great integrated-bracelet sports watches.",
+      consider: "Priority is given to the mandating client; comparable examples can be sourced on request.", verify: "Sourced for mandate · provenance verified" },
+    { id: "submariner", brand: "Rolex", name: "Submariner Date", ref: "126610LN", year: 2024, frame: 0,
+      price: 14800, cats: ["available", "rolex"], status: "Available Now", live: true,
+      cond: "Unworn", papers: "Full set", loc: "Italy",
+      specs: { Reference: "126610LN", Year: "2024", Case: "41mm Oystersteel", Movement: "Cal. 3235, automatic", Dial: "Black", "Box & papers": "Full set", Condition: "Unworn", Location: "Italy", Delivery: "Worldwide, insured" },
+      why: "The benchmark steel diver, current generation, unworn — endlessly wearable and highly liquid.",
+      consider: "A cornerstone piece; we confirm card date and seller standing prior to purchase.", verify: "Dealer vetted · papers consistent" },
+    { id: "aquanaut", brand: "Patek Philippe", name: "Aquanaut", ref: "5167A", year: 2019, frame: 3,
+      price: null, cats: ["por", "patek"], status: "Private Opportunity", live: false,
+      cond: "Very good", papers: "Full set", loc: "United States",
+      specs: { Reference: "5167A-001", Year: "2019", Case: "40mm steel", Movement: "Cal. 324 S C", Dial: "Black embossed", "Box & papers": "Full set", Condition: "Very good", Location: "United States", Delivery: "Subject to assessment" },
+      why: "The steel Aquanaut — a versatile, travel-ready Patek offered through a private channel.",
+      consider: "Light wear consistent with age; we will assess polishing history before recommending.", verify: "Private seller · documentation review pending" }
   ];
 
   var FILTERS = [
     { key: "all", label: "All" },
-    { key: "chronograph", label: "Chronograph" },
-    { key: "gmt", label: "GMT" },
-    { key: "dive", label: "Dive" },
-    { key: "dress", label: "Dress" },
-    { key: "skeleton", label: "Skeleton" },
-    { key: "limited", label: "Limited" }
+    { key: "available", label: "Available now" },
+    { key: "por", label: "Price on request" },
+    { key: "rare", label: "Rare / vintage" },
+    { key: "client", label: "Client mandate" }
   ];
 
-  /* ----------------------- DOM refs ----------------------- */
   var grid = document.getElementById("grid");
   var filtersEl = document.getElementById("filters");
   var resultCount = document.getElementById("resultCount");
@@ -91,18 +82,15 @@
   var emptyState = document.getElementById("emptyState");
   if (!grid) return;
 
-  var state = { filter: "all", sort: "featured", cart: [], favs: {} };
+  var state = { filter: "all", sort: "featured", list: [], shortlist: [] };
 
-  /* ----------------------- Filter chips ----------------------- */
   function countFor(key) {
     return key === "all" ? WATCHES.length : WATCHES.filter(function (w) { return w.cats.indexOf(key) > -1; }).length;
   }
   FILTERS.forEach(function (f) {
     var b = document.createElement("button");
     b.className = "chip" + (f.key === "all" ? " active" : "");
-    b.type = "button";
-    b.setAttribute("role", "tab");
-    b.dataset.key = f.key;
+    b.type = "button"; b.dataset.key = f.key;
     b.innerHTML = f.label + '<span class="c">' + countFor(f.key) + "</span>";
     b.addEventListener("click", function () {
       state.filter = f.key;
@@ -112,51 +100,42 @@
     filtersEl.appendChild(b);
   });
 
-  /* ----------------------- Card markup ----------------------- */
-  function badgeHtml(badge) {
-    if (!badge) return "";
-    if (badge.indexOf("steel:") === 0) return '<span class="badge steel">' + badge.slice(6) + "</span>";
-    return '<span class="badge">' + badge + "</span>";
-  }
-  function chipsHtml(specs) {
-    return ["Movement", "Case", "Water", "Reserve"].map(function (k) {
-      return "<span>" + specs[k] + "</span>";
-    }).join("");
+  function priceLabel(w) { return w.price ? money(w.price) : "Price on Request"; }
+  function chipsHtml(w) {
+    return [w.year, w.cond, w.papers, w.loc].map(function (x) { return "<span>" + x + "</span>"; }).join("");
   }
   function cardHtml(w) {
+    var shortlisted = state.shortlist.indexOf(w.id) > -1;
     return (
-      '<article class="card" data-id="' + w.id + '" tabindex="0" role="button" aria-label="Quick view ' + w.name + '">' +
+      '<article class="card" data-id="' + w.id + '" tabindex="0" role="button" aria-label="Review ' + w.brand + " " + w.name + '">' +
         '<div class="card-media">' +
-          badgeHtml(w.badge) +
-          '<button class="fav' + (state.favs[w.id] ? " on" : "") + '" type="button" data-fav="' + w.id + '" aria-label="Save ' + w.name + '">' + (state.favs[w.id] ? "♥" : "♡") + "</button>" +
-          '<img src="' + frame(w.frame) + '" alt="PETROCORE ' + w.name + '" loading="lazy" />' +
+          '<span class="badge' + (w.live ? "" : " steel") + '">' + w.status + "</span>" +
+          '<button class="fav' + (shortlisted ? " on" : "") + '" type="button" data-fav="' + w.id + '" aria-label="Shortlist">' + (shortlisted ? "★" : "☆") + "</button>" +
+          '<img src="' + frame(w.frame) + '" alt="' + w.brand + " " + w.name + '" loading="lazy" />' +
           '<div class="card-shine"></div>' +
         "</div>" +
         '<div class="card-body">' +
-          '<div class="card-ref">' + w.ref + " · " + w.year + "</div>" +
-          '<h3 class="card-name">' + w.name + "</h3>" +
-          '<p class="card-tagline">' + w.tagline + "</p>" +
-          '<div class="spec-chips">' + chipsHtml(w.specs) + "</div>" +
+          '<div class="card-ref">' + w.brand + " · " + w.ref + "</div>" +
+          '<h3 class="card-name serif">' + w.name + "</h3>" +
+          '<p class="card-tagline">' + w.why + "</p>" +
+          '<div class="spec-chips">' + chipsHtml(w) + "</div>" +
           '<div class="card-foot">' +
-            '<div class="price">' + money(w.price) + "<small>" + (w.stock <= 5 ? "Only " + w.stock + " available" : "In stock") + "</small></div>" +
-            '<span class="card-cta" data-view="' + w.id + '">Quick view →</span>' +
+            '<div class="price">' + priceLabel(w) + "<small>" + (w.price ? "Indicative · excl. fees" : "Quoted privately") + "</small></div>" +
+            '<span class="card-cta">Request review →</span>' +
           "</div>" +
         "</div>" +
       "</article>"
     );
   }
 
-  /* ----------------------- Render ----------------------- */
   function visible() {
-    var list = WATCHES.filter(function (w) {
-      return state.filter === "all" || w.cats.indexOf(state.filter) > -1;
-    });
+    var list = WATCHES.filter(function (w) { return state.filter === "all" || w.cats.indexOf(state.filter) > -1; });
     var s = state.sort;
     list.sort(function (a, b) {
-      if (s === "price-asc") return a.price - b.price;
-      if (s === "price-desc") return b.price - a.price;
-      if (s === "name") return a.name.localeCompare(b.name);
-      return 0; /* featured = catalogue order */
+      if (s === "price-asc") return (a.price || 1e12) - (b.price || 1e12);
+      if (s === "price-desc") return (b.price || -1) - (a.price || -1);
+      if (s === "name") return a.brand.localeCompare(b.brand);
+      return 0;
     });
     return list;
   }
@@ -164,152 +143,120 @@
   function render() {
     var list = visible();
     grid.innerHTML = list.map(cardHtml).join("");
-    if (resultCount) resultCount.textContent = "Showing " + list.length + " timepiece" + (list.length === 1 ? "" : "s");
+    if (resultCount) resultCount.textContent = "Showing " + list.length + " opportunit" + (list.length === 1 ? "y" : "ies");
     if (emptyState) emptyState.hidden = list.length > 0;
-    /* stagger reveal */
-    var cards = grid.querySelectorAll(".card");
-    cards.forEach(function (c, i) {
+    grid.querySelectorAll(".card").forEach(function (c, i) {
       if (reduce) { c.classList.add("in"); return; }
       setTimeout(function () { c.classList.add("in"); }, 40 + i * 55);
     });
     bindCards();
   }
 
-  /* ----------------------- Card interactions ----------------------- */
   function bindCards() {
     grid.querySelectorAll(".card").forEach(function (card) {
       var id = card.dataset.id;
-      card.addEventListener("click", function (e) {
-        if (e.target.closest("[data-fav]")) return; /* fav handled separately */
-        openQuick(id);
-      });
-      card.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openQuick(id); }
-      });
-      /* 3D tilt + shine */
+      card.addEventListener("click", function (e) { if (e.target.closest("[data-fav]")) return; openQuick(id); });
+      card.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openQuick(id); } });
       if (!reduce && !window.matchMedia("(pointer: coarse)").matches) {
         var media = card.querySelector(".card-media");
         card.addEventListener("mousemove", function (e) {
           var r = card.getBoundingClientRect();
           var px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
-          card.style.transform = "perspective(900px) rotateY(" + (px - 0.5) * 7 + "deg) rotateX(" + (0.5 - py) * 7 + "deg) translateY(-6px)";
+          card.style.transform = "perspective(900px) rotateY(" + (px - 0.5) * 6 + "deg) rotateX(" + (0.5 - py) * 6 + "deg) translateY(-6px)";
           if (media) { media.style.setProperty("--mx", px * 100 + "%"); media.style.setProperty("--my", py * 100 + "%"); }
         });
         card.addEventListener("mouseleave", function () { card.style.transform = ""; });
       }
     });
     grid.querySelectorAll("[data-fav]").forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        e.stopPropagation();
-        var id = btn.dataset.fav;
-        state.favs[id] = !state.favs[id];
-        btn.classList.toggle("on", state.favs[id]);
-        btn.textContent = state.favs[id] ? "♥" : "♡";
-        if (state.favs[id]) toast("Saved to your list", "♥");
-      });
+      btn.addEventListener("click", function (e) { e.stopPropagation(); toggleShortlist(btn.dataset.fav); });
     });
   }
 
-  /* ----------------------- Quick-view modal ----------------------- */
+  /* ----------------------- Quick view ----------------------- */
   var qv = document.getElementById("quickView");
-  var qvAddBtn = document.getElementById("qvAdd");
   var currentId = null;
-
   function openQuick(id) {
     var w = WATCHES.find(function (x) { return x.id === id; });
     if (!w || !qv) return;
     currentId = id;
     document.getElementById("qvImg").src = frame(w.frame);
-    document.getElementById("qvImg").alt = "PETROCORE " + w.name;
-    document.getElementById("qvRef").textContent = w.ref + " · " + w.year;
+    document.getElementById("qvImg").alt = w.brand + " " + w.name;
+    document.getElementById("qvRef").textContent = w.brand + " · " + w.ref;
     document.getElementById("qvName").textContent = w.name;
-    document.getElementById("qvPrice").textContent = money(w.price);
-    document.getElementById("qvDesc").textContent = w.desc;
+    document.getElementById("qvPrice").textContent = priceLabel(w);
+    document.getElementById("qvDesc").textContent = w.why;
     var badge = document.getElementById("qvBadge");
-    if (w.badge) { badge.hidden = false; badge.textContent = w.badge.replace("steel:", ""); }
-    else badge.hidden = true;
+    badge.hidden = false; badge.textContent = w.status;
     document.getElementById("qvSpecs").innerHTML = Object.keys(w.specs).map(function (k) {
       return "<div><dt>" + k + "</dt><dd>" + w.specs[k] + "</dd></div>";
     }).join("");
-    var commission = document.getElementById("qvCommission");
-    if (commission) commission.href = "order.html?ref=" + encodeURIComponent(w.id);
+    document.getElementById("qvAssess").innerHTML =
+      '<h4>Consultant’s assessment</h4><p>' + w.consider + "</p>" +
+      '<p class="verify"><span>Verification</span> ' + w.verify + "</p>";
+    var review = document.getElementById("qvReview");
+    if (review) review.href = "order.html?ref=" + encodeURIComponent(w.id);
+    var sl = document.getElementById("qvShortlist");
+    if (sl) { var on = state.shortlist.indexOf(w.id) > -1; sl.textContent = on ? "On your shortlist ✓" : "Add to shortlist"; }
     var avail = document.getElementById("qvAvail");
-    avail.innerHTML = w.stock <= 5
-      ? '<span class="low">●</span> Only ' + w.stock + " pieces remaining — reserve promptly."
-      : '<span class="ok">●</span> In stock · ships within 3 business days.';
-    qv.hidden = false;
-    document.body.style.overflow = "hidden";
-    qvAddBtn.focus();
+    avail.innerHTML = w.live
+      ? '<span class="ok">●</span> Available now · subject to inspection and confirmation.'
+      : '<span class="low">●</span> ' + w.status + " · introduced privately after review.";
+    qv.hidden = false; document.body.style.overflow = "hidden";
   }
-  function closeQuick() {
-    if (!qv) return;
-    qv.hidden = true;
-    document.body.style.overflow = "";
-    currentId = null;
-  }
+  function closeQuick() { if (qv) { qv.hidden = true; document.body.style.overflow = ""; currentId = null; } }
   if (qv) {
     qv.querySelectorAll("[data-close]").forEach(function (el) { el.addEventListener("click", closeQuick); });
-    qvAddBtn.addEventListener("click", function () { if (currentId) { addToCart(currentId); closeQuick(); } });
+    var slBtn = document.getElementById("qvShortlist");
+    if (slBtn) slBtn.addEventListener("click", function () { if (currentId) { toggleShortlist(currentId); var on = state.shortlist.indexOf(currentId) > -1; slBtn.textContent = on ? "On your shortlist ✓" : "Add to shortlist"; } });
   }
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") { closeQuick(); closeCart(); }
-  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeQuick(); closeCart(); } });
 
-  /* ----------------------- Cart ----------------------- */
+  /* ----------------------- Shortlist ----------------------- */
   var cartBtn = document.getElementById("cartBtn");
   var cartDrawer = document.getElementById("cartDrawer");
   var cartItems = document.getElementById("cartItems");
   var cartCount = document.getElementById("cartCount");
   var cartTotal = document.getElementById("cartTotal");
 
-  function addToCart(id) {
+  function toggleShortlist(id) {
+    var i = state.shortlist.indexOf(id);
     var w = WATCHES.find(function (x) { return x.id === id; });
-    if (!w) return;
-    state.cart.push(id);
-    updateCart();
-    toast(w.name + " added to your selection", "✦");
+    if (i > -1) { state.shortlist.splice(i, 1); }
+    else { state.shortlist.push(id); toast((w ? w.name : "Watch") + " added to your shortlist", "★"); }
+    updateShortlist();
+    var card = grid.querySelector('.card[data-id="' + id + '"] [data-fav]');
+    if (card) { var on = state.shortlist.indexOf(id) > -1; card.classList.toggle("on", on); card.textContent = on ? "★" : "☆"; }
   }
-  function removeFromCart(idx) { state.cart.splice(idx, 1); updateCart(); }
-
-  function updateCart() {
-    var n = state.cart.length;
+  function updateShortlist() {
+    var n = state.shortlist.length;
     if (cartCount) { cartCount.textContent = n; cartCount.classList.toggle("show", n > 0); }
     if (!cartItems) return;
-    if (!n) {
-      cartItems.innerHTML = '<p class="cart-empty">Your selection is empty.<br>Add a timepiece to begin a reservation.</p>';
-    } else {
-      cartItems.innerHTML = state.cart.map(function (id, idx) {
+    if (!n) { cartItems.innerHTML = '<p class="cart-empty">Your shortlist is empty.<br>Add opportunities to request a combined review.</p>'; }
+    else {
+      cartItems.innerHTML = state.shortlist.map(function (id) {
         var w = WATCHES.find(function (x) { return x.id === id; });
-        return '<div class="ci">' +
-          '<img src="' + frame(w.frame) + '" alt="' + w.name + '" />' +
-          '<div><div class="nm">' + w.name + '</div><div class="rf">' + w.ref + '</div>' +
-          '<button class="rm" type="button" data-rm="' + idx + '">Remove</button></div>' +
-          '<div class="pr">' + money(w.price) + "</div>" +
-        "</div>";
+        return '<div class="ci"><img src="' + frame(w.frame) + '" alt="' + w.name + '" />' +
+          '<div><div class="nm">' + w.name + '</div><div class="rf">' + w.brand + " · " + w.ref + '</div>' +
+          '<button class="rm" type="button" data-rm="' + id + '">Remove</button></div>' +
+          '<div class="pr">' + priceLabel(w) + "</div></div>";
       }).join("");
-      cartItems.querySelectorAll("[data-rm]").forEach(function (b) {
-        b.addEventListener("click", function () { removeFromCart(parseInt(b.dataset.rm, 10)); });
-      });
+      cartItems.querySelectorAll("[data-rm]").forEach(function (b) { b.addEventListener("click", function () { toggleShortlist(b.dataset.rm); }); });
     }
-    var total = state.cart.reduce(function (sum, id) {
-      var w = WATCHES.find(function (x) { return x.id === id; });
-      return sum + (w ? w.price : 0);
-    }, 0);
-    if (cartTotal) cartTotal.textContent = money(total);
+    var total = state.shortlist.reduce(function (s, id) { var w = WATCHES.find(function (x) { return x.id === id; }); return s + (w && w.price ? w.price : 0); }, 0);
+    if (cartTotal) cartTotal.textContent = total ? money(total) + "+" : "On request";
   }
-
   function openCart() { if (cartDrawer) { cartDrawer.classList.add("open"); cartDrawer.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; } }
   function closeCart() { if (cartDrawer) { cartDrawer.classList.remove("open"); cartDrawer.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; } }
   if (cartBtn) cartBtn.addEventListener("click", openCart);
   if (cartDrawer) cartDrawer.querySelectorAll("[data-cart-close]").forEach(function (el) { el.addEventListener("click", closeCart); });
   var checkoutBtn = document.getElementById("checkoutBtn");
   if (checkoutBtn) checkoutBtn.addEventListener("click", function () {
-    if (!state.cart.length) { toast("Your selection is empty", "✦"); return; }
-    toast("Reservation request sent — an advisor will be in touch.", "✓");
-    state.cart = []; updateCart(); closeCart();
+    if (!state.shortlist.length) { toast("Your shortlist is empty", "★"); return; }
+    toast("Shortlist sent — a consultant will review and respond privately.", "✓");
+    state.shortlist = []; updateShortlist(); closeCart();
   });
 
-  /* clear-filter link in empty state */
   if (emptyState) emptyState.addEventListener("click", function (e) {
     if (e.target.matches("[data-clear]")) {
       state.filter = "all";
@@ -317,21 +264,8 @@
       render();
     }
   });
-
-  /* ----------------------- Toast ----------------------- */
-  var toastEl = document.getElementById("toast");
-  var toastTimer;
-  function toast(msg, mark) {
-    if (!toastEl) return;
-    toastEl.innerHTML = (mark ? '<span class="tk">' + mark + "</span>" : "") + "<span>" + msg + "</span>";
-    toastEl.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.classList.remove("show"); }, 2600);
-  }
-
-  /* ----------------------- Sort + boot ----------------------- */
   if (sortSelect) sortSelect.addEventListener("change", function () { state.sort = sortSelect.value; render(); });
 
   render();
-  updateCart();
+  updateShortlist();
 })();

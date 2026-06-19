@@ -3,27 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PETROCORE — Instruments of Time</title>
-  <meta name="description" content="PETROCORE crafts precision automatic timepieces — Swiss-grade movements, hand-finished cases, engineered to outlast generations. Scroll to watch the story unfold." />
-  <meta name="theme-color" content="#06080c" />
-  <meta property="og:title" content="PETROCORE — Instruments of Time" />
-  <meta property="og:description" content="Precision automatic timepieces, engineered to outlast generations." />
+  <title>HORO PRIVÉ — Your Private Office for Exceptional Watches</title>
+  <meta name="description" content="HORO PRIVÉ is an independent international watch advisory. We represent the collector — sourcing the right watch at the right price, locating rare references, and managing your collection with portfolio intelligence." />
+  <meta name="theme-color" content="#0a0b0d" />
+  <meta property="og:title" content="HORO PRIVÉ — Private Watch Advisory" />
+  <meta property="og:description" content="Private Watch Advisory · Global Sourcing · Portfolio Intelligence. The right watch. The right price. The right moment." />
   <meta property="og:type" content="website" />
+  <script type="application/ld+json">
+  { "@context": "https://schema.org", "@type": "ProfessionalService", "name": "HORO PRIVÉ",
+    "description": "Independent international watch advisory, global sourcing and portfolio intelligence for collectors.",
+    "areaServed": "Worldwide", "serviceType": "Private Watch Advisory" }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/hp.css" />
 </head>
 <body>
 
-  <!-- Scroll progress -->
   <div id="progress"></div>
   <div class="cursor"></div>
 
   <!-- Preloader -->
   <div id="preload">
     <div style="text-align:center">
-      <div class="pl-logo"><span>PETRO</span><span>CORE</span></div>
+      <div class="pl-logo"><span>HORO</span><span>&nbsp;PRIVÉ</span></div>
       <div class="pl-bar"><i></i></div>
       <div class="pl-count">000</div>
     </div>
@@ -31,20 +36,18 @@
 
   <!-- Navigation -->
   <header>
-    <a class="brand" href="#top"><span class="dot"></span> PETROCORE</a>
+    <a class="brand" href="index.html"><span class="dot"></span> HORO&nbsp;PRIVÉ</a>
     <nav>
-      <a class="link" href="#heritage">Heritage</a>
-      <a class="link" href="#craft">Craft</a>
-      <a class="link" href="#collection">Collection</a>
-      <a class="link" href="#materials">Materials</a>
-      <a class="link" href="shop.html">Shop</a>
-      <a class="link" href="order.html">Commission</a>
-      <a class="btn ghost" href="#contact">Account</a>
-      <a class="btn flame" href="order.html">Commission →</a>
+      <a class="link" href="services.html">Advisory</a>
+      <a class="link" href="shop.html">Opportunities</a>
+      <a class="link" href="portfolio.html">Portfolio</a>
+      <a class="link" href="about.html">About</a>
+      <a class="btn ghost" href="#" data-login>Client Login</a>
+      <a class="btn flame" href="order.html">Start a Consultation</a>
     </nav>
   </header>
 
-  <!-- ============ HERO: scroll-scrub "video" ============ -->
+  <!-- ============ HERO ============ -->
   <section id="hero" data-top>
     <a id="top"></a>
     <div class="hero-sticky">
@@ -54,221 +57,264 @@
 
       <div class="hero-content">
         <div class="wrap">
-          <span class="kicker"><span class="ln"></span><span class="eyebrow">Maison since 1971</span></span>
-          <h1 class="hero-title">
-            <span class="row"><span>Time,</span></span>
-            <span class="row"><span>engineered.</span></span>
+          <span class="kicker"><span class="ln"></span><span class="eyebrow">Private Watch Advisory · Global Sourcing · Portfolio Intelligence</span></span>
+          <h1 class="hero-title serif">
+            <span class="row"><span>Your private office</span></span>
+            <span class="row"><span>for exceptional watches.</span></span>
           </h1>
-          <p class="hero-sub">A precision automatic chronograph, finished entirely by hand. Scroll to turn the timepiece in the light and reveal every detail.</p>
+          <p class="hero-sub">From securing the right international deal to locating rare references and managing your collection, HORO&nbsp;PRIVÉ represents you throughout the entire watch-ownership journey.</p>
           <div class="hero-cta">
-            <a class="btn flame" href="#collection">View the collection</a>
-            <a class="btn ghost" href="#heritage">The story</a>
+            <a class="btn flame" href="order.html">Start a Private Consultation</a>
+            <a class="btn ghost" href="order.html#request">Request a Watch</a>
+            <a class="btn ghost subtle" href="portfolio.html">Add Your First Watch</a>
           </div>
+          <p class="hero-slogan">The right watch. The right price. The right moment.</p>
         </div>
       </div>
 
       <div class="hero-stage">
-        <div class="lbl">Now viewing</div>
-        <div class="val">The Case</div>
+        <div class="lbl">The journey</div>
+        <div class="val">The Search</div>
       </div>
 
       <div class="scroll-hint"><span class="mouse"></span><span>Scroll</span></div>
     </div>
   </section>
 
-  <!-- Marquee -->
+  <!-- Marquee — brand pillars -->
   <div class="marquee" aria-hidden="true">
     <div class="track">
-      <span>Swiss-grade movement</span><span>Hand-finished</span><span>120m water resistant</span>
-      <span>Sapphire crystal</span><span>Engineered to last</span><span>Swiss-grade movement</span>
-      <span>Hand-finished</span><span>120m water resistant</span><span>Sapphire crystal</span>
+      <span>Global sourcing</span><span>Independent advice</span><span>Portfolio intelligence</span>
+      <span>Discreet execution</span><span>Rare-piece mandates</span><span>Global sourcing</span>
+      <span>Independent advice</span><span>Portfolio intelligence</span><span>Discreet execution</span>
     </div>
   </div>
 
-  <!-- ============ Heritage / intro ============ -->
-  <section class="block" id="heritage">
+  <!-- ============ Trust statement ============ -->
+  <section class="block" id="represent">
     <div class="wrap intro">
       <div>
-        <span class="eyebrow reveal">The Maison</span>
-        <h2 class="lines" style="margin-top:18px">
-          <span class="ln-row"><b>Half a century of</b></span>
-          <span class="ln-row"><b><span class="big">obsession</span> with</b></span>
-          <span class="ln-row"><b>the <span class="big">measure</span> of time.</b></span>
+        <span class="eyebrow reveal">We represent the collector</span>
+        <h2 class="serif lines" style="margin-top:18px">
+          <span class="ln-row"><b>A watch dealer sells you</b></span>
+          <span class="ln-row"><b>what they have.</b></span>
+          <span class="ln-row"><b><span class="big">We find what you should own.</span></b></span>
         </h2>
-        <p class="body reveal d1">Founded in a small atelier in 1971, PETROCORE was built on a single conviction — that a watch should be an instrument first and an ornament second. Every caliber is assembled, regulated and finished by hand, then tested for fifteen days before it earns our name on the dial.</p>
-        <div class="hero-cta reveal d2" style="margin-top:30px">
-          <a class="btn ghost" href="#craft">How we build →</a>
+        <p class="body reveal d1">Traditional retailers sell from the inventory they hold. HORO&nbsp;PRIVÉ begins with your objectives, searches across suitable international sources, evaluates the available opportunities, and helps you make a more informed decision — independently, and entirely on your side of the table.</p>
+        <div class="hero-cta reveal d2" style="margin-top:28px">
+          <a class="btn ghost" href="about.html">Why independent advice matters →</a>
         </div>
       </div>
-      <div class="intro-media reveal d1">
-        <img data-frame="1" alt="PETROCORE timepiece, three-quarter view" />
-        <span class="tag">Caliber PC-71 · Automatic</span>
+      <div class="pillars reveal d1">
+        <div class="pillar"><span class="pi">◷</span><h3>Independent Guidance</h3><p>Advice aligned to you, never to a showroom's stock.</p></div>
+        <div class="pillar"><span class="pi">⊕</span><h3>International Sourcing</h3><p>Access across dealers, auctions and private collectors.</p></div>
+        <div class="pillar"><span class="pi">❖</span><h3>Discreet Execution</h3><p>Negotiation, verification and delivery, handled privately.</p></div>
+        <div class="pillar"><span class="pi">◫</span><h3>Portfolio Intelligence</h3><p>Your collection, valued and managed over time.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- ============ Stats ============ -->
-  <section class="block" id="numbers" style="padding-top:0">
-    <div class="wrap stats">
-      <div class="stat reveal">
-        <div class="num"><span data-to="28800" data-suffix="">0</span></div>
-        <div class="lbl">Vibrations / hour</div>
-      </div>
-      <div class="stat reveal d1">
-        <div class="num"><span data-to="120" data-suffix="m">0</span></div>
-        <div class="lbl">Water resistance</div>
-      </div>
-      <div class="stat reveal d2">
-        <div class="num"><span data-to="208" data-suffix="">0</span></div>
-        <div class="lbl">Hand-finishing hours</div>
-      </div>
-      <div class="stat reveal d3">
-        <div class="num"><span data-to="72" data-suffix="h">0</span></div>
-        <div class="lbl">Power reserve</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ Craft / capabilities ============ -->
-  <section class="block" id="craft">
-    <div class="wrap">
-      <div class="sec-head">
-        <h2 class="lines">
-          <span class="ln-row"><b>The craft</b></span>
-          <span class="ln-row"><b>behind the dial</b></span>
-        </h2>
-        <p class="reveal">Four disciplines, one timepiece. Each pillar is held to a standard that takes years to master and seconds to feel.</p>
-      </div>
-      <div class="grid-cap">
-        <article class="cap reveal">
-          <div class="ix">01</div><h3>In-house movement</h3>
-          <p>The PC-71 automatic caliber — 27 jewels, 72-hour reserve, free-sprung balance — designed, machined and regulated under our own roof.</p>
-          <div class="arc">→</div>
-        </article>
-        <article class="cap reveal d1">
-          <div class="ix">02</div><h3>Hand finishing</h3>
-          <p>Anglage, Côtes de Genève and perlage applied by hand. Over 200 hours of finishing on surfaces you will rarely see — but always sense.</p>
-          <div class="arc">→</div>
-        </article>
-        <article class="cap reveal d2">
-          <div class="ix">03</div><h3>Materials</h3>
-          <p>316L and grade-5 titanium cases, box-sapphire crystal, and luminescent indices engineered to glow through the darkest hours.</p>
-          <div class="arc">→</div>
-        </article>
-        <article class="cap reveal d3">
-          <div class="ix">04</div><h3>Precision testing</h3>
-          <p>Fifteen days on the timing machine across six positions. Chronometer-grade accuracy, certified before it ever reaches your wrist.</p>
-          <div class="arc">→</div>
-        </article>
-        <article class="cap reveal">
-          <div class="ix">05</div><h3>Architecture</h3>
-          <p>An exhibition caseback frames a skeletonised rotor in motion — the engine of the watch, on permanent display.</p>
-          <div class="arc">→</div>
-        </article>
-        <article class="cap reveal d1">
-          <div class="ix">06</div><h3>Guarantee</h3>
-          <p>A five-year international warranty and a promise of service for the lifetime of the timepiece. Built to be inherited.</p>
-          <div class="arc">→</div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ Pinned horizontal collection ============ -->
-  <section id="ops">
-    <div class="ops-sticky">
-      <div class="ops-track">
-        <div class="ops-intro">
-          <span class="eyebrow">The Collection</span>
-          <h2 style="margin-top:16px">Four<br>references.</h2>
-          <p>Scroll to move through the line — each a different expression of the same obsession with precision. Keep scrolling.</p>
-        </div>
-
-        <article class="ops-card">
-          <img data-frame="0" alt="PETROCORE Apex" />
-          <div class="meta"><div class="n">Ref. 01 · Apex</div><h3>The Apex Chronograph</h3><p>Steel & champagne gold · blue sunburst dial</p></div>
-        </article>
-        <article class="ops-card">
-          <img data-frame="3" alt="PETROCORE Meridian" />
-          <div class="meta"><div class="n">Ref. 02 · Meridian</div><h3>The Meridian Dial</h3><p>Top-down clarity · applied gold indices</p></div>
-        </article>
-        <article class="ops-card">
-          <img data-frame="4" alt="PETROCORE Caliber" />
-          <div class="meta"><div class="n">Ref. 03 · Caliber</div><h3>Exhibition Caseback</h3><p>Skeletonised rotor · PC-71 movement</p></div>
-        </article>
-        <article class="ops-card">
-          <img data-frame="5" alt="PETROCORE Nocturne" />
-          <div class="meta"><div class="n">Ref. 04 · Nocturne</div><h3>The Nocturne Lume</h3><p>Super-luminous · engineered for darkness</p></div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ Materials / future ============ -->
-  <section class="block" id="materials">
-    <div class="wrap future-grid">
-      <div class="future-visual reveal">
-        <img data-frame="2" alt="PETROCORE case profile" />
+  <!-- ============ The name ============ -->
+  <section class="block" id="thename">
+    <div class="wrap name-grid">
+      <div class="name-card reveal">
+        <div class="name-word serif">HORO&nbsp;PRIVÉ</div>
+        <div class="name-say">/ Ho-roh · Pree-vay /</div>
+        <button class="name-listen" type="button" data-say aria-label="Hear the pronunciation">▶ Pronunciation</button>
       </div>
       <div>
-        <span class="eyebrow reveal">Materials & innovation</span>
-        <h2 class="lines" style="font-size:clamp(1.8rem,4.4vw,3.2rem);margin-top:16px;text-transform:none">
-          <span class="ln-row"><b>Engineered down</b></span>
-          <span class="ln-row"><b>to the micron.</b></span>
+        <span class="eyebrow reveal">The name</span>
+        <h2 class="serif lines" style="margin-top:14px;font-size:clamp(1.7rem,4vw,2.8rem)">
+          <span class="ln-row"><b>Horology, held</b></span>
+          <span class="ln-row"><b>in private.</b></span>
         </h2>
-        <ul class="future-list">
-          <li class="reveal"><span class="p">01</span><div><h3>Box sapphire crystal</h3><p>Anti-reflective on both faces, scratch-resistant to 9 Mohs — clarity that disappears.</p></div></li>
-          <li class="reveal d1"><span class="p">02</span><div><h3>Grade-5 titanium</h3><p>40% lighter than steel, hypoallergenic, brushed to a satin finish that resists the years.</p></div></li>
-          <li class="reveal d2"><span class="p">03</span><div><h3>Super-LumiNova X1</h3><p>A proprietary luminescent compound that holds its glow from dusk until dawn.</p></div></li>
-        </ul>
+        <p class="body reveal d1"><strong>“Horo”</strong> is drawn from <em>horology</em> — the art and science of measuring time, and of the watchmaking we have devoted ourselves to understanding.</p>
+        <p class="body reveal d1"><strong>“Privé”</strong> is French for <em>private</em> — it speaks to private access, exclusivity, and discreet, personal service reserved for those we represent.</p>
+        <p class="body reveal d2">Together: a private house of horology. Not a shop you walk into, but an office that works for you — quietly, knowledgeably, and only in your interest.</p>
       </div>
     </div>
   </section>
 
-  <!-- ============ Trust / credibility ============ -->
-  <section class="block" id="trust">
+  <!-- ============ How it works ============ -->
+  <section class="block" id="how">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="lines">
-          <span class="ln-row"><b>Trusted on</b></span>
-          <span class="ln-row"><b>the wrist</b></span>
-        </h2>
-        <p class="reveal">Half a century of precision, and the assurances to match — every PETROCORE is certified, secured and guaranteed.</p>
+        <h2 class="serif lines"><span class="ln-row"><b>How it works</b></span></h2>
+        <p class="reveal">A measured, transparent process — from your first objective to a watch on your wrist and in your portfolio.</p>
       </div>
+      <ol class="timeline">
+        <li class="tl reveal"><span class="tn">01</span><h3>Tell us your objective</h3><p>Budget, purpose, brands, milestones — or simply that you don't yet know.</p></li>
+        <li class="tl reveal d1"><span class="tn">02</span><h3>Receive a collector profile</h3><p>We translate your goals into a clear, written brief and acquisition strategy.</p></li>
+        <li class="tl reveal d2"><span class="tn">03</span><h3>We search and evaluate</h3><p>Across international sources, every opportunity assessed for condition, papers and price.</p></li>
+        <li class="tl reveal d3"><span class="tn">04</span><h3>Review curated opportunities</h3><p>A short, considered list — with our independent assessment of each.</p></li>
+        <li class="tl reveal d4"><span class="tn">05</span><h3>Acquire and manage</h3><p>We coordinate verification and delivery, then manage the piece within your portfolio.</p></li>
+      </ol>
+    </div>
+  </section>
 
-      <div class="trust-row">
-        <div class="trust-item reveal"><div class="ti">◈</div><strong>Chronometer-certified</strong><span>15-day, six-position testing on every caliber</span></div>
-        <div class="trust-item reveal d1"><div class="ti">🛡</div><strong>5-year warranty</strong><span>International cover · lifetime servicing</span></div>
-        <div class="trust-item reveal d2"><div class="ti">🔒</div><strong>Secure ordering</strong><span>Encrypted · no payment taken online</span></div>
-        <div class="trust-item reveal d3"><div class="ti">↩</div><strong>14-day returns</strong><span>Reserve with complete confidence</span></div>
+  <!-- ============ Core services ============ -->
+  <section class="block" id="services">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="serif lines"><span class="ln-row"><b>Six ways we</b></span><span class="ln-row"><b>represent you</b></span></h2>
+        <p class="reveal">One private office, across the entire ownership journey.</p>
       </div>
+      <div class="grid-cap">
+        <a class="cap reveal" href="services.html#advisory"><div class="ix">01</div><h3>Private Watch Advisory</h3><p>The right watch for your life, budget and collection — determined independently, before a single purchase.</p><div class="arc">→</div></a>
+        <a class="cap reveal d1" href="services.html#sourcing"><div class="ix">02</div><h3>Global Watch Sourcing</h3><p>We search authorized dealers, auction houses and private collectors to secure the best available international deal.</p><div class="arc">→</div></a>
+        <a class="cap reveal d2" href="services.html#rare"><div class="ix">03</div><h3>Rare-Piece Acquisition</h3><p>Submit a private mandate for discontinued, vintage or full-set references and let our network pursue them.</p><div class="arc">→</div></a>
+        <a class="cap reveal" href="services.html#portfolio"><div class="ix">04</div><h3>Portfolio Management</h3><p>Your entire collection — valued, documented and monitored — with intelligent observations over time.</p><div class="arc">→</div></a>
+        <a class="cap reveal d1" href="services.html#sell"><div class="ix">05</div><h3>Sale &amp; Trade Advisory</h3><p>Private exits, upgrades and collection restructuring, with international price comparison and buyer matching.</p><div class="arc">→</div></a>
+        <a class="cap reveal d2" href="services.html#verify"><div class="ix">06</div><h3>Verification Coordination</h3><p>Seller checks, document and condition review, and independent inspection — coordinated end to end.</p><div class="arc">→</div></a>
+      </div>
+    </div>
+  </section>
 
-      <figure class="trust-quote reveal">
-        <div class="stars">★★★★★</div>
-        <blockquote>“From first email to delivery, it felt genuinely personal — the finishing is on another level, and it keeps perfect time.”</blockquote>
-        <figcaption><span class="rate">4.9 / 5</span> · Élise Marchand and <strong>2,400+ verified owners</strong></figcaption>
-      </figure>
+  <!-- ============ Private watch request module ============ -->
+  <section class="block" id="request">
+    <div class="wrap request-module">
+      <div class="rm-copy">
+        <span class="eyebrow">Private watch request</span>
+        <h2 class="serif">Tell us what you're looking for.</h2>
+        <p>Share as little or as much as you wish. A consultant reviews every request personally — there is no obligation, and no payment at this stage.</p>
+        <ul class="rm-modes">
+          <li>I know the exact watch</li>
+          <li>I need recommendations</li>
+          <li>I'm searching for a rare piece</li>
+          <li>I want the best international deal</li>
+          <li>I want to trade an existing watch</li>
+        </ul>
+      </div>
+      <form class="rm-form" id="quickRequest" novalidate>
+        <div class="rmf two">
+          <label>Brand <input name="brand" placeholder="e.g. Rolex, Patek Philippe" /></label>
+          <label>Model / Reference <input name="model" placeholder="e.g. Daytona 116500LN" /></label>
+        </div>
+        <div class="rmf two">
+          <label>Budget range <input name="budget" placeholder="e.g. $25k–40k" /></label>
+          <label>Delivery country <input name="country" placeholder="Country" /></label>
+        </div>
+        <label>What are you trying to achieve?
+          <select name="intent">
+            <option>I need recommendations</option>
+            <option>I know the exact watch</option>
+            <option>I'm searching for a rare piece</option>
+            <option>I want the best international deal</option>
+            <option>I want to trade an existing watch</option>
+          </select>
+        </label>
+        <div class="rmf two">
+          <label>Email <span class="req">*</span><input type="email" name="email" required placeholder="you@example.com" /></label>
+          <label>Preferred contact
+            <select name="channel"><option>Email</option><option>Phone</option><option>WhatsApp</option></select>
+          </label>
+        </div>
+        <small class="err" data-for="qrEmail">Please enter a valid email.</small>
+        <div class="rm-actions">
+          <button class="btn flame" type="submit">Submit private request</button>
+          <a class="btn ghost" href="order.html">Open the full consultation →</a>
+        </div>
+        <p class="rm-fine">Subject to availability, verification and assessment. No payment is taken at this stage.</p>
+      </form>
+    </div>
+  </section>
 
-      <div class="trust-press reveal">
-        <span class="press-label">As featured in</span>
-        <div class="press-logos">
-          <span>HODINKEE</span><span>GQ</span><span>Monochrome</span><span>Revolution</span><span>WatchTime</span><span>Robb Report</span>
+  <!-- ============ Portfolio intelligence preview ============ -->
+  <section class="block" id="portfolio-preview">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="serif lines"><span class="ln-row"><b>Portfolio intelligence</b></span></h2>
+        <p class="reveal">Your collection, understood. A private dashboard that values, organises and watches over every piece. <span class="demo-tag">Sample data</span></p>
+      </div>
+      <div class="dash reveal">
+        <div class="dash-top">
+          <div class="dk"><span class="dl">Estimated value</span><span class="dv">$486k<span class="dr">– $529k</span></span></div>
+          <div class="dk"><span class="dl">Cost basis</span><span class="dv">$402k</span></div>
+          <div class="dk up"><span class="dl">Unrealised (est.)</span><span class="dv">+$92k <small>+22.9%</small></span></div>
+          <div class="dk"><span class="dl">Pieces</span><span class="dv">7</span></div>
+          <div class="dk"><span class="dl">Insurance value</span><span class="dv">$540k</span></div>
+        </div>
+        <div class="dash-grid">
+          <div class="dash-card">
+            <h4>Brand allocation</h4>
+            <div class="bar"><span style="width:38%" data-b="Rolex 38%"></span><span style="width:27%" data-b="Patek 27%"></span><span style="width:18%" data-b="AP 18%"></span><span style="width:17%" data-b="Other 17%"></span></div>
+            <ul class="legend"><li><i class="c1"></i>Rolex 38%</li><li><i class="c2"></i>Patek 27%</li><li><i class="c3"></i>AP 18%</li><li><i class="c4"></i>Other 17%</li></ul>
+          </div>
+          <div class="dash-card">
+            <h4>Service &amp; warranty</h4>
+            <ul class="cal">
+              <li><span>Datejust 126334</span><b class="soon">Service due · Aug</b></li>
+              <li><span>Nautilus 5711</span><b>Warranty · 2027</b></li>
+              <li><span>Royal Oak 15500</span><b class="soon">Valuation · refresh</b></li>
+            </ul>
+          </div>
+          <div class="dash-card">
+            <h4>Collection observations</h4>
+            <ul class="obs">
+              <li>↳ High concentration in steel sports models</li>
+              <li>↳ Gap: no dress/complication piece</li>
+              <li>↳ One piece due for revaluation</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dash-foot">
+          <span class="demo-tag">Illustrative only · valuations are estimates, not guaranteed returns</span>
+          <a class="btn flame" href="portfolio.html">Open your private portfolio →</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ CTA ============ -->
-  <section class="block" id="contact" style="padding-top:0">
+  <!-- ============ Curated opportunities ============ -->
+  <section class="block" id="opportunities">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="serif lines"><span class="ln-row"><b>Curated opportunities</b></span></h2>
+        <p class="reveal">A selection of pieces currently under review by our advisory. <a href="shop.html">See all →</a></p>
+      </div>
+      <div class="opp-grid" id="oppPreview"><!-- injected by hp.js --></div>
+    </div>
+  </section>
+
+  <!-- ============ Rare-piece mandate ============ -->
+  <section class="block" id="mandate">
+    <div class="wrap mandate-band reveal">
+      <span class="eyebrow">Rare-piece mandate</span>
+      <h2 class="serif">Some watches are not found.<br>They are pursued.</h2>
+      <p>Submit a private sourcing mandate and let our international network search for the precise reference, configuration, year, provenance and condition you require.</p>
+      <a class="btn flame" href="order.html#mandate">Submit a Private Mandate</a>
+    </div>
+  </section>
+
+  <!-- ============ Advisory intelligence / journal ============ -->
+  <section class="block" id="journal">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="serif lines"><span class="ln-row"><b>Advisory intelligence</b></span></h2>
+        <p class="reveal">Considered reading for the modern collector.</p>
+      </div>
+      <div class="journal-grid">
+        <a class="jcard reveal" href="about.html"><span class="jtag">Buying</span><h3>How to buy a luxury watch internationally</h3><p>Navigating dealers, auctions, duties and verification across borders.</p><span class="jmore">Read →</span></a>
+        <a class="jcard reveal d1" href="about.html"><span class="jtag">Value</span><h3>Retail price versus market price</h3><p>Why the sticker rarely reflects what a reference truly trades for.</p><span class="jmore">Read →</span></a>
+        <a class="jcard reveal d2" href="about.html"><span class="jtag">Collecting</span><h3>Box &amp; papers: how much do they matter?</h3><p>The real impact of full sets on condition, liquidity and value.</p><span class="jmore">Read →</span></a>
+        <a class="jcard reveal" href="about.html"><span class="jtag">Strategy</span><h3>Building a balanced watch collection</h3><p>Concentration, categories and the case for considered gaps.</p><span class="jmore">Read →</span></a>
+        <a class="jcard reveal d1" href="about.html"><span class="jtag">Portfolio</span><h3>How watch portfolio valuation works</h3><p>What an estimate is — and, just as importantly, what it isn't.</p><span class="jmore">Read →</span></a>
+        <a class="jcard reveal d2" href="about.html"><span class="jtag">Risk</span><h3>Risks in the secondary market</h3><p>Service history, redials and provenance — where value quietly leaks.</p><span class="jmore">Read →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Final consultation ============ -->
+  <section class="block" id="contact">
     <div class="wrap" id="cta">
-      <h2 class="lines">
-        <span class="ln-row"><b>Own a piece</b></span>
-        <span class="ln-row"><b>of <span class="glow">time.</span></b></span>
+      <h2 class="serif lines">
+        <span class="ln-row"><b>Your next watch should be a</b></span>
+        <span class="ln-row"><b><span class="glow">decision</span>, not an impulse.</b></span>
       </h2>
-      <p class="reveal d1">Commission a timepiece that is entirely yours, or explore the collection. Reserved securely, certified before it ships, guaranteed for five years.</p>
+      <p class="reveal d1">Begin with a private, no-obligation conversation. We'll understand your objective and show you what representation can do.</p>
       <div class="hero-cta reveal d2">
-        <a class="btn flame" href="order.html">Commission a timepiece</a>
-        <a class="btn ghost" href="shop.html">Shop the collection</a>
+        <a class="btn flame" href="order.html">Speak With a Watch Consultant</a>
+        <a class="btn ghost" href="shop.html">View curated opportunities</a>
       </div>
     </div>
   </section>
@@ -278,51 +324,47 @@
     <div class="wrap">
       <div class="foot-grid">
         <div>
-          <div class="foot-brand">PETROCORE
-            <p>Precision automatic timepieces, hand-finished and engineered to outlast generations. Maison since 1971.</p>
+          <div class="foot-brand">HORO&nbsp;PRIVÉ
+            <p>An independent international watch advisory. We represent the collector — sourcing, verifying and managing exceptional watches with discretion.</p>
           </div>
         </div>
-        <div><h4>Collection</h4><ul>
-          <li><a href="#collection">Apex Chronograph</a></li>
-          <li><a href="#collection">Meridian</a></li>
-          <li><a href="#collection">Nocturne</a></li>
-          <li><a href="#collection">Limited series</a></li>
+        <div><h4>Advisory</h4><ul>
+          <li><a href="services.html#advisory">Private advisory</a></li>
+          <li><a href="services.html#sourcing">Global sourcing</a></li>
+          <li><a href="services.html#rare">Rare-piece acquisition</a></li>
+          <li><a href="services.html#verify">Verification</a></li>
         </ul></div>
-        <div><h4>Maison</h4><ul>
-          <li><a href="#heritage">Heritage</a></li>
-          <li><a href="#craft">The craft</a></li>
-          <li><a href="#materials">Materials</a></li>
-          <li><a href="#">Service</a></li>
+        <div><h4>Clients</h4><ul>
+          <li><a href="portfolio.html">Portfolio dashboard</a></li>
+          <li><a href="shop.html">Curated opportunities</a></li>
+          <li><a href="order.html">Start a consultation</a></li>
+          <li><a href="order.html#mandate">Submit a mandate</a></li>
         </ul></div>
-        <div><h4>Connect</h4><ul>
-          <li><a href="#">Instagram</a></li>
-          <li><a href="#">Journal</a></li>
-          <li><a href="#contact">Book a viewing</a></li>
-          <li><a href="#">Boutiques</a></li>
+        <div><h4>House</h4><ul>
+          <li><a href="about.html">About HORO PRIVÉ</a></li>
+          <li><a href="about.html#name">The name</a></li>
+          <li><a href="about.html#independent">Why independent</a></li>
+          <li><a href="#" data-wa>Private line</a></li>
         </ul></div>
       </div>
+      <p class="legal">HORO&nbsp;PRIVÉ is an advisory and sourcing service. Watch availability and prices can change. Market valuations are estimates and historical performance does not guarantee future appreciation; watches are not represented as guaranteed investments. Authentication based on images is preliminary and final verification may require physical inspection by a qualified professional. Customs, duties and taxes depend on the destination and applicable law. External sellers and service providers may be independent parties.</p>
       <div class="foot-bottom">
-        <span>© 1971–2026 PETROCORE Manufacture. All rights reserved.</span>
-        <span>Crafted with precision · Visuals generated with Higgsfield</span>
+        <span>© 2026 HORO&nbsp;PRIVÉ. All rights reserved.</span>
+        <span>Discreet by design · Visuals generated with Higgsfield</span>
       </div>
     </div>
   </footer>
 
+  <!-- Discreet WhatsApp / private line -->
+  <a class="wa-fab" href="#" data-wa aria-label="Private line on WhatsApp"><span>Private line</span> ◵</a>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
   <script src="js/frames.js"></script>
   <script>
-    /* Captions that update live as the hero "video" scrubs */
-    window.PETROCORE_STAGES = ["The Case", "The Profile", "The Dial", "The Movement", "The Lume", "On the Wrist"];
+    window.HP_STAGES = ["The Search", "The Shortlist", "Due Diligence", "Negotiation", "Acquisition", "The Portfolio"];
   </script>
   <script src="js/main.js"></script>
-  <script>
-    /* Bind section images to generated frames once frames.js has loaded */
-    (function () {
-      var F = window.PETROCORE_FRAMES || [];
-      document.querySelectorAll("img[data-frame]").forEach(function (img) {
-        var i = parseInt(img.getAttribute("data-frame"), 10);
-        if (F[i]) img.src = F[i]; else if (F.length) img.src = F[F.length - 1];
-      });
-    })();
-  </script>
+  <script src="js/hp.js"></script>
 </body>
 </html>

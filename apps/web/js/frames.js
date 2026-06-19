@@ -1,28 +1,24 @@
-/* PETROCORE — cinematic scroll-scrub frame manifest.
- * Each entry is a Higgsfield-generated cinematic still of the timepiece.
- * The hero <canvas> cross-dissolves through these frames as you scroll,
- * turning the watch from a full case view, through the dial and movement,
- * to its lume glow and finally on the wrist.
+/* HORO PRIVÉ — cinematic scroll-scrub frame manifest.
+ * Editorial luxury stills (Higgsfield-generated) that the hero <canvas>
+ * cross-dissolves through as you scroll — the journey of representation:
+ * the watch, the advisor, the selection, the movement, the private office,
+ * and the documentation behind every acquisition.
  *
- * Order = the scroll story: Case → Profile → Dial → Movement → Lume → Wrist.
- *
- * The build sandbox's egress blocks vendoring the bytes locally, so these
- * reference the Higgsfield CDN directly (a visitor's browser loads them fine).
- * To self-host: download each URL into assets/frames/ and swap the paths.
+ * The same images double as section and opportunity imagery across the site
+ * (referenced by index in window.HP_FRAMES). They load from the Higgsfield
+ * CDN directly; to self-host, download each into assets/frames/ and swap paths.
  */
-window.PETROCORE_FRAMES = [
-  // 0 — the case (hero / front macro)
-  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260618_231700_756271ec-baa5-45b3-9559-de37f27aa904.png",
-  // 1 — three-quarter angle
-  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260618_231734_e74ee4d4-bd33-4f75-9559-70c9cb657e0b.png",
-  // 2 — side profile / crown & pushers
-  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260618_231950_c9e854ef-674f-4001-b2d5-9773a0d2b2b9.png",
-  // 3 — top-down dial
-  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260618_231829_b07ca889-d94e-4490-a61c-a803ae2f04df.png",
-  // 4 — exhibition caseback / movement
-  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260618_232042_638d62bb-fd33-43f9-b84a-061c67c5a26a.png",
-  // 5 — lume glow in darkness
-  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260618_232111_8282c04b-eecd-4264-9546-869ea2fc04f9.png",
-  // 6 — on the wrist
-  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260618_232151_f1170930-0737-4a84-88e9-457890f3d718.png"
+window.HP_FRAMES = [
+  // 0 — an exceptional watch on brushed steel (hero)
+  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_091907_fe5505f7-3d81-446f-bcde-c2e72ff97842.png",
+  // 1 — the advisor: a collector examined under the loupe
+  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_092123_d97194e4-251b-4809-b430-3fc15ac83470.png",
+  // 2 — the selection: a tray of fine watches
+  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_092354_9280fefa-1207-44ce-aba4-11bbaa16ed76.png",
+  // 3 — the mechanism: a fine movement, macro
+  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_092639_528c1299-c392-4eb2-bc28-c37a1d267464.png",
+  // 4 — the private office
+  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_092906_036e27ae-7ef8-4acc-ac58-a7b30deeb19d.png",
+  // 5 — due diligence: box, papers & certificate
+  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_093038_7364fd92-0a4c-4ee8-8739-be75ddbbd522.png"
 ];

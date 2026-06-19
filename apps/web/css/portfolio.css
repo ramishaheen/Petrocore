@@ -1,0 +1,68 @@
+/* =========================================================================
+   HORO PRIVÉ — Portfolio Intelligence (demo dashboard)
+   ========================================================================= */
+.pf-hero { padding: 120px 0 26px; }
+.pf-hero-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.pf-hero h1 { font-size: clamp(1.9rem, 4.6vw, 3.2rem); margin: 8px 0 10px; }
+.pf-hero p { color: var(--muted); max-width: 640px; font-size: 0.92rem; }
+.pf-controls { display: flex; gap: 12px; align-items: center; }
+.pf-ctl { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; }
+.pf-ctl select { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 100px; padding: 9px 14px; font: inherit; font-size: 0.84rem; cursor: pointer; }
+.pf-private { background: transparent; border: 1px solid var(--line); color: var(--ink); border-radius: 100px; padding: 9px 16px; font: inherit; font-size: 0.84rem; cursor: pointer; transition: border-color 0.3s, color 0.3s, background 0.3s; }
+.pf-private[aria-pressed="true"] { background: linear-gradient(120deg, var(--flame), var(--flame-2)); color: #190a02; border-color: transparent; }
+
+/* tabs */
+.pf-tabs { position: sticky; top: 0; z-index: 120; background: rgba(10,11,13,0.78); backdrop-filter: blur(14px); border-block: 1px solid var(--line); }
+.pf-tabs-inner { display: flex; gap: 6px; overflow-x: auto; padding: 10px 0; }
+.pf-tab { white-space: nowrap; background: transparent; border: 1px solid transparent; color: var(--muted); border-radius: 100px; padding: 8px 16px; font: inherit; font-size: 0.84rem; cursor: pointer; transition: color 0.3s, background 0.3s, border-color 0.3s; }
+.pf-tab:hover { color: var(--ink); }
+.pf-tab.active { color: #190a02; background: linear-gradient(120deg, var(--flame), var(--flame-2)); }
+
+.pf-main { padding: 40px 0 80px; }
+.pf-panel { display: none; animation: pfin 0.4s var(--ease); }
+.pf-panel.active { display: block; }
+@keyframes pfin { from { opacity: 0; transform: translateY(10px); } }
+
+/* private mode masks monetary values */
+body.privacy .money, body.privacy .pf-total strong, body.privacy .ps-val { filter: blur(8px); user-select: none; }
+
+/* table */
+.pf-tablewrap { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.pf-table { width: 100%; border-collapse: collapse; }
+.pf-table th, .pf-table td { text-align: left; padding: 15px 18px; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+.pf-table th { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--bg-2); }
+.pf-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.pf-table .wm { font-weight: 600; }
+.pf-table .wm small { display: block; color: var(--muted); font-weight: 400; font-size: 0.76rem; }
+.pf-status { font-size: 0.74rem; padding: 4px 10px; border-radius: 100px; border: 1px solid var(--line); color: var(--muted); }
+.pf-status.hold { color: var(--teal); border-color: rgba(143,180,214,0.4); }
+.pf-status.sell { color: var(--flame-2); border-color: rgba(201,162,74,0.4); }
+
+/* blocks / forms */
+.pf-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.pf-addgrid { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 18px; align-items: start; }
+.pf-block, .pf-form, .pf-vault, .pf-result { border: 1px solid var(--line); border-radius: 16px; padding: 26px; background: linear-gradient(180deg, var(--panel), rgba(13,19,32,0.3)); }
+.pf-block h3, .pf-form h3 { font-size: 1.4rem; text-transform: none; margin-bottom: 14px; }
+.pf-sub { color: var(--muted); font-size: 0.86rem; margin-bottom: 18px; }
+.pf-form label { display: grid; gap: 7px; font-size: 0.78rem; color: var(--muted); margin-bottom: 14px; }
+.pf-form .btn { cursor: pointer; }
+.pf-confirm-extract, .pf-stamp { color: var(--muted); font-size: 0.76rem; margin-top: 14px; }
+.pf-kv { list-style: none; display: grid; gap: 0; margin-bottom: 18px; }
+.pf-kv li { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 0.88rem; }
+.pf-kv li span { color: var(--muted); }
+.pf-vault ul { list-style: none; display: grid; gap: 10px; margin-top: 14px; }
+.pf-vault li { color: var(--ink); font-size: 0.86rem; opacity: 0.85; }
+.pf-vault li.locked { color: var(--teal); }
+.spark { width: 100%; height: 120px; margin: 6px 0 6px; }
+.pf-strat { list-style: none; display: grid; gap: 12px; margin-bottom: 18px; }
+.pf-strat li { color: var(--ink); font-size: 0.92rem; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2); }
+.ps-tag { display: inline-block; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); border: 1px solid rgba(143,180,214,0.35); border-radius: 100px; padding: 3px 9px; margin-right: 10px; }
+.ps-tag.warn { color: var(--flame-2); border-color: rgba(201,162,74,0.4); }
+.pf-result h4 { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.pf-total { display: flex; align-items: baseline; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 14px; margin-top: 6px; }
+.pf-total strong { font-family: "Syne", sans-serif; font-weight: 800; font-size: 1.4rem; }
+.pf-block h4 { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+@media (max-width: 900px) {
+  .pf-cols, .pf-addgrid { grid-template-columns: 1fr; }
+}
