@@ -209,6 +209,9 @@ def seed() -> None:
         # ---- Workflow engine + permission roles (P-K) ----
         from app.seed.seed_k import seed_k
         seed_k(db)
+        # ---- AI lifecycle & governance (P-L) ----
+        from app.seed.seed_l import seed_l
+        seed_l(db)
 
         db.commit()
         print("Seed complete.")

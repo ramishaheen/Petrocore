@@ -2,10 +2,10 @@
 from fastapi import APIRouter
 
 from app.api.v1.endpoints import (
-    analytics, assessment, assessment_blueprint, assessment_exec, auth, competency,
-    competency_depth, config, dashboards, development, enablement, gaps, governance,
-    integration, operations, org, profile, readiness, reports, strategy, talent,
-    training, workflow, workforce,
+    ai_lifecycle, analytics, assessment, assessment_blueprint, assessment_exec, auth,
+    competency, competency_depth, config, dashboards, development, enablement, gaps,
+    governance, integration, operations, org, profile, readiness, reports, strategy,
+    talent, training, workflow, workforce,
 )
 
 api_router = APIRouter()
@@ -33,3 +33,4 @@ api_router.include_router(development.router)
 api_router.include_router(operations.router)
 api_router.include_router(strategy.router)
 api_router.include_router(workflow.router)
+api_router.include_router(ai_lifecycle.router)

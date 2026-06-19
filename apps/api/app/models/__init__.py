@@ -53,6 +53,9 @@ from app.models.strategy import (
 from app.models.workflow import (
     WorkflowInstance, WorkflowStep, Approval, PermissionRole, UserPermissionRole,
 )
+from app.models.ai_lifecycle import (
+    PromptTemplate, AIModelVersion, AIRequest, AIOutput, AIReview,
+)
 
 __all__ = [
     "AppUser",
@@ -82,4 +85,5 @@ __all__ = [
     "Site", "ProcessUnit", "Equipment", "Procedure", "CriticalTask", "TaskRisk",
     "StrategicObjective", "StrategicKpi", "ObjectiveCompetency", "StrategicReadinessGap",
     "WorkflowInstance", "WorkflowStep", "Approval", "PermissionRole", "UserPermissionRole",
+    "PromptTemplate", "AIModelVersion", "AIRequest", "AIOutput", "AIReview",
 ]

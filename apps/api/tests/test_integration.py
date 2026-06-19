@@ -829,3 +829,32 @@ def test_workflow_engine_and_permissions(client):
     employee = _login(client, "employee@noc.ly")
     assert client.post("/api/v1/workflows", headers=employee, json={
         "workflow_type": "x", "entity_type": "x", "entity_id": "x", "steps": []}).status_code == 403
+
+
+def test_ai_lifecycle_and_governance(client):
+    """P-L: an AI request logs input + model version, the output carries confidence
+    and is PENDING_REVIEW until a human AI-governance review accepts it."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # Seeded prompt templates + active model version.
+    assert any(t["code"] == "QGEN" for t in client.get("/api/v1/ai/prompt-templates", headers=admin).json())
+    assert client.get("/api/v1/ai/model-versions", headers=admin).json()
+
+    # Run a request → output with confidence, pending review.
+    run = client.post("/api/v1/ai/requests", headers=admin, json={
+        "request_type": "SuggestCompetency", "prompt": "Suggest competencies for an HSE Officer.",
+        "prompt_template_code": "CSUG"}).json()
+    assert run["status"] == "PENDING_REVIEW" and 0.0 <= run["confidence_score"] <= 1.0
+    assert run["output"]
+
+    # Human AI-governance review accepts it.
+    rev = client.post(f"/api/v1/ai/outputs/{run['output_id']}/review", headers=admin, json={
+        "decision": "Accepted", "comments": "Reasonable suggestions."}).json()
+    assert rev["status"] == "ACCEPTED"
+    detail = client.get(f"/api/v1/ai/requests/{run['request_id']}", headers=admin).json()
+    assert detail["reviews"] and detail["outputs"][0]["status"] == "ACCEPTED"
+
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+    employee = _login(client, "employee@noc.ly")
+    assert client.post("/api/v1/ai/requests", headers=employee, json={
+        "request_type": "x", "prompt": "x"}).status_code == 403
