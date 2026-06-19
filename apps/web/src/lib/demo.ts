@@ -228,6 +228,97 @@ const ROLE_AR: Record<string, string> = {
   EMPLOYEE: "الموظف", COMPANY_ADMIN: "مسؤول الشركة", CONSULTANT: "الفريق الاستشاري",
 };
 
+/* ---------------------------------------------- P-C: assessment blueprints */
+const jobs = [
+  { id: "j-op3", code: "OP-3", title_en: "Senior Field Operator", title_ar: "مشغل حقل أول", job_family: "Operations", admin_level: 2, activity_segment: "PRODUCTION", has_approved_profile: true },
+  { id: "j-pe2", code: "PE-2", title_en: "Process Engineer", title_ar: "مهندس عمليات", job_family: "Engineering", admin_level: 3, activity_segment: "PROCESSING", has_approved_profile: true },
+  { id: "j-hse2", code: "HSE-2", title_en: "HSE Officer", title_ar: "مسؤول سلامة", job_family: "HSE", admin_level: 2, activity_segment: "PRODUCTION", has_approved_profile: false },
+];
+
+const blueprints = [
+  { id: "bp-op3", code: "OP-3-BP-v1", name: "Senior Field Operator — Assessment Blueprint", name_ar: "مشغل حقل أول — مخطط التقييم", job_id: "j-op3", assessment_purpose: "Baseline", approval_status: "PUBLISHED", version: 1, competency_count: 4 },
+  { id: "bp-pe2", code: "PE-2-BP-v1", name: "Process Engineer — Assessment Blueprint", name_ar: "مهندس عمليات — مخطط التقييم", job_id: "j-pe2", assessment_purpose: "Promotion", approval_status: "DRAFT", version: 1, competency_count: 3 },
+];
+
+const BP_COMPS: Record<string, Array<Record<string, unknown>>> = {
+  "bp-op3": [
+    { competency_en: "Well Operations", competency_ar: "عمليات الآبار", required_level: "P4", weight: 1, question_count: 4, evidence_required: false },
+    { competency_en: "Process Safety Management", competency_ar: "إدارة سلامة العمليات", required_level: "P5", weight: 2, question_count: 5, evidence_required: true },
+    { competency_en: "Communication", competency_ar: "التواصل", required_level: "P3", weight: 1, question_count: 3, evidence_required: false },
+    { competency_en: "Data & Digital Literacy", competency_ar: "الثقافة الرقمية والبيانات", required_level: "P3", weight: 1, question_count: 3, evidence_required: false },
+  ],
+  "bp-pe2": [
+    { competency_en: "Process Control", competency_ar: "التحكم في العمليات", required_level: "P4", weight: 1.5, question_count: 4, evidence_required: false },
+    { competency_en: "Process Safety Management", competency_ar: "إدارة سلامة العمليات", required_level: "P4", weight: 2, question_count: 4, evidence_required: true },
+    { competency_en: "Decision Making", competency_ar: "اتخاذ القرار", required_level: "P3", weight: 1, question_count: 3, evidence_required: false },
+  ],
+};
+
+function blueprintDetail(id: string) {
+  const bp = blueprints.find((b) => b.id === id) ?? blueprints[0];
+  return {
+    ...bp, passing_threshold: 0.6, readiness_threshold: 0.75,
+    scoring_rubric: { code: "WEIGHTED", model: "weighted" },
+    competencies: BP_COMPS[bp.id] ?? BP_COMPS["bp-op3"],
+    rules: [
+      { rule_type: "TimeLimit", rule_value: "60" },
+      { rule_type: "Randomization", rule_value: "true" },
+      { rule_type: "ReviewerRequired", rule_value: "SME" },
+      ...(((BP_COMPS[bp.id] ?? []).some((c) => c.evidence_required)) ? [{ rule_type: "EvidenceRequired", rule_value: "true" }] : []),
+    ],
+  };
+}
+
+const aiQuestions = [
+  { id: "q1", competency_en: "Process Safety Management", question_text: "[SCENARIO] At the Expert (P5) level, a gas detector alarms during a hot-work permit — outline your decision sequence and the evidence you would document.", question_text_ar: "[SCENARIO] عند مستوى خبير (P5)، يصدر كاشف الغاز إنذارًا أثناء تصريح عمل ساخن — اشرح تسلسل قرارك والأدلة التي ستوثّقها.", question_type: "SCENARIO", difficulty_level: 5, ai_confidence_score: 0.84, risk_level: "MED", review_status: "DRAFT", published_question_id: null },
+  { id: "q2", competency_en: "Process Safety Management", question_text: "[MCQ] Which control is the FIRST line of defence under the process-safety hierarchy?", question_text_ar: "[MCQ] أي ضابط يُعدّ خط الدفاع الأول وفق هرم سلامة العمليات؟", question_type: "MCQ", difficulty_level: 5, ai_confidence_score: 0.58, risk_level: "HIGH", review_status: "DRAFT", published_question_id: null },
+  { id: "q3", competency_en: "Well Operations", question_text: "[MCQ] Select the correct shut-in sequence for a kick during tripping.", question_text_ar: "[MCQ] اختر تسلسل الإغلاق الصحيح عند حدوث اندفاع أثناء سحب الأنابيب.", question_type: "MCQ", difficulty_level: 4, ai_confidence_score: 0.9, risk_level: "MED", review_status: "DRAFT", published_question_id: null },
+  { id: "q4", competency_en: "Well Operations", question_text: "[SCENARIO] At the Advanced (P4) level, describe how you would verify barrier integrity before resuming operations.", question_text_ar: "[SCENARIO] عند مستوى متقدم (P4)، صف كيف ستتحقق من سلامة الحواجز قبل استئناف العمليات.", question_type: "SCENARIO", difficulty_level: 4, ai_confidence_score: 0.79, risk_level: "MED", review_status: "APPROVED", published_question_id: "lq-aproved-1" },
+  { id: "q5", competency_en: "Communication", question_text: "[SCENARIO] A shift handover missed a critical isolation — how do you address it with the team?", question_text_ar: "[SCENARIO] أغفل تسليم الوردية عزلًا حرجًا — كيف تعالج ذلك مع الفريق؟", question_type: "SCENARIO", difficulty_level: 3, ai_confidence_score: 0.66, risk_level: "MED", review_status: "RETURNED", published_question_id: null },
+  { id: "q6", competency_en: "Data & Digital Literacy", question_text: "[MCQ] Which chart best surfaces a drift in a process variable over a shift?", question_text_ar: "[MCQ] أي رسم بياني يُظهر انحراف متغيّر عملية عبر الوردية بأفضل شكل؟", question_type: "MCQ", difficulty_level: 3, ai_confidence_score: 0.72, risk_level: "MED", review_status: "DRAFT", published_question_id: null },
+];
+
+const scoringRubrics = [
+  { id: "r1", code: "WEIGHTED", name: "Weighted competency score", model: "weighted", status: "ACTIVE" },
+  { id: "r2", code: "RUBRIC", name: "Behaviour rubric", model: "rubric", status: "ACTIVE" },
+  { id: "r3", code: "PASS_FAIL", name: "Pass / fail gate", model: "pass_fail", status: "ACTIVE" },
+];
+
+/* ----------------------------------------------- P-D: multi-factor readiness */
+const rsStatuses = [
+  { code: "READY", name_en: "Ready", name_ar: "جاهز" },
+  { code: "READY_MINOR_GAPS", name_en: "Ready with minor gaps", name_ar: "جاهز مع فجوات طفيفة" },
+  { code: "DEVELOPMENT_REQUIRED", name_en: "Development required", name_ar: "يتطلب تطويراً" },
+  { code: "NOT_READY_CRITICAL", name_en: "Not ready for critical role", name_ar: "غير جاهز لدور حرج" },
+  { code: "EVIDENCE_INSUFFICIENT", name_en: "Evidence insufficient", name_ar: "الأدلة غير كافية" },
+  { code: "REASSESSMENT_REQUIRED", name_en: "Reassessment required", name_ar: "إعادة التقييم مطلوبة" },
+  { code: "SUCCESSION_CANDIDATE", name_en: "Succession candidate", name_ar: "مرشح للإحلال" },
+  { code: "HIGH_POTENTIAL", name_en: "High potential", name_ar: "إمكانات عالية" },
+];
+
+interface RSRow { entity_type: string; entity_id: string; name_en: string; name_ar: string; readiness_index: number; readiness_status: string; source_count: number; factors: Record<string, number>; is_critical: boolean; }
+const readinessRows: RSRow[] = [
+  { entity_type: "EMPLOYEE", entity_id: "e1", name_en: "Ahmed Al-Mansouri", name_ar: "أحمد المنصوري", readiness_index: 88.4, readiness_status: "READY", source_count: 4, is_critical: true, factors: { competency_score: 0.95, evidence_confidence: 0.86, data_quality: 0.9, risk_adjustment: 1.0, role_criticality: 0.88, recency: 0.94 } },
+  { entity_type: "EMPLOYEE", entity_id: "e7", name_en: "Omar Al-Fitouri", name_ar: "عمر الفيتوري", readiness_index: 81.2, readiness_status: "READY", source_count: 4, is_critical: true, factors: { competency_score: 0.88, evidence_confidence: 0.8, data_quality: 0.85, risk_adjustment: 0.95, role_criticality: 0.85, recency: 0.9 } },
+  { entity_type: "EMPLOYEE", entity_id: "e2", name_en: "Fatima Al-Zawawi", name_ar: "فاطمة الزواوي", readiness_index: 74.6, readiness_status: "READY_MINOR_GAPS", source_count: 4, is_critical: false, factors: { competency_score: 0.78, evidence_confidence: 0.74, data_quality: 0.8, risk_adjustment: 0.9, role_criticality: 1.0, recency: 0.85 } },
+  { entity_type: "EMPLOYEE", entity_id: "e5", name_en: "Yusuf Al-Tayeb", name_ar: "يوسف الطيب", readiness_index: 41.0, readiness_status: "NOT_READY_CRITICAL", source_count: 3, is_critical: true, factors: { competency_score: 0.42, evidence_confidence: 0.6, data_quality: 0.55, risk_adjustment: 0.7, role_criticality: 0.88, recency: 0.7 } },
+  { entity_type: "EMPLOYEE", entity_id: "e6", name_en: "Mariam Saleh", name_ar: "مريم صالح", readiness_index: 0.0, readiness_status: "EVIDENCE_INSUFFICIENT", source_count: 0, is_critical: false, factors: { competency_score: 0.3, evidence_confidence: 0.2, data_quality: 0.3, risk_adjustment: 0.8, role_criticality: 1.0, recency: 0.5 } },
+  { entity_type: "DEPARTMENT", entity_id: "opsa", name_en: "Operations Section A", name_ar: "قسم العمليات أ", readiness_index: 67.9, readiness_status: "DEVELOPMENT_REQUIRED", source_count: 3, is_critical: false, factors: { competency_score: 0.71, evidence_confidence: 0.7, data_quality: 0.72, risk_adjustment: 0.88, role_criticality: 0.92, recency: 0.83 } },
+  { entity_type: "DEPARTMENT", entity_id: "opsb", name_en: "Operations Section B", name_ar: "قسم العمليات ب", readiness_index: 52.3, readiness_status: "DEVELOPMENT_REQUIRED", source_count: 3, is_critical: false, factors: { competency_score: 0.55, evidence_confidence: 0.62, data_quality: 0.6, risk_adjustment: 0.8, role_criticality: 0.9, recency: 0.78 } },
+];
+
+function rsDetail(entityId: string) {
+  const row = readinessRows.find((r) => r.entity_id === entityId) ?? readinessRows[0];
+  const f = row.factors;
+  const raw = f.competency_score * f.evidence_confidence * f.data_quality * f.risk_adjustment * f.role_criticality * f.recency;
+  return {
+    entity_type: row.entity_type, entity_id: row.entity_id, name_en: row.name_en, name_ar: row.name_ar,
+    readiness_index: row.readiness_index, readiness_status: row.readiness_status, source_count: row.source_count,
+    factors: f, method_version: "rs-v1",
+    breakdown: { raw_product: Math.round(raw * 1e6) / 1e6, method_version: "rs-v1", is_critical_role: row.is_critical },
+  };
+}
+
 export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   const url = (config.url || "").split("?")[0];
   const method = (config.method || "get").toLowerCase();
@@ -248,6 +339,30 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   }
   if (url.startsWith("/assessments/questions/")) return questionsFor(url.split("/").pop() || "c-psm");
   if (url.startsWith("/profiles/") && method === "get") return profileDetail[url.split("/").pop() || "p1"] ?? profileDetail.p1;
+
+  // P-C: assessment blueprints + AI question review
+  if (url === "/jobs") return jobs;
+  if (url === "/blueprints" && method === "get") return blueprints;
+  if (/^\/blueprints\/[^/]+$/.test(url) && method === "get") return blueprintDetail(url.split("/")[2]);
+  if (url === "/ai-questions") return aiQuestions;
+  if (url === "/scoring-rubrics") return scoringRubrics;
+  if (method === "post" && /^\/blueprints\/[^/]+\/generate-questions$/.test(url)) return { request_id: "req-demo", drafted: 8 };
+  if (method === "post" && /^\/ai-questions\/[^/]+\/review$/.test(url)) {
+    const decision = (() => { try { return JSON.parse(config.data || "{}").decision || "Approved"; } catch { return "Approved"; } })();
+    const map: Record<string, string> = { Approved: "APPROVED", Returned: "RETURNED", Rejected: "REJECTED" };
+    return { ai_question_id: url.split("/")[2], review_status: map[decision] ?? "APPROVED",
+             published_question_id: decision === "Approved" ? "lq-" + Math.random().toString(36).slice(2, 7) : null };
+  }
+
+  // P-D: multi-factor readiness
+  if (url === "/readiness/statuses") return rsStatuses;
+  if (url === "/readiness" && method === "get")
+    return readinessRows.map((r) => ({
+      entity_type: r.entity_type, entity_id: r.entity_id, name_en: r.name_en, name_ar: r.name_ar,
+      readiness_index: r.readiness_index, readiness_status: r.readiness_status, source_count: r.source_count,
+    }));
+  if (/^\/readiness\/(employees|nodes)\/[^/]+$/.test(url) && method === "get") return rsDetail(url.split("/")[3]);
+  if (method === "post" && /^\/readiness\/(employees|nodes)\/[^/]+\/compute$/.test(url)) return rsDetail(url.split("/")[3]);
 
   if (method === "post" && url === "/assessments/grade")
     return { assessed_level: 3, required_level: 4, confidence: 0.62, status: "PENDING_REVIEW", needs_human_review: true };

@@ -1,7 +1,7 @@
 import {
-  Activity, BarChart3, BookOpen, Boxes, Building2, ClipboardCheck, GraduationCap,
-  LayoutDashboard, LogOut, Moon, Network, Rocket, ScrollText, ShieldCheck, Globe, Sun,
-  UserCircle, Users, type LucideIcon,
+  Activity, BarChart3, BookOpen, Boxes, Building2, ClipboardCheck, FileStack, Gauge,
+  GraduationCap, LayoutDashboard, LogOut, Moon, Network, Rocket, ScrollText, ShieldCheck,
+  Globe, Sun, UserCircle, Users, type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -17,7 +17,8 @@ import { useAuth } from "../store/auth";
 const ICONS: Record<string, LucideIcon> = {
   myWorkspace: UserCircle, myTeam: Users, department: Building2,
   dashboard: LayoutDashboard, hierarchy: Network, competencies: BookOpen, profiles: Boxes,
-  assessment: ClipboardCheck, gaps: Activity, training: GraduationCap, reports: BarChart3,
+  assessment: ClipboardCheck, blueprints: FileStack, readiness: Gauge,
+  gaps: Activity, training: GraduationCap, reports: BarChart3,
   governance: ShieldCheck, enablement: Rocket, diagnostic: ScrollText,
 };
 const GROUP_ORDER = ["me", "overview", "foundation", "intelligence", "decision", "rollout"];
