@@ -118,6 +118,20 @@ RLS multi-tenant (enforced under a non-superuser DB role).
   `/knowledge-graph[/summary]`, `/psychometrics/*`, `/benchmarking/companies`,
   `/integration/{connectors,sync-logs}`. Read-only analytics over existing data (no new workforce
   facts invented); connector runs are audited.
+- **P-G…P-M ✅ (full-spec completion):** the remaining target entities and the promotion of the
+  earlier simpler-equivalents to the spec's full splits — migrations 0008–0014:
+  - **P-G** assessment execution split (Campaign → Participant → Attempt → Response → per-competency
+    Result) + QuestionBank/Tag + EvidenceReview; approved results write back to L5.
+  - **P-H** development planning (LearningNeed → DevelopmentPlan → PlanItem) derived from verified gaps.
+  - **P-I** operational & asset context (Site → ProcessUnit → Equipment, Procedure, CriticalTask →
+    TaskRisk) with a competency-exposure link to the readiness engine.
+  - **P-J** strategy cascade (Objective → KPI → competency alignment → computed Strategic Readiness Gap).
+  - **P-K** generic workflow engine (Instance → Step → Approval) + scoped PermissionRole/UserPermissionRole.
+  - **P-L** AI lifecycle (PromptTemplate, ModelVersion, AIRequest → AIOutput → AIReview) wrapping the gateway.
+  - **P-M** workforce groups (with readiness rollup) + talent pools.
+  All tenant-scoped with subtree RLS, audited, and covered by integration tests (41 total).
+  Live deploy: `render.yaml` runs `alembic upgrade head` + idempotent seed (0001–0014) then serves the
+  API; point the web app at it via `VITE_API_BASE_URL` (see `docs/DEPLOY.md`).
 
 MVP (per spec §30): setup → segmentation → Employee 360 basic → competency matrix → blueprint →
 basic AI questions w/ review → bank → assessment → gaps → readiness → dev plan → dashboard → RBAC →
