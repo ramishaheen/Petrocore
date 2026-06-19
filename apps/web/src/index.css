@@ -147,3 +147,21 @@ body {
   background: #94a3b8;
   background-clip: content-box;
 }
+
+/* Soft floating orbs for animated backgrounds (used on the login screen). */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Respect users who prefer reduced motion — keep it calm, not busy. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

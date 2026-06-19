@@ -41,6 +41,9 @@ export default {
         "petro-mesh":
           "radial-gradient(at 0% 0%, rgba(31,138,110,.20) 0, transparent 50%), radial-gradient(at 100% 100%, rgba(201,162,39,.14) 0, transparent 50%)",
         "petro-grad": "linear-gradient(135deg, #083c30 0%, #0d5c4a 60%, #1f8a6e 100%)",
+        // Animated multi-stop aurora (pair with bg-[length:300%_300%] + animate-gradient-pan).
+        "petro-aurora":
+          "linear-gradient(125deg, #04201a 0%, #083c30 25%, #0d5c4a 50%, #1f8a6e 70%, #0d5c4a 88%, #062e25 100%)",
       },
       keyframes: {
         "fade-in": { from: { opacity: "0" }, to: { opacity: "1" } },
@@ -48,11 +51,43 @@ export default {
           from: { opacity: "0", transform: "translateY(8px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
+        "rise-in": {
+          from: { opacity: "0", transform: "translateY(22px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
         shimmer: { "100%": { transform: "translateX(100%)" } },
+        "gradient-pan": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0) translateX(0)" },
+          "50%": { transform: "translateY(-22px) translateX(12px)" },
+        },
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(0) translateX(0) scale(1)" },
+          "50%": { transform: "translateY(26px) translateX(-16px) scale(1.06)" },
+        },
+        "spin-slow": { to: { transform: "rotate(360deg)" } },
+        "pulse-soft": {
+          "0%, 100%": { opacity: ".45", transform: "scale(1)" },
+          "50%": { opacity: ".85", transform: "scale(1.05)" },
+        },
+        "sheen": {
+          "0%": { transform: "translateX(-120%) skewX(-12deg)" },
+          "60%, 100%": { transform: "translateX(220%) skewX(-12deg)" },
+        },
       },
       animation: {
         "fade-in": "fade-in .3s ease both",
         "slide-up": "slide-up .35s cubic-bezier(.2,.8,.2,1) both",
+        "rise-in": "rise-in .6s cubic-bezier(.2,.8,.2,1) both",
+        "gradient-pan": "gradient-pan 14s ease-in-out infinite",
+        float: "float 7s ease-in-out infinite",
+        "float-slow": "float-slow 11s ease-in-out infinite",
+        "spin-slow": "spin-slow 38s linear infinite",
+        "pulse-soft": "pulse-soft 5s ease-in-out infinite",
+        sheen: "sheen 6s ease-in-out infinite",
       },
     },
   },
