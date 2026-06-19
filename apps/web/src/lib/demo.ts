@@ -367,6 +367,92 @@ function rsDetail(entityId: string) {
   };
 }
 
+/* ----------------------------------------- P-F: planning, prediction, graph */
+const wfpOverview = {
+  total_employees: 8, ready_employees: 3, ready_pct: 37.5, critical_roles: 3,
+  critical_roles_covered: 2, critical_roles_at_risk: 1, open_training_needs: 6,
+  knowledge_holders: 2, knowledge_at_risk: 1,
+};
+const wfpSupplyDemand = [
+  { family: "Operations", roles: 3, headcount: 5, ready: 2, ready_pct: 40 },
+  { family: "Engineering", roles: 2, headcount: 2, ready: 1, ready_pct: 50 },
+  { family: "HSE", roles: 1, headcount: 1, ready: 0, ready_pct: 0 },
+];
+const wfpCoverage = [
+  { job_id: "j-cro", title_en: "Control Room Operator", title_ar: "مشغل غرفة تحكم", criticality: "HIGH", loss_risk: 0.8, bench_strength: 0, ready_now: 0, coverage: "AT_RISK" },
+  { job_id: "j-sup", title_en: "Shift Supervisor", title_ar: "مشرف وردية", criticality: "VERY_HIGH", loss_risk: 0.7, bench_strength: 2, ready_now: 1, coverage: "COVERED" },
+  { job_id: "j-pe2", title_en: "Process Engineer", title_ar: "مهندس عمليات", criticality: "HIGH", loss_risk: 0.4, bench_strength: 1, ready_now: 0, coverage: "COVERED" },
+];
+const wfpTrainingDemand = [
+  { competency_id: "c-psm", competency_en: "Process Safety Management", competency_ar: "إدارة سلامة العمليات", learners: 4, total_gap: 11, very_high: 2 },
+  { competency_id: "c-proc", competency_en: "Process Control", competency_ar: "التحكم في العمليات", learners: 3, total_gap: 6, very_high: 0 },
+  { competency_id: "c-data", competency_en: "Data & Digital Literacy", competency_ar: "الثقافة الرقمية والبيانات", learners: 3, total_gap: 5, very_high: 0 },
+];
+const forecastPipeline = { assessed_employees: 8, current_ready: 2, projected_ready: 4, projected_uplift: 2, open_gaps: 6, horizon_months: 12 };
+function forecastFor(id: string) {
+  const row = readinessRows.find((r) => r.entity_id === id) ?? readinessRows[0];
+  const cur = row.readiness_index;
+  const proj = Math.min(100, Math.round((cur + (100 - cur) * 0.45) * 10) / 10);
+  return {
+    employee_id: id, current_index: cur, current_status: row.readiness_status,
+    projected_index: proj, projected_status: proj >= 85 ? "READY" : proj >= 70 ? "READY_MINOR_GAPS" : "DEVELOPMENT_REQUIRED",
+    horizon_months: 12,
+    drivers: ["active development: yes", `competency headroom: ${Math.round((1 - row.factors.competency_score) * 100)}%`, "horizon: 12 months"],
+  };
+}
+const kgSummary = {
+  total_links: 8, total_entities: 9,
+  by_link_type: [{ link_type: "Required", count: 5 }, { link_type: "EvidenceFor", count: 1 }, { link_type: "Supports", count: 1 }, { link_type: "Impacts", count: 1 }],
+};
+const kgGraph = {
+  nodes: [
+    { id: "Role:j-op3", entity_type: "Role", entity_id: "j-op3", label_en: "Senior Field Operator", label_ar: "مشغل حقل أول" },
+    { id: "Competency:c-well", entity_type: "Competency", entity_id: "c-well", label_en: "Well Operations", label_ar: "عمليات الآبار" },
+    { id: "Competency:c-psm", entity_type: "Competency", entity_id: "c-psm", label_en: "Process Safety Management", label_ar: "إدارة سلامة العمليات" },
+    { id: "Competency:c-comm", entity_type: "Competency", entity_id: "c-comm", label_en: "Communication", label_ar: "التواصل" },
+    { id: "Competency:c-data", entity_type: "Competency", entity_id: "c-data", label_en: "Data & Digital Literacy", label_ar: "الثقافة الرقمية والبيانات" },
+    { id: "Employee:e1", entity_type: "Employee", entity_id: "e1", label_en: "Ahmed Al-Mansouri", label_ar: "أحمد المنصوري" },
+    { id: "Asset:a1", entity_type: "Asset", entity_id: "a1", label_en: "Gas Compression Train A", label_ar: "قطار ضغط الغاز أ" },
+    { id: "Strategy:s1", entity_type: "Strategy", entity_id: "s1", label_en: "Workforce Readiness 2030", label_ar: "جاهزية القوى العاملة 2030" },
+    { id: "Project:prj", entity_type: "Project", entity_id: "prj", label_en: "Offshore Startup", label_ar: "بدء التشغيل البحري" },
+  ],
+  edges: [
+    { source: "Role:j-op3", target: "Competency:c-well", link_type: "Required", weight: 1 },
+    { source: "Role:j-op3", target: "Competency:c-psm", link_type: "Required", weight: 2 },
+    { source: "Role:j-op3", target: "Competency:c-comm", link_type: "Required", weight: 1 },
+    { source: "Role:j-op3", target: "Competency:c-data", link_type: "Required", weight: 1 },
+    { source: "Employee:e1", target: "Competency:c-psm", link_type: "EvidenceFor", weight: 1 },
+    { source: "Employee:e1", target: "Project:prj", link_type: "Supports", weight: 0.8 },
+    { source: "Competency:c-psm", target: "Asset:a1", link_type: "Required", weight: 1 },
+    { source: "Strategy:s1", target: "Competency:c-data", link_type: "Impacts", weight: 1 },
+  ],
+  node_count: 9, edge_count: 8,
+};
+const psychQuality = [
+  { question_id: "c-psm-q1", competency_en: "Process Safety Management", body_en: "Select the correct shutdown sequence.", kind: "MCQ", usage: 14, avg_score: 0.61, difficulty: 0.39, discrimination: 0.34, reliability: "OK", retire_recommended: false },
+  { question_id: "c-psm-q2", competency_en: "Process Safety Management", body_en: "A pressure anomaly is detected — describe your response.", kind: "SCENARIO", usage: 12, avg_score: 0.55, difficulty: 0.45, discrimination: 0.41, reliability: "OK", retire_recommended: false },
+  { question_id: "c-well-q1", competency_en: "Well Operations", body_en: "Identify the well-control barrier.", kind: "MCQ", usage: 9, avg_score: 0.96, difficulty: 0.04, discrimination: 0.05, reliability: "OK", retire_recommended: true },
+  { question_id: "c-data-q1", competency_en: "Data & Digital Literacy", body_en: "Interpret the trend chart.", kind: "MCQ", usage: 3, avg_score: 0.7, difficulty: 0.3, discrimination: 0.0, reliability: "INSUFFICIENT_DATA", retire_recommended: false },
+];
+const psychReliability = { assessments: 14, items_recorded: 96, questions_used: 16, mean_usage_per_question: 6.0, reliability_score: 1.0, items_needing_calibration: 1, items_insufficient_data: 3, bias_flags: [] };
+const benchCompanies = [
+  { company_id: "agoco", name_en: "Arabian Gulf Oil Co.", name_ar: "شركة الخليج العربي للنفط", avg_readiness: 76.0, assessed: 5, headcount: 6, ready: 3, ready_pct: 50, rank: 1 },
+  { company_id: "sirte", name_en: "Sirte Oil Co.", name_ar: "شركة سرت للنفط", avg_readiness: 71.0, assessed: 4, headcount: 5, ready: 2, ready_pct: 40, rank: 2 },
+  { company_id: "waha", name_en: "Waha Oil Co.", name_ar: "شركة الواحة للنفط", avg_readiness: 68.0, assessed: 4, headcount: 5, ready: 2, ready_pct: 40, rank: 3 },
+];
+const connectors = [
+  { id: "co1", code: "HR-CORE", name_en: "Core HR System", name_ar: "نظام الموارد البشرية", system_type: "HR", direction: "INBOUND", status: "ACTIVE", sync_mode: "SCHEDULED", last_sync_at: "2026-06-18T22:00:00Z" },
+  { id: "co2", code: "LMS", name_en: "Learning Management System", name_ar: "نظام إدارة التعلم", system_type: "LMS", direction: "BIDIRECTIONAL", status: "CONFIGURED", sync_mode: "SCHEDULED", last_sync_at: null },
+  { id: "co3", code: "ERP-FIN", name_en: "ERP / Finance", name_ar: "تخطيط الموارد / المالية", system_type: "ERP", direction: "INBOUND", status: "PLANNED", sync_mode: "SCHEDULED", last_sync_at: null },
+  { id: "co4", code: "CMMS", name_en: "Maintenance (CMMS)", name_ar: "إدارة الصيانة", system_type: "CMMS", direction: "INBOUND", status: "PLANNED", sync_mode: "SCHEDULED", last_sync_at: null },
+  { id: "co5", code: "HSE", name_en: "HSE System", name_ar: "نظام السلامة", system_type: "HSE", direction: "INBOUND", status: "CONFIGURED", sync_mode: "SCHEDULED", last_sync_at: null },
+  { id: "co6", code: "IAM", name_en: "Identity Management", name_ar: "إدارة الهوية", system_type: "IAM", direction: "INBOUND", status: "ACTIVE", sync_mode: "REALTIME", last_sync_at: "2026-06-19T06:00:00Z" },
+  { id: "co7", code: "BI", name_en: "BI / Data Warehouse", name_ar: "ذكاء الأعمال", system_type: "BI", direction: "OUTBOUND", status: "ACTIVE", sync_mode: "SCHEDULED", last_sync_at: "2026-06-19T05:00:00Z" },
+];
+const syncLogs = [
+  { id: "sl1", connector_code: "HR-CORE", direction: "INBOUND", entity_type: "Employee", records_in: 3, records_ok: 3, records_failed: 0, status: "SUCCESS", message: "Initial employee load.", at: "2026-06-18T22:00:00Z" },
+];
+
 export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   const url = (config.url || "").split("?")[0];
   const method = (config.method || "get").toLowerCase();
@@ -450,6 +536,24 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
     return { id: "tp-new", employee_id: url.split("/")[3], talent_segment: b.talent_segment,
              potential_rating: b.potential_rating ?? "MED", readiness_status: "READY" };
   }
+
+  // P-F: planning, prediction, graph, psychometrics, benchmarking, integrations
+  if (url === "/workforce-planning/overview") return wfpOverview;
+  if (url === "/workforce-planning/supply-demand") return wfpSupplyDemand;
+  if (url === "/workforce-planning/coverage") return wfpCoverage;
+  if (url === "/workforce-planning/retirement-risk") return knowledgeHolders;
+  if (url === "/workforce-planning/training-demand") return wfpTrainingDemand;
+  if (url === "/readiness/forecast" && method === "get") return forecastPipeline;
+  if (/^\/readiness\/forecast\/[^/]+$/.test(url) && method === "get") return forecastFor(url.split("/")[3]);
+  if (url === "/knowledge-graph/summary") return kgSummary;
+  if (url === "/knowledge-graph" && method === "get") return kgGraph;
+  if (url === "/psychometrics/question-quality") return psychQuality;
+  if (url === "/psychometrics/reliability") return psychReliability;
+  if (url === "/benchmarking/companies") return benchCompanies;
+  if (url === "/integration/connectors" && method === "get") return connectors;
+  if (url === "/integration/sync-logs") return syncLogs;
+  if (method === "post" && /^\/integration\/connectors\/[^/]+\/sync$/.test(url))
+    return { id: "sl-" + Math.random().toString(36).slice(2, 7), connector_code: url.split("/")[3], status: "SUCCESS" };
 
   if (method === "post" && url === "/assessments/grade")
     return { assessed_level: 3, required_level: 4, confidence: 0.62, status: "PENDING_REVIEW", needs_human_review: true };

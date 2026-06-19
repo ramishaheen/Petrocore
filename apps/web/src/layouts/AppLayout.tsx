@@ -1,7 +1,7 @@
 import {
   Activity, BarChart3, BookOpen, Boxes, Building2, ClipboardCheck, Crown, FileStack, Gauge,
-  GraduationCap, LayoutDashboard, LogOut, Moon, Network, Rocket, ScrollText, ShieldCheck,
-  Globe, Sun, UserCircle, Users, type LucideIcon,
+  GraduationCap, LayoutDashboard, LogOut, Moon, Network, Plug, Rocket, ScrollText, Share2,
+  ShieldCheck, Globe, Sun, Target, UserCircle, Users, type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,6 +19,7 @@ const ICONS: Record<string, LucideIcon> = {
   dashboard: LayoutDashboard, hierarchy: Network, competencies: BookOpen, profiles: Boxes,
   assessment: ClipboardCheck, blueprints: FileStack, readiness: Gauge,
   gaps: Activity, training: GraduationCap, succession: Crown, reports: BarChart3,
+  workforcePlanning: Target, knowledgeGraph: Share2, integrations: Plug,
   governance: ShieldCheck, enablement: Rocket, diagnostic: ScrollText,
 };
 const GROUP_ORDER = ["me", "overview", "foundation", "intelligence", "decision", "rollout"];

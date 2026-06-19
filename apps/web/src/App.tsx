@@ -22,6 +22,9 @@ const Readiness = lazy(() => import("./pages/Readiness"));
 const Gaps = lazy(() => import("./pages/Gaps"));
 const Succession = lazy(() => import("./pages/Succession"));
 const Training = lazy(() => import("./pages/Training"));
+const WorkforcePlanning = lazy(() => import("./pages/WorkforcePlanning"));
+const KnowledgeGraph = lazy(() => import("./pages/KnowledgeGraph"));
+const Integrations = lazy(() => import("./pages/Integrations"));
 const Reports = lazy(() => import("./pages/Reports"));
 const Governance = lazy(() => import("./pages/Governance"));
 const Enablement = lazy(() => import("./pages/Enablement"));
@@ -69,6 +72,9 @@ export default function App() {
           <Route path="/gaps" element={<Gaps />} />
           <Route path="/succession" element={<Succession />} />
           <Route path="/training" element={<Training />} />
+          <Route path="/workforce-planning" element={<WorkforcePlanning />} />
+          <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
+          <Route path="/integrations" element={<Integrations />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/governance" element={<Governance />} />
           <Route path="/enablement" element={<Enablement />} />
