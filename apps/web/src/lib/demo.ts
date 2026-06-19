@@ -453,6 +453,100 @@ const syncLogs = [
   { id: "sl1", connector_code: "HR-CORE", direction: "INBOUND", entity_type: "Employee", records_in: 3, records_ok: 3, records_failed: 0, status: "SUCCESS", message: "Initial employee load.", at: "2026-06-18T22:00:00Z" },
 ];
 
+/* ---------------------------------- P-G…P-M: full-spec layers (demo fixtures) */
+// P-J strategy
+const stObjectives = [
+  { id: "obj-corp", level: "CORPORATE", title_en: "Workforce Readiness 2030", title_ar: "جاهزية القوى العاملة 2030", period: "2026-2030", parent_objective_id: null },
+  { id: "obj-hse", level: "DEPARTMENT", title_en: "Cut HSE incidents 50%", title_ar: "خفض حوادث السلامة 50%", period: "2026", parent_objective_id: "obj-corp" },
+];
+function stObjectiveDetail(id: string) {
+  const o = stObjectives.find((x) => x.id === id) ?? stObjectives[0];
+  return {
+    ...o,
+    kpis: [{ code: "WRI", name_en: "Workforce Readiness Index", name_ar: "مؤشر جاهزية القوى العاملة", target_value: 85, current_value: 73, unit: "%" }],
+    competencies: [
+      { competency_id: "c-psm", competency_en: "Process Safety Management", required_level: 5, weight: 2 },
+      { competency_id: "c-well", competency_en: "Well Operations", required_level: 4, weight: 1 },
+    ],
+    readiness_gaps: [
+      { competency_id: "c-psm", required_level: 5, actual_avg_level: 3.4, gap: 1.6, readiness_pct: 68 },
+      { competency_id: "c-well", required_level: 4, actual_avg_level: 3.6, gap: 0.4, readiness_pct: 90 },
+    ],
+  };
+}
+// P-I operations
+const opSites = [{ id: "site-sarir", code: "SARIR", name_en: "Sarir Field", name_ar: "حقل السرير", activity_segment: "PRODUCTION" }];
+const opEquipment = [
+  { id: "eq-k101", tag: "K-101", name_en: "Gas Compression Train A", name_ar: "قطار ضغط الغاز أ", equipment_type: "ROTATING", criticality: "VERY_HIGH", risk_level: "HIGH" },
+  { id: "eq-p200", tag: "P-200", name_en: "Export Pump", name_ar: "مضخة التصدير", equipment_type: "PUMP", criticality: "HIGH", risk_level: "MED" },
+];
+const opCriticalTasks = [
+  { id: "t1", name_en: "Safe compressor startup", name_ar: "بدء تشغيل الضاغط بأمان", criticality: "VERY_HIGH", competency_id: "c-psm", equipment_id: "eq-k101" },
+];
+const opExposure = [
+  { task_id: "t1", name_en: "Safe compressor startup", name_ar: "بدء تشغيل الضاغط بأمان", criticality: "VERY_HIGH", competency_id: "c-psm", competency_en: "Process Safety Management", covered_employees: 2, risk_count: 1 },
+];
+// P-G campaigns
+const axCampaigns = [
+  { id: "camp-1", name: "Senior Field Operator — Baseline", status: "PUBLISHED", blueprint_id: "bp-op3", target_entity_type: "Employee", participants: 1 },
+];
+function axCampaignDetail(id: string) {
+  return { id, name: "Senior Field Operator — Baseline", status: "PUBLISHED", blueprint_id: "bp-op3",
+    participants: [{ id: "pt1", employee_id: "e1", name_en: "Ahmed Al-Mansouri", name_ar: "أحمد المنصوري", status: "SUBMITTED" }] };
+}
+// P-H development plans
+const devPlans = [{ id: "dp-1", plan_name: "Individual Development Plan 2026", entity_type: "Employee", entity_id: "e1", approval_status: "APPROVED" }];
+function devPlanDetail(id: string) {
+  return { id, plan_name: "Individual Development Plan 2026", entity_type: "Employee", entity_id: "e1", approval_status: "APPROVED",
+    items: [{ id: "it1", action_type: "Training", action_description: "Process Safety Management — Level 5 program.", completion_status: "IN_PROGRESS", post_assessment_required: true }] };
+}
+// P-K workflows + permission roles
+const wfInstances = [
+  { id: "wf-1", workflow_type: "BlueprintApproval", entity_type: "AssessmentBlueprint", entity_id: "bp-op3", status: "OPEN", current_step: 2 },
+];
+function wfDetail(id: string) {
+  return { id, workflow_type: "BlueprintApproval", entity_type: "AssessmentBlueprint", entity_id: "bp-op3", status: "OPEN", current_step: 2,
+    steps: [
+      { step_order: 1, step_name: "Functional Review", approver_role: "SME", status: "APPROVED" },
+      { step_order: 2, step_name: "HR Review", approver_role: "HR_VALIDATOR", status: "PENDING" },
+      { step_order: 3, step_name: "Governance Review", approver_role: "COMPANY_ADMIN", status: "PENDING" },
+    ] };
+}
+const permRoles = [
+  { id: "pr1", role_name: "Enterprise Administrator", role_scope: "Enterprise", description: "Full enterprise configuration and governance." },
+  { id: "pr2", role_name: "Company HR Manager", role_scope: "Company", description: "Manage employees, profiles and validations within a company." },
+  { id: "pr3", role_name: "Department Reviewer", role_scope: "Department", description: "Review and approve within a department subtree." },
+];
+// P-L AI lifecycle
+const aiRequests = [
+  { id: "air-1", request_type: "SuggestCompetency", status: "COMPLETED", entity_type: "Role", entity_id: null },
+];
+function aiRequestDetail(id: string) {
+  return { id, request_type: "SuggestCompetency", status: "COMPLETED",
+    outputs: [{ id: "ao-1", confidence_score: 0.78, status: "PENDING_REVIEW", output: { text: "{\"stub\": true, \"ref\": \"a1b2c3\"}" } }],
+    reviews: [] };
+}
+const aiPromptTemplates = [
+  { id: "pt-qgen", code: "QGEN", template_name: "Question Generation", use_case: "GenerateQuestion", version: 1, status: "ACTIVE" },
+  { id: "pt-csug", code: "CSUG", template_name: "Competency Suggestion", use_case: "SuggestCompetency", version: 1, status: "ACTIVE" },
+];
+const aiModelVersions = [{ id: "mv-1", model_name: "claude-opus-4-8", version: "stub-1", provider: "gateway", status: "ACTIVE" }];
+// P-M groups + pools
+const grpGroups = [{ id: "g-opsa", name_en: "Operations Section A Team", name_ar: "فريق قسم العمليات أ", group_type: "Department" }];
+function grpReadiness(id: string) {
+  return { group_id: id, name_en: "Operations Section A Team", name_ar: "فريق قسم العمليات أ", group_type: "Department",
+    members: 3, assessed: 3, avg_readiness: 67.9, ready: 1,
+    member_list: [
+      { employee_id: "e1", name_en: "Ahmed Al-Mansouri", name_ar: "أحمد المنصوري", readiness_index: 88.4, readiness_status: "READY" },
+      { employee_id: "e2", name_en: "Fatima Al-Zawawi", name_ar: "فاطمة الزواوي", readiness_index: 74.6, readiness_status: "READY_MINOR_GAPS" },
+      { employee_id: "e5", name_en: "Yusuf Al-Tayeb", name_ar: "يوسف الطيب", readiness_index: 41.0, readiness_status: "NOT_READY_CRITICAL" },
+    ] };
+}
+const talPools = [
+  { id: "pool-hipo", name_en: "High-Potential Pool", name_ar: "مجموعة الإمكانات العالية", pool_type: "HiPo" },
+  { id: "pool-succ", name_en: "Successor Pool", name_ar: "مجموعة الإحلال", pool_type: "Successor" },
+];
+
 export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   const url = (config.url || "").split("?")[0];
   const method = (config.method || "get").toLowerCase();
@@ -554,6 +648,40 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   if (url === "/integration/sync-logs") return syncLogs;
   if (method === "post" && /^\/integration\/connectors\/[^/]+\/sync$/.test(url))
     return { id: "sl-" + Math.random().toString(36).slice(2, 7), connector_code: url.split("/")[3], status: "SUCCESS" };
+
+  // P-J strategy
+  if (url === "/strategy/objectives" && method === "get") return stObjectives;
+  if (/^\/strategy\/objectives\/[^/]+$/.test(url) && method === "get") return stObjectiveDetail(url.split("/")[3]);
+  if (method === "post" && /^\/strategy\/objectives\/[^/]+\/readiness-gap$/.test(url))
+    return { objective_id: url.split("/")[3], overall_readiness_pct: 79, gaps: stObjectiveDetail(url.split("/")[3]).readiness_gaps };
+  // P-I operations
+  if (url === "/operations/sites") return opSites;
+  if (url === "/operations/equipment" && method === "get") return opEquipment;
+  if (url === "/operations/critical-tasks" && method === "get") return opCriticalTasks;
+  if (url === "/operations/competency-exposure") return opExposure;
+  // P-G campaigns
+  if (url === "/assessment-campaigns" && method === "get") return axCampaigns;
+  if (/^\/assessment-campaigns\/[^/]+$/.test(url) && method === "get") return axCampaignDetail(url.split("/")[2]);
+  // P-H development
+  if (url === "/development/plans" && method === "get") return devPlans;
+  if (/^\/development\/plans\/[^/]+$/.test(url) && method === "get") return devPlanDetail(url.split("/")[3]);
+  // P-K workflows + permissions
+  if (url === "/workflows" && method === "get") return wfInstances;
+  if (/^\/workflows\/[^/]+$/.test(url) && method === "get") return wfDetail(url.split("/")[2]);
+  if (method === "post" && /^\/workflows\/[^/]+\/act$/.test(url)) return { instance_id: url.split("/")[2], status: "OPEN", current_step: 3 };
+  if (url === "/permission-roles" && method === "get") return permRoles;
+  // P-L AI lifecycle
+  if (url === "/ai/requests" && method === "get") return aiRequests;
+  if (/^\/ai\/requests\/[^/]+$/.test(url) && method === "get") return aiRequestDetail(url.split("/")[3]);
+  if (url === "/ai/prompt-templates" && method === "get") return aiPromptTemplates;
+  if (url === "/ai/model-versions" && method === "get") return aiModelVersions;
+  if (method === "post" && url === "/ai/requests")
+    return { request_id: "air-new", output_id: "ao-new", confidence_score: 0.74, status: "PENDING_REVIEW", output: { text: "{\"stub\": true}" } };
+  if (method === "post" && /^\/ai\/outputs\/[^/]+\/review$/.test(url)) return { output_id: url.split("/")[3], status: "ACCEPTED" };
+  // P-M groups + pools
+  if (url === "/groups" && method === "get") return grpGroups;
+  if (/^\/groups\/[^/]+\/readiness$/.test(url)) return grpReadiness(url.split("/")[2]);
+  if (url === "/talent-pools" && method === "get") return talPools;
 
   if (method === "post" && url === "/assessments/grade")
     return { assessed_level: 3, required_level: 4, confidence: 0.62, status: "PENDING_REVIEW", needs_human_review: true };

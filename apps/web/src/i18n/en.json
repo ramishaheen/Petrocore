@@ -34,10 +34,86 @@
     "workforcePlanning": "Workforce Planning",
     "knowledgeGraph": "Knowledge Graph",
     "integrations": "Integrations",
+    "strategy": "Strategy & Objectives",
+    "operations": "Operations & Assets",
+    "campaigns": "Assessment Campaigns",
+    "development": "Development Plans",
+    "workflows": "Approval Workflows",
+    "aiStudio": "AI Studio & Governance",
+    "groups": "Groups & Talent Pools",
     "governance": "Governance & Audit",
     "enablement": "Enablement & Pilot",
     "diagnostic": "Layer Readiness Diagnostic",
     "logout": "Log out"
+  },
+  "strategy": {
+    "title": "Strategy & Objectives",
+    "subtitle": "Cascade objectives, align competencies, and measure the strategic readiness gap.",
+    "kpis": "KPIs",
+    "readinessGap": "Strategic Readiness Gap",
+    "note": "Each objective's competencies are compared to the workforce's actual levels — strategy connected to readiness.",
+    "lvl_CORPORATE": "Corporate",
+    "lvl_DEPARTMENT": "Department",
+    "lvl_ROLE": "Role",
+    "lvl_EMPLOYEE": "Employee"
+  },
+  "ops": {
+    "title": "Operations & Asset Context",
+    "subtitle": "Sites, equipment, procedures and critical tasks — linked to the competencies that de-risk them.",
+    "equipment": "Equipment",
+    "tag": "Tag",
+    "type": "Type",
+    "risk": "Risk",
+    "exposure": "Critical-Task Competency Exposure",
+    "task": "Critical Task",
+    "covered": "Covered",
+    "risks": "Risks",
+    "note": "'Covered' = employees with an approved result meeting the required level for the task's competency."
+  },
+  "campaigns": {
+    "title": "Assessment Campaigns",
+    "subtitle": "Governed assessment campaigns: enroll, run attempts, score, and review results.",
+    "participants": "participants",
+    "empty": "No campaigns yet.",
+    "note": "Approved results write back into the competency results that feed gaps and readiness."
+  },
+  "devplan": {
+    "title": "Development Plans",
+    "subtitle": "Learning needs from verified gaps → development plans → items → completion.",
+    "empty": "No development plans yet.",
+    "postAssess": "Post-assessment",
+    "note": "Plan items derive from verified gaps; completing an item closes its learning need.",
+    "cs_COMPLETE": "Complete",
+    "cs_IN_PROGRESS": "In progress",
+    "cs_PLANNED": "Planned"
+  },
+  "workflows": {
+    "title": "Approval Workflows",
+    "subtitle": "Multi-step approvals over any entity, plus scoped permission roles.",
+    "permRoles": "Permission Roles",
+    "ss_APPROVED": "Approved",
+    "ss_PENDING": "Pending",
+    "ss_REJECTED": "Rejected"
+  },
+  "aistudio": {
+    "title": "AI Studio & Governance",
+    "subtitle": "Every AI request logs input + model version; outputs carry confidence and pass human review.",
+    "templates": "Prompt Templates",
+    "models": "Model Versions",
+    "note": "AI suggests; humans review. The model gateway is swappable; outputs are audited.",
+    "os_ACCEPTED": "Accepted",
+    "os_PENDING_REVIEW": "Pending review",
+    "os_MODIFIED": "Modified",
+    "os_REJECTED": "Rejected"
+  },
+  "groups": {
+    "title": "Groups & Talent Pools",
+    "subtitle": "Arbitrary workforce groups with a readiness rollup, and curated talent pools.",
+    "groups": "Groups",
+    "pools": "Talent Pools",
+    "members": "Members",
+    "avgReadiness": "Avg Readiness",
+    "readyNow": "Ready Now"
   },
   "wfp": {
     "title": "Workforce Planning Intelligence",

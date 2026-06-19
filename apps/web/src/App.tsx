@@ -25,6 +25,13 @@ const Training = lazy(() => import("./pages/Training"));
 const WorkforcePlanning = lazy(() => import("./pages/WorkforcePlanning"));
 const KnowledgeGraph = lazy(() => import("./pages/KnowledgeGraph"));
 const Integrations = lazy(() => import("./pages/Integrations"));
+const Strategy = lazy(() => import("./pages/Strategy"));
+const Operations = lazy(() => import("./pages/Operations"));
+const Campaigns = lazy(() => import("./pages/Campaigns"));
+const DevelopmentPlans = lazy(() => import("./pages/DevelopmentPlans"));
+const Workflows = lazy(() => import("./pages/Workflows"));
+const AIStudio = lazy(() => import("./pages/AIStudio"));
+const GroupsPools = lazy(() => import("./pages/GroupsPools"));
 const Reports = lazy(() => import("./pages/Reports"));
 const Governance = lazy(() => import("./pages/Governance"));
 const Enablement = lazy(() => import("./pages/Enablement"));
@@ -72,6 +79,13 @@ export default function App() {
           <Route path="/gaps" element={<Gaps />} />
           <Route path="/succession" element={<Succession />} />
           <Route path="/training" element={<Training />} />
+          <Route path="/strategy" element={<Strategy />} />
+          <Route path="/operations" element={<Operations />} />
+          <Route path="/campaigns" element={<Campaigns />} />
+          <Route path="/development" element={<DevelopmentPlans />} />
+          <Route path="/workflows" element={<Workflows />} />
+          <Route path="/ai-studio" element={<AIStudio />} />
+          <Route path="/groups" element={<GroupsPools />} />
           <Route path="/workforce-planning" element={<WorkforcePlanning />} />
           <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
           <Route path="/integrations" element={<Integrations />} />
