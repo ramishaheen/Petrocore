@@ -468,3 +468,64 @@ def test_multi_factor_readiness(client):
     employee = _login(client, "employee@noc.ly")
     assert client.post(f"/api/v1/readiness/employees/{employee_id}/compute",
                        headers=employee).status_code == 403
+
+
+def test_talent_succession_and_knowledge_continuity(client):
+    """P-E: build a succession plan for a critical role (ranked by readiness + gaps),
+    govern a candidate decision, flag talent, and record knowledge continuity."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # Critical roles are listed with bench-strength rollups.
+    roles = client.get("/api/v1/talent/critical-roles", headers=admin).json()
+    assert roles, "expected at least one seeded critical role"
+    job_id = roles[0]["job_id"]
+
+    # Build a succession plan: candidates ranked best-first by readiness.
+    plan = client.post(f"/api/v1/talent/jobs/{job_id}/succession-plan", headers=admin).json()
+    assert plan["candidate_count"] >= 1
+    ranks = [c["rank"] for c in plan["candidates"]]
+    assert ranks == sorted(ranks) and ranks[0] == 1
+    indices = [c["readiness_index"] for c in plan["candidates"]]
+    assert indices == sorted(indices, reverse=True), "candidates must be ranked by readiness desc"
+    assert all("remaining_gaps" in c for c in plan["candidates"])
+
+    # Building a plan opens a governance decision (succession is human-in-the-loop).
+    decisions = client.get("/api/v1/governance/decisions", headers=admin).json()
+    assert any(d["kind"] == "SUCCESSION" for d in decisions)
+
+    # A candidate decision is recorded and audited.
+    cand_id = plan["candidates"][0]["id"]
+    decided = client.post(f"/api/v1/talent/successors/{cand_id}/decision", headers=admin,
+                          json={"approve": True}).json()
+    assert decided["recommendation_status"] == "APPROVED"
+
+    # Talent flagging + pipeline rollup.
+    profiles = client.get("/api/v1/profiles", headers=admin).json()
+    emp_id = profiles[0]["employee_id"]
+    flagged = client.post(f"/api/v1/talent/employees/{emp_id}/flag", headers=admin,
+                          json={"talent_segment": "HIGH_POTENTIAL", "potential_rating": "HIGH"}).json()
+    assert flagged["talent_segment"] == "HIGH_POTENTIAL"
+    pipeline = client.get("/api/v1/talent/pipeline", headers=admin).json()
+    assert pipeline["talent_profiles"] >= 1 and pipeline["critical_roles_total"] >= 1
+
+    # Knowledge continuity: register a holder, then a transfer plan against it.
+    holder = client.post("/api/v1/talent/knowledge-holders", headers=admin, json={
+        "employee_id": emp_id, "knowledge_domain": "Turnaround planning",
+        "criticality": "VERY_HIGH", "retirement_risk": 0.8,
+    }).json()
+    assert holder["transfer_status"] == "OPEN"
+    kt = client.post("/api/v1/talent/transfer-plans", headers=admin, json={
+        "knowledge_holder_id": holder["id"], "plan_name": "Shadow rotation + mentoring",
+    }).json()
+    assert kt["status"] in {"ACTIVE", "PLANNED"}
+    holders = client.get("/api/v1/talent/knowledge-holders", headers=admin).json()
+    assert any(h["id"] == holder["id"] and h["transfer_status"] == "IN_PROGRESS" for h in holders)
+
+    # The whole P-E flow stayed inside the tamper-evident audit chain.
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+
+    # RBAC: a plain employee cannot build plans or flag talent.
+    employee = _login(client, "employee@noc.ly")
+    assert client.post(f"/api/v1/talent/jobs/{job_id}/succession-plan", headers=employee).status_code == 403
+    assert client.post(f"/api/v1/talent/employees/{emp_id}/flag", headers=employee,
+                       json={"talent_segment": "EMERGING"}).status_code == 403

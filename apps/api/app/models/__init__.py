@@ -35,6 +35,9 @@ from app.models.assessment_v2 import (
     AIQuestionGenerationRequest, AIGeneratedQuestion, QuestionReview,
 )
 from app.models.readiness import ReadinessScore
+from app.models.talent import (
+    TalentProfile, SuccessionPlan, SuccessorCandidate, KnowledgeHolder, KnowledgeTransferPlan,
+)
 
 __all__ = [
     "AppUser",
@@ -55,4 +58,6 @@ __all__ = [
     "AssessmentBlueprintRule", "AIQuestionGenerationRequest", "AIGeneratedQuestion",
     "QuestionReview",
     "ReadinessScore",
+    "TalentProfile", "SuccessionPlan", "SuccessorCandidate",
+    "KnowledgeHolder", "KnowledgeTransferPlan",
 ]

@@ -188,6 +188,9 @@ def seed() -> None:
         # ---- Evidence-backed results + multi-factor readiness scores (P-D) ----
         from app.seed.seed_d import seed_d
         seed_d(db)
+        # ---- Talent, succession & knowledge continuity (P-E) ----
+        from app.seed.seed_e import seed_e
+        seed_e(db)
 
         db.commit()
         print("Seed complete.")

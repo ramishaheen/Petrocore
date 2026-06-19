@@ -75,7 +75,7 @@ RLS multi-tenant (enforced under a non-superuser DB role).
 | EmployeeQualification/Certification/Experience | ✅ P-B (`e360_*` tables) |
 | AssessmentBlueprint(+Competency,+Rule) + ScoringRubric | ✅ P-C (`ab_*` tables) |
 | AIQuestionGenerationRequest/AIGeneratedQuestion/QuestionReview | ✅ P-C (`qg_*` tables → promote to `l7_question`) |
-| Talent/Succession entities | ⬜ P-E (next) |
+| Talent/Succession/KnowledgeContinuity entities | ✅ P-E (`tal_*` tables + succession ranking) |
 | Multi-factor ReadinessScore (per group/family/level) | ✅ P-D (`rs_score` + readiness engine) |
 
 ## 7. Phased plan to converge on the spec
@@ -102,7 +102,13 @@ RLS multi-tenant (enforced under a non-superuser DB role).
   scores roll up the org tree by averaging factors and recomputing. Migration 0005; APIs under
   `/readiness/{statuses,employees/{id}[/compute],nodes/{id}[/compute]}` and `GET /readiness`. Every
   compute/aggregate is audited.
-- **P-E:** talent/succession/knowledge-continuity; workforce planning; integrations (HR/LMS/ERP/CMMS/HSE).
+- **P-E ✅:** talent, succession & knowledge continuity (`tal_profile`, `tal_succession_plan`,
+  `tal_successor`, `tal_knowledge_holder`, `tal_kt_plan`). Succession ranks candidates for a critical
+  role by their multi-factor readiness (P-D) and remaining gaps vs the role's approved profile (P-B),
+  computing bench strength + time-to-ready; building a plan opens a `gov_decision` (human-in-the-loop)
+  and every write is audited. Migration 0006; APIs under `/talent/{pipeline,profiles,critical-roles,
+  jobs/{id}/succession-plan,succession-plans[/{id}],successors/{id}/decision,knowledge-holders,
+  transfer-plans}`. (Workforce planning + HR/LMS/ERP/CMMS/HSE integrations remain for a later increment.)
 - **P-F:** psychometrics/calibration, predictive readiness, knowledge graph, benchmarking.
 
 MVP (per spec §30): setup → segmentation → Employee 360 basic → competency matrix → blueprint →
