@@ -334,3 +334,78 @@ def test_competency_depth_role_matrix_and_employee_360(client):
     employee = _login(client, "employee@noc.ly")
     assert client.post(f"/api/v1/employees/{employee_id}/qualifications", headers=employee,
                        json={"qualification_type": "Diploma"}).status_code == 403
+
+
+def test_assessment_blueprint_and_ai_question_review(client):
+    """P-C: derive a governed blueprint from an approved profile, draft AI questions,
+    and promote one into the live bank only after a human review — fully audited."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # A job with an APPROVED competency profile can yield a blueprint.
+    jobs = client.get("/api/v1/jobs", headers=admin).json()
+    assert jobs, "expected at least one seeded job"
+    job = next((j for j in jobs if j["has_approved_profile"]), None)
+    assert job, "expected a job with an APPROVED competency profile"
+
+    # Derive the blueprint: it must pin competencies (from the matrix) and carry rules.
+    bp = client.post(f"/api/v1/jobs/{job['id']}/blueprint", headers=admin,
+                     json={"assessment_purpose": "Promotion"}).json()
+    assert bp["approval_status"] == "DRAFT"
+    assert bp["competencies"], "blueprint must inherit the role's competencies"
+    assert bp["scoring_rubric"] is not None
+    assert any(r["rule_type"] == "ReviewerRequired" for r in bp["rules"])
+    blueprint_id = bp["id"]
+    comp_count = len(bp["competencies"])
+
+    # It appears in the listing with the right competency count.
+    listed = {b["id"]: b for b in client.get("/api/v1/blueprints", headers=admin).json()}
+    assert listed[blueprint_id]["competency_count"] == comp_count
+
+    # A missing job → 409 (a blueprint is never built on a non-existent/unapproved matrix).
+    assert client.post("/api/v1/jobs/does-not-exist/blueprint", headers=admin).status_code == 409
+
+    # Generate AI question drafts for the blueprint.
+    gen = client.post(f"/api/v1/blueprints/{blueprint_id}/generate-questions", headers=admin).json()
+    assert gen["drafted"] > 0
+
+    drafts = client.get(f"/api/v1/ai-questions?blueprint_id={blueprint_id}&review_status=DRAFT",
+                        headers=admin).json()
+    assert len(drafts) == gen["drafted"]
+    q = drafts[0]
+    assert q["question_text"] and q["question_text_ar"]  # bilingual draft
+    assert 0.0 <= q["ai_confidence_score"] <= 1.0
+    assert q["published_question_id"] is None
+
+    # Live bank size for this competency BEFORE promotion.
+    target_comp_id = next(
+        c["id"] for c in client.get("/api/v1/competencies", headers=admin).json()
+        if c["name_en"] == q["competency_en"]
+    )
+    before_bank = client.get(f"/api/v1/assessments/questions/{target_comp_id}", headers=admin).json()
+
+    # Human review = Approved ⇒ promote into the live l7 bank.
+    review = client.post(f"/api/v1/ai-questions/{q['id']}/review", headers=admin,
+                         json={"decision": "Approved", "review_role": "SME"}).json()
+    assert review["review_status"] == "APPROVED"
+    assert review["published_question_id"], "approved question must enter the bank"
+
+    after_bank = client.get(f"/api/v1/assessments/questions/{target_comp_id}", headers=admin).json()
+    after_ids = {item["id"] for item in after_bank}
+    assert review["published_question_id"] in after_ids
+    assert len(after_bank) == len(before_bank) + 1
+
+    # Invalid decision is rejected.
+    other = drafts[1] if len(drafts) > 1 else drafts[0]
+    assert client.post(f"/api/v1/ai-questions/{other['id']}/review", headers=admin,
+                       json={"decision": "Maybe"}).status_code == 400
+
+    # The whole workflow stayed inside the tamper-evident audit chain.
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+
+    # RBAC: a plain employee can neither author blueprints nor review AI questions.
+    employee = _login(client, "employee@noc.ly")
+    assert client.post(f"/api/v1/jobs/{job['id']}/blueprint", headers=employee).status_code == 403
+    assert client.post(f"/api/v1/blueprints/{blueprint_id}/generate-questions",
+                       headers=employee).status_code == 403
+    assert client.post(f"/api/v1/ai-questions/{other['id']}/review", headers=employee,
+                       json={"decision": "Approved"}).status_code == 403

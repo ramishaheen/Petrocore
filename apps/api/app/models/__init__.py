@@ -30,6 +30,10 @@ from app.models.competency_v2 import (
 from app.models.employee_360 import (
     EmployeeQualification, EmployeeCertification, EmployeeExperience,
 )
+from app.models.assessment_v2 import (
+    ScoringRubric, AssessmentBlueprint, AssessmentBlueprintCompetency, AssessmentBlueprintRule,
+    AIQuestionGenerationRequest, AIGeneratedQuestion, QuestionReview,
+)
 
 __all__ = [
     "AppUser",
@@ -46,4 +50,7 @@ __all__ = [
     "CompetencyDescriptor", "EvidenceRequirementProfile",
     "RoleCompetencyProfile", "RoleCompetencyRequirement",
     "EmployeeQualification", "EmployeeCertification", "EmployeeExperience",
+    "ScoringRubric", "AssessmentBlueprint", "AssessmentBlueprintCompetency",
+    "AssessmentBlueprintRule", "AIQuestionGenerationRequest", "AIGeneratedQuestion",
+    "QuestionReview",
 ]

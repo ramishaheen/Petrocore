@@ -30,7 +30,7 @@ def append_audit(
     after: dict | None = None,
 ) -> AuditLog:
     """Append an immutable, hash-chained audit entry."""
-    last = db.execute(select(AuditLog).order_by(AuditLog.created_at.desc()).limit(1)).scalar_one_or_none()
+    last = db.execute(select(AuditLog).order_by(AuditLog.seq.desc()).limit(1)).scalar_one_or_none()
     prev_hash = last.hash if last else ""
     payload = {
         "actor": actor_user_id, "action": action,
@@ -43,12 +43,15 @@ def append_audit(
         hash=_hash_entry(prev_hash, payload),
     )
     db.add(entry)
+    # Flush so the next append in the same transaction chains off this entry's hash
+    # and monotonic `seq` (the session runs with autoflush disabled).
+    db.flush()
     return entry
 
 
 def verify_chain(db: Session) -> bool:
     """Verify the audit hash chain is intact (tamper detection)."""
-    entries = db.execute(select(AuditLog).order_by(AuditLog.created_at.asc())).scalars().all()
+    entries = db.execute(select(AuditLog).order_by(AuditLog.seq.asc())).scalars().all()
     prev = ""
     for e in entries:
         payload = {

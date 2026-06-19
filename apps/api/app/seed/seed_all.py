@@ -182,6 +182,9 @@ def seed() -> None:
         # ---- Competency depth + role matrix + Employee 360 (P-B) ----
         from app.seed.seed_b import seed_b
         seed_b(db)
+        # ---- Scoring rubrics + governed blueprints + AI question queue (P-C) ----
+        from app.seed.seed_c import seed_c
+        seed_c(db)
 
         db.commit()
         print("Seed complete.")

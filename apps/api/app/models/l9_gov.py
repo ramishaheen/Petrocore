@@ -1,5 +1,5 @@
 """L9 Training & Development Governance · cross-cutting governance & audit."""
-from sqlalchemy import Float, ForeignKey, Integer, String, Text
+from sqlalchemy import BigInteger, Float, ForeignKey, Identity, Integer, String, Text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -80,6 +80,9 @@ class AuditLog(Base, TimestampMixin):
     __tablename__ = "audit_log"
 
     id: Mapped[str] = uuid_pk()
+    # Monotonic insertion order — the hash chain is verified in `seq` order, which
+    # stays well-defined even when many entries share a transaction `created_at`.
+    seq: Mapped[int] = mapped_column(BigInteger, Identity(), index=True)
     actor_user_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     action: Mapped[str] = mapped_column(String(60))
     entity: Mapped[str] = mapped_column(String(60))

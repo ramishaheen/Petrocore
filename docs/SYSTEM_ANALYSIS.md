@@ -73,9 +73,10 @@ RLS multi-tenant (enforced under a non-superuser DB role).
 | CompetencyDomain/Cluster/ProficiencyLevel/Descriptor | ✅ P-B (`cd_*` tables + taxonomy + descriptors) |
 | RoleCompetencyProfile/Requirement (versioned) | ✅ P-B (`rc_profile`/`rc_requirement`, P1–P5) |
 | EmployeeQualification/Certification/Experience | ✅ P-B (`e360_*` tables) |
-| AssessmentBlueprint(+Competency,+Rule) | ⬜ P-C (next) |
+| AssessmentBlueprint(+Competency,+Rule) + ScoringRubric | ✅ P-C (`ab_*` tables) |
+| AIQuestionGenerationRequest/AIGeneratedQuestion/QuestionReview | ✅ P-C (`qg_*` tables → promote to `l7_question`) |
 | Talent/Succession entities | ⬜ P-E |
-| Multi-factor ReadinessScore (per group/family/level) | ⬜ P-D |
+| Multi-factor ReadinessScore (per group/family/level) | ⬜ P-D (next) |
 
 ## 7. Phased plan to converge on the spec
 - **P-A (this increment):** extensible core (LookupType/Value, EntityType/EntityLink, CustomField*) +
@@ -83,7 +84,14 @@ RLS multi-tenant (enforced under a non-superuser DB role).
 - **P-B ✅:** competency depth (Domain/Cluster/ProficiencyLevel/Descriptor) + versioned RoleCompetencyProfile/Requirement;
   Employee qualifications/certifications/experience. Migration 0003; APIs under `/competencies`, `/competency-domains`,
   `/jobs/{id}/competency-profile`, `/employees/{id}/{qualifications,certifications,experience}`.
-- **P-C:** AssessmentBlueprint engine (+competency,+rule) + attempt/response split + scoring rubrics; AI question review workflow.
+- **P-C ✅:** governed AssessmentBlueprint engine (`ab_blueprint` + `_competency` + `_rule`) derived from a
+  job's latest APPROVED competency profile, scoring rubrics (`ab_scoring_rubric`), and the AI
+  question workflow (`qg_request`/`qg_question`/`qg_review`): the gateway *drafts* questions with a
+  confidence score, a human reviewer (SME/HR/Governance) Approves/Returns/Rejects, and an approved
+  draft is *promoted* into the live `l7_question` bank — every step audited. Migration 0004; APIs under
+  `/jobs`, `/jobs/{id}/blueprint`, `/blueprints[/{id}][/submit|/approve|/generate-questions]`,
+  `/ai-questions[/{id}/review]`, `/scoring-rubrics`. Also hardened the audit hash chain with a monotonic
+  `seq` (ties on transaction `created_at` no longer reorder the chain).
 - **P-D:** multi-factor ReadinessScore (entity = employee/group/dept/family/level/company) + readiness models per family.
 - **P-E:** talent/succession/knowledge-continuity; workforce planning; integrations (HR/LMS/ERP/CMMS/HSE).
 - **P-F:** psychometrics/calibration, predictive readiness, knowledge graph, benchmarking.
