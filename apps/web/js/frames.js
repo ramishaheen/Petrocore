@@ -20,5 +20,9 @@ window.HP_FRAMES = [
   // 4 — the private office
   "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_092906_036e27ae-7ef8-4acc-ac58-a7b30deeb19d.png",
   // 5 — due diligence: box, papers & certificate
-  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_093038_7364fd92-0a4c-4ee8-8739-be75ddbbd522.png"
+  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_093038_7364fd92-0a4c-4ee8-8739-be75ddbbd522.png",
+  // 6 — the object of desire: gold & steel, chiaroscuro
+  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_153146_02d051a9-c13f-49f0-84a1-5797e29137b1.png",
+  // 7 — on the wrist: quiet opulence
+  "https://d8j0ntlcm91z4.cloudfront.net/user_2whIQnXT6z1DfEo8OTTSyHeZ2gr/hf_20260619_153214_294b6295-25bc-410d-b983-4203b71c5939.png"
 ];

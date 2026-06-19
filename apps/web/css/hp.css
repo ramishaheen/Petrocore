@@ -367,3 +367,34 @@ header.shrink {
 }
 .brand { font-size: 1.04rem; letter-spacing: 0.06em; }
 .brand-mark { width: 28px; height: 28px; }
+
+/* =========================================================================
+   Luxe motion — film grain, hero vignette, logo intro animation
+   ========================================================================= */
+/* animated gold-lit film grain over heroes */
+.hero-noise { inset: -6%; opacity: 0.08; will-change: transform; animation: grain 7s steps(8) infinite; }
+@keyframes grain {
+  0%,100% { transform: translate(0,0); } 12% { transform: translate(-4%,-3%); }
+  25% { transform: translate(3%,-5%); } 37% { transform: translate(-5%,4%); }
+  50% { transform: translate(4%,3%); } 62% { transform: translate(-3%,-4%); }
+  75% { transform: translate(5%,2%); } 87% { transform: translate(-2%,5%); }
+}
+/* richer gold vignette on the cinematic home hero */
+#hero .hero-grade {
+  background:
+    radial-gradient(68% 50% at 50% 2%, rgba(201,162,74,0.12), transparent 55%),
+    radial-gradient(125% 90% at 50% 38%, transparent 48%, rgba(0,0,0,0.5) 100%),
+    radial-gradient(120% 80% at 50% 10%, transparent 40%, rgba(7,8,11,0.55) 100%),
+    linear-gradient(180deg, rgba(7,8,11,0.5) 0%, transparent 30%, transparent 52%, rgba(7,8,11,0.96) 100%);
+}
+
+/* logo intro — the watch-dial mark winds in */
+.brand-mark { animation: markIn 0.9s var(--ease) both; }
+@keyframes markIn { from { opacity: 0; transform: rotate(-130deg) scale(0.55); } to { opacity: 1; transform: none; } }
+
+/* preloader logo — rise + gentle gold glow */
+#preload .pl-mark { animation: plrise 0.9s var(--ease) both, plglow 2.6s ease-in-out 0.6s infinite; }
+@keyframes plglow {
+  0%,100% { filter: drop-shadow(0 0 4px rgba(201,162,74,0)); }
+  50% { filter: drop-shadow(0 0 18px rgba(201,162,74,0.32)); }
+}
