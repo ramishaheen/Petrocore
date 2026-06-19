@@ -307,6 +307,54 @@ const readinessRows: RSRow[] = [
   { entity_type: "DEPARTMENT", entity_id: "opsb", name_en: "Operations Section B", name_ar: "قسم العمليات ب", readiness_index: 52.3, readiness_status: "DEVELOPMENT_REQUIRED", source_count: 3, is_critical: false, factors: { competency_score: 0.55, evidence_confidence: 0.62, data_quality: 0.6, risk_adjustment: 0.8, role_criticality: 0.9, recency: 0.78 } },
 ];
 
+/* ----------------------------------------------- P-E: talent & succession */
+const talentPipeline = {
+  talent_profiles: 3,
+  by_segment: [{ segment: "HIGH_POTENTIAL", count: 2 }, { segment: "SOLID_PERFORMER", count: 1 }],
+  critical_roles_total: 3, critical_roles_covered: 2, knowledge_holders: 2, knowledge_at_risk: 1,
+};
+
+const criticalRolesTal = [
+  { job_id: "j-sup", job_code: "SUP-1", title_en: "Shift Supervisor", title_ar: "مشرف وردية", criticality: "VERY_HIGH", loss_risk: 0.7, business_impact: 0.9, bench_strength: 2, ready_now: 1, has_plan: true },
+  { job_id: "j-pe2", job_code: "PE-2", title_en: "Process Engineer", title_ar: "مهندس عمليات", criticality: "HIGH", loss_risk: 0.4, business_impact: 0.8, bench_strength: 1, ready_now: 0, has_plan: true },
+  { job_id: "j-cro", job_code: "CRO-1", title_en: "Control Room Operator", title_ar: "مشغل غرفة تحكم", criticality: "HIGH", loss_risk: 0.8, business_impact: 0.6, bench_strength: 0, ready_now: 0, has_plan: false },
+];
+
+const TAL_CANDS: Record<string, Array<Record<string, unknown>>> = {
+  "j-sup": [
+    { id: "sc1", employee_id: "e7", name_en: "Omar Al-Fitouri", name_ar: "عمر الفيتوري", readiness_index: 81.2, readiness_status: "READY", remaining_gaps: 0, time_to_ready_months: 0, rank: 1, recommendation_status: "PENDING" },
+    { id: "sc2", employee_id: "e2", name_en: "Fatima Al-Zawawi", name_ar: "فاطمة الزواوي", readiness_index: 74.6, readiness_status: "READY_MINOR_GAPS", remaining_gaps: 1, time_to_ready_months: 3, rank: 2, recommendation_status: "PENDING" },
+    { id: "sc3", employee_id: "e8", name_en: "Huda Barakat", name_ar: "هدى بركات", readiness_index: 69.0, readiness_status: "DEVELOPMENT_REQUIRED", remaining_gaps: 2, time_to_ready_months: 6, rank: 3, recommendation_status: "PENDING" },
+    { id: "sc4", employee_id: "e5", name_en: "Yusuf Al-Tayeb", name_ar: "يوسف الطيب", readiness_index: 41.0, readiness_status: "NOT_READY_CRITICAL", remaining_gaps: 4, time_to_ready_months: 12, rank: 4, recommendation_status: "PENDING" },
+  ],
+};
+
+function successionPlanFor(jobId: string) {
+  const role = criticalRolesTal.find((r) => r.job_id === jobId) ?? criticalRolesTal[0];
+  const cands = TAL_CANDS[jobId] ?? TAL_CANDS["j-sup"];
+  return {
+    id: "sp-" + role.job_id, job_id: role.job_id, plan_name: `${role.title_en} — Succession Plan`,
+    bench_strength: cands.filter((c) => ["READY", "READY_MINOR_GAPS"].includes(c.readiness_status as string)).length,
+    ready_now: cands.filter((c) => c.readiness_status === "READY").length,
+    candidate_count: cands.length, approval_status: "UNDER_REVIEW", candidates: cands,
+  };
+}
+
+const knowledgeHolders = [
+  { id: "kh1", employee_id: "e1", name_en: "Ahmed Al-Mansouri", name_ar: "أحمد المنصوري", knowledge_domain: "Offshore startup & well control", criticality: "VERY_HIGH", retirement_risk: 0.7, transfer_status: "IN_PROGRESS" },
+  { id: "kh2", employee_id: "e7", name_en: "Omar Al-Fitouri", name_ar: "عمر الفيتوري", knowledge_domain: "Turnaround planning", criticality: "HIGH", retirement_risk: 0.5, transfer_status: "OPEN" },
+];
+
+const transferPlans = [
+  { id: "kt1", knowledge_holder_id: "kh1", plan_name: "Mentor second-line on PSM & startup", successor_employee_id: "e2", mentoring_flag: true, status: "ACTIVE" },
+];
+
+const talentProfiles = [
+  { id: "tp1", employee_id: "e1", name_en: "Ahmed Al-Mansouri", name_ar: "أحمد المنصوري", talent_segment: "HIGH_POTENTIAL", potential_rating: "HIGH", readiness_status: "READY" },
+  { id: "tp2", employee_id: "e7", name_en: "Omar Al-Fitouri", name_ar: "عمر الفيتوري", talent_segment: "HIGH_POTENTIAL", potential_rating: "HIGH", readiness_status: "READY" },
+  { id: "tp3", employee_id: "e2", name_en: "Fatima Al-Zawawi", name_ar: "فاطمة الزواوي", talent_segment: "SOLID_PERFORMER", potential_rating: "MED", readiness_status: "READY_MINOR_GAPS" },
+];
+
 function rsDetail(entityId: string) {
   const row = readinessRows.find((r) => r.entity_id === entityId) ?? readinessRows[0];
   const f = row.factors;
@@ -363,6 +411,45 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
     }));
   if (/^\/readiness\/(employees|nodes)\/[^/]+$/.test(url) && method === "get") return rsDetail(url.split("/")[3]);
   if (method === "post" && /^\/readiness\/(employees|nodes)\/[^/]+\/compute$/.test(url)) return rsDetail(url.split("/")[3]);
+
+  // P-E: talent & succession
+  if (url === "/talent/pipeline") return talentPipeline;
+  if (url === "/talent/critical-roles") return criticalRolesTal;
+  if (url === "/talent/profiles") return talentProfiles;
+  if (url === "/talent/knowledge-holders" && method === "get") return knowledgeHolders;
+  if (url === "/talent/transfer-plans" && method === "get") return transferPlans;
+  if (url === "/talent/succession-plans" && method === "get")
+    return criticalRolesTal.filter((r) => r.has_plan).map((r) => {
+      const p = successionPlanFor(r.job_id);
+      return { id: p.id, job_id: p.job_id, plan_name: p.plan_name, bench_strength: p.bench_strength,
+               ready_now: p.ready_now, candidate_count: p.candidate_count, approval_status: p.approval_status };
+    });
+  if (/^\/talent\/succession-plans\/[^/]+$/.test(url) && method === "get") {
+    const jid = (url.split("/")[3] || "").replace(/^sp-/, "");
+    return successionPlanFor(jid);
+  }
+  if (method === "post" && /^\/talent\/jobs\/[^/]+\/succession-plan$/.test(url)) return successionPlanFor(url.split("/")[3]);
+  if (method === "post" && /^\/talent\/successors\/[^/]+\/decision$/.test(url)) {
+    const approve = (() => { try { return JSON.parse(config.data || "{}").approve !== false; } catch { return true; } })();
+    return { id: url.split("/")[3], recommendation_status: approve ? "APPROVED" : "REJECTED" };
+  }
+  if (method === "post" && url === "/talent/knowledge-holders") {
+    const b = (() => { try { return JSON.parse(config.data || "{}"); } catch { return {}; } })();
+    return { id: "kh-" + Math.random().toString(36).slice(2, 7), employee_id: b.employee_id,
+             knowledge_domain: b.knowledge_domain, criticality: b.criticality ?? "HIGH",
+             retirement_risk: b.retirement_risk ?? 0, transfer_status: "OPEN" };
+  }
+  if (method === "post" && url === "/talent/transfer-plans") {
+    const b = (() => { try { return JSON.parse(config.data || "{}"); } catch { return {}; } })();
+    return { id: "kt-" + Math.random().toString(36).slice(2, 7), knowledge_holder_id: b.knowledge_holder_id,
+             plan_name: b.plan_name, successor_employee_id: b.successor_employee_id ?? null,
+             mentoring_flag: b.mentoring_flag ?? true, status: "ACTIVE" };
+  }
+  if (method === "post" && /^\/talent\/employees\/[^/]+\/flag$/.test(url)) {
+    const b = (() => { try { return JSON.parse(config.data || "{}"); } catch { return {}; } })();
+    return { id: "tp-new", employee_id: url.split("/")[3], talent_segment: b.talent_segment,
+             potential_rating: b.potential_rating ?? "MED", readiness_status: "READY" };
+  }
 
   if (method === "post" && url === "/assessments/grade")
     return { assessed_level: 3, required_level: 4, confidence: 0.62, status: "PENDING_REVIEW", needs_human_review: true };

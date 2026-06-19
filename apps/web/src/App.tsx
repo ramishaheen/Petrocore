@@ -20,6 +20,7 @@ const Assessment = lazy(() => import("./pages/Assessment"));
 const Blueprints = lazy(() => import("./pages/Blueprints"));
 const Readiness = lazy(() => import("./pages/Readiness"));
 const Gaps = lazy(() => import("./pages/Gaps"));
+const Succession = lazy(() => import("./pages/Succession"));
 const Training = lazy(() => import("./pages/Training"));
 const Reports = lazy(() => import("./pages/Reports"));
 const Governance = lazy(() => import("./pages/Governance"));
@@ -66,6 +67,7 @@ export default function App() {
           <Route path="/blueprints" element={<Blueprints />} />
           <Route path="/readiness" element={<Readiness />} />
           <Route path="/gaps" element={<Gaps />} />
+          <Route path="/succession" element={<Succession />} />
           <Route path="/training" element={<Training />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/governance" element={<Governance />} />

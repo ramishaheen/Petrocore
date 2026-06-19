@@ -19,6 +19,7 @@ export const NAV: NavMeta[] = [
   { key: "gaps", route: "/gaps", group: "intelligence", roles: ["LINE_MANAGER", "DEPT_MANAGER", "LD_MANAGER", "COMPANY_ADMIN", "PLATFORM_ADMIN"] },
   { key: "readiness", route: "/readiness", group: "intelligence", roles: ["LINE_MANAGER", "DEPT_MANAGER", "HR_VALIDATOR", "COMPANY_ADMIN", "NOC_EXECUTIVE", "CONSULTANT", "PLATFORM_ADMIN"] },
   { key: "training", route: "/training", group: "decision", roles: ["LD_MANAGER", "DEPT_MANAGER", "PLATFORM_ADMIN"] },
+  { key: "succession", route: "/succession", group: "decision", roles: ["HR_VALIDATOR", "DEPT_MANAGER", "COMPANY_ADMIN", "NOC_EXECUTIVE", "CONSULTANT", "PLATFORM_ADMIN"] },
   { key: "reports", route: "/reports", group: "decision", roles: ["DEPT_MANAGER", "LD_MANAGER", "COMPANY_ADMIN", "NOC_EXECUTIVE", "PLATFORM_ADMIN"] },
   { key: "governance", route: "/governance", group: "decision", roles: ["HR_VALIDATOR", "DEPT_MANAGER", "COMPANY_ADMIN", "NOC_EXECUTIVE", "PLATFORM_ADMIN"] },
   { key: "enablement", route: "/enablement", group: "rollout", roles: ["CONSULTANT", "COMPANY_ADMIN", "PLATFORM_ADMIN"] },
