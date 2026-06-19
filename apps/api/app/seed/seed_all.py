@@ -179,6 +179,9 @@ def seed() -> None:
         # ---- Extensible core + workforce segmentation (System Analysis P-A) ----
         from app.seed.seed_core import seed_core
         seed_core(db)
+        # ---- Competency depth + role matrix + Employee 360 (P-B) ----
+        from app.seed.seed_b import seed_b
+        seed_b(db)
 
         db.commit()
         print("Seed complete.")

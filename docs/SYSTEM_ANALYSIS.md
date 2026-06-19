@@ -70,17 +70,19 @@ RLS multi-tenant (enforced under a non-superuser DB role).
 | **Generic EntityLink** | 🆕 added (this increment) |
 | **CustomFieldDefinition/Value** | 🆕 added (this increment) |
 | **WorkforceFamily / CareerStream / RoleLevel / RoleArchetype** | 🆕 added (this increment) |
-| CompetencyDomain/Cluster/ProficiencyLevel/Descriptor | ⬜ next |
-| AssessmentBlueprint(+Competency,+Rule) | ⬜ next |
-| EmployeeQualification/Certification/Experience | ⬜ next |
-| Talent/Succession entities | ⬜ next |
-| Multi-factor ReadinessScore (per group/family/level) | ⬜ next |
+| CompetencyDomain/Cluster/ProficiencyLevel/Descriptor | ✅ P-B (`cd_*` tables + taxonomy + descriptors) |
+| RoleCompetencyProfile/Requirement (versioned) | ✅ P-B (`rc_profile`/`rc_requirement`, P1–P5) |
+| EmployeeQualification/Certification/Experience | ✅ P-B (`e360_*` tables) |
+| AssessmentBlueprint(+Competency,+Rule) | ⬜ P-C (next) |
+| Talent/Succession entities | ⬜ P-E |
+| Multi-factor ReadinessScore (per group/family/level) | ⬜ P-D |
 
 ## 7. Phased plan to converge on the spec
 - **P-A (this increment):** extensible core (LookupType/Value, EntityType/EntityLink, CustomField*) +
   workforce segmentation (Family/Stream/RoleLevel/RoleArchetype) — additive tables, seed, read/link APIs, tests.
-- **P-B:** competency depth (Domain/Cluster/ProficiencyLevel/Descriptor) + RoleCompetencyProfile/Requirement versions;
-  Employee qualifications/certifications/experience.
+- **P-B ✅:** competency depth (Domain/Cluster/ProficiencyLevel/Descriptor) + versioned RoleCompetencyProfile/Requirement;
+  Employee qualifications/certifications/experience. Migration 0003; APIs under `/competencies`, `/competency-domains`,
+  `/jobs/{id}/competency-profile`, `/employees/{id}/{qualifications,certifications,experience}`.
 - **P-C:** AssessmentBlueprint engine (+competency,+rule) + attempt/response split + scoring rubrics; AI question review workflow.
 - **P-D:** multi-factor ReadinessScore (entity = employee/group/dept/family/level/company) + readiness models per family.
 - **P-E:** talent/succession/knowledge-continuity; workforce planning; integrations (HR/LMS/ERP/CMMS/HSE).

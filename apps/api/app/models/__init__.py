@@ -22,6 +22,14 @@ from app.models.core_ext import (
 from app.models.workforce import (
     WorkforceFamily, CareerStream, RoleLevel, RoleArchetype,
 )
+from app.models.competency_v2 import (
+    ProficiencyLevel, CompetencyDomain, CompetencyCluster, CompetencyTaxonomy,
+    CompetencyDescriptor, EvidenceRequirementProfile,
+    RoleCompetencyProfile, RoleCompetencyRequirement,
+)
+from app.models.employee_360 import (
+    EmployeeQualification, EmployeeCertification, EmployeeExperience,
+)
 
 __all__ = [
     "AppUser",
@@ -34,4 +42,8 @@ __all__ = [
     "LookupType", "LookupValue", "EntityType", "EntityLink",
     "CustomFieldDefinition", "CustomFieldValue",
     "WorkforceFamily", "CareerStream", "RoleLevel", "RoleArchetype",
+    "ProficiencyLevel", "CompetencyDomain", "CompetencyCluster", "CompetencyTaxonomy",
+    "CompetencyDescriptor", "EvidenceRequirementProfile",
+    "RoleCompetencyProfile", "RoleCompetencyRequirement",
+    "EmployeeQualification", "EmployeeCertification", "EmployeeExperience",
 ]
