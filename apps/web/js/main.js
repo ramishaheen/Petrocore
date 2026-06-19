@@ -15,7 +15,9 @@
   var images = [];
   var loaded = 0;
 
-  function preload(done) {
+  function preload(cb) {
+    var booted = false;
+    function done() { if (booted) return; booted = true; cb(); }   /* run boot once */
     if (!FRAMES.length) { done(); return; }
     FRAMES.forEach(function (src, i) {
       var img = new Image();

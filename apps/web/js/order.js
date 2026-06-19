@@ -142,7 +142,14 @@
   var confirmClose = $("#confirmClose");
   if (confirmClose) confirmClose.addEventListener("click", function () {
     var confirm = $("#confirm"); if (confirm) { confirm.hidden = true; document.body.style.overflow = ""; }
-    if (form) form.reset(); renderBrief(); showStep(1);
+    if (form) form.reset();
+    /* reset custom pill state too — form.reset() only clears native inputs */
+    sel = { intent: GROUPS.intent[0], first: "", flex: "", condition: "Open", papers: "Full set preferred", timeframe: "No rush", channel: "Email", when: "Any time" };
+    Object.keys(GROUPS).forEach(function (group) {
+      var host = document.querySelector('.pills[data-group="' + group + '"]');
+      if (host) host.querySelectorAll(".pill").forEach(function (p) { p.classList.toggle("sel", p.dataset.val === sel[group]); });
+    });
+    renderBrief(); showStep(1);
   });
 
   /* rare-piece mandate shortcut */
