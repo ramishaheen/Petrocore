@@ -23,6 +23,15 @@ class Settings(BaseSettings):
     AI_API_KEY: str = ""
     CONFIDENCE_REVIEW_THRESHOLD: float = 0.75
 
+    # Multi-factor readiness (P-D) — configurable bands, not hard-coded in logic.
+    # index ∈ [0,100]; status thresholds and the factor-quality floors below.
+    READINESS_READY_THRESHOLD: float = 85.0          # ≥ ⇒ "Ready"
+    READINESS_MINOR_GAPS_THRESHOLD: float = 70.0     # ≥ ⇒ "Ready with minor gaps"
+    READINESS_EVIDENCE_FLOOR: float = 0.40           # < ⇒ "Evidence insufficient"
+    READINESS_RECENCY_FLOOR: float = 0.40            # < ⇒ "Reassessment required"
+    READINESS_CRITICAL_ROLE_FLOOR: float = 0.70      # role_criticality ≥ ⇒ critical-role gate
+    READINESS_RECENCY_HALFLIFE_DAYS: float = 365.0   # recency decay half-life
+
     # 32-byte url-safe base64 key for field-level PII encryption (Fernet).
     # Dev default — override with a freshly generated key in production:
     #   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"

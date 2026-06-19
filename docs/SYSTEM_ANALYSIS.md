@@ -75,8 +75,8 @@ RLS multi-tenant (enforced under a non-superuser DB role).
 | EmployeeQualification/Certification/Experience | ✅ P-B (`e360_*` tables) |
 | AssessmentBlueprint(+Competency,+Rule) + ScoringRubric | ✅ P-C (`ab_*` tables) |
 | AIQuestionGenerationRequest/AIGeneratedQuestion/QuestionReview | ✅ P-C (`qg_*` tables → promote to `l7_question`) |
-| Talent/Succession entities | ⬜ P-E |
-| Multi-factor ReadinessScore (per group/family/level) | ⬜ P-D (next) |
+| Talent/Succession entities | ⬜ P-E (next) |
+| Multi-factor ReadinessScore (per group/family/level) | ✅ P-D (`rs_score` + readiness engine) |
 
 ## 7. Phased plan to converge on the spec
 - **P-A (this increment):** extensible core (LookupType/Value, EntityType/EntityLink, CustomField*) +
@@ -92,7 +92,16 @@ RLS multi-tenant (enforced under a non-superuser DB role).
   `/jobs`, `/jobs/{id}/blueprint`, `/blueprints[/{id}][/submit|/approve|/generate-questions]`,
   `/ai-questions[/{id}/review]`, `/scoring-rubrics`. Also hardened the audit hash chain with a monotonic
   `seq` (ties on transaction `created_at` no longer reorder the chain).
-- **P-D:** multi-factor ReadinessScore (entity = employee/group/dept/family/level/company) + readiness models per family.
+- **P-D ✅:** multi-factor, explainable ReadinessScore (`rs_score`) for any entity
+  (employee/department/company/family/level/group). The readiness engine combines the six §4
+  factors — CompetencyScore × EvidenceConfidence × DataQuality × RiskAdjustment × RoleCriticality ×
+  Recency — surfacing the geometric mean as a 0–100 index (monotonic in the product) while recording
+  the raw product and every factor for defensibility. Status bands + quality floors are configurable;
+  the catalog covers the §4 statuses (Ready · Ready w/ minor gaps · Development required · Not ready for
+  critical role · Evidence insufficient · Reassessment required · + talent flags for P-E). Employee
+  scores roll up the org tree by averaging factors and recomputing. Migration 0005; APIs under
+  `/readiness/{statuses,employees/{id}[/compute],nodes/{id}[/compute]}` and `GET /readiness`. Every
+  compute/aggregate is audited.
 - **P-E:** talent/succession/knowledge-continuity; workforce planning; integrations (HR/LMS/ERP/CMMS/HSE).
 - **P-F:** psychometrics/calibration, predictive readiness, knowledge graph, benchmarking.
 

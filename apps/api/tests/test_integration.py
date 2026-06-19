@@ -409,3 +409,62 @@ def test_assessment_blueprint_and_ai_question_review(client):
                        headers=employee).status_code == 403
     assert client.post(f"/api/v1/ai-questions/{other['id']}/review", headers=employee,
                        json={"decision": "Approved"}).status_code == 403
+
+
+def test_multi_factor_readiness(client):
+    """P-D: an explainable, multi-factor ReadinessScore per employee, rolled up to
+    a department — every factor recorded, status from the catalog, fully audited."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # The status vocabulary is bilingual and complete.
+    statuses = {s["code"]: s for s in client.get("/api/v1/readiness/statuses", headers=admin).json()}
+    assert {"READY", "NOT_READY_CRITICAL", "EVIDENCE_INSUFFICIENT"} <= set(statuses)
+    assert all(s["name_ar"] for s in statuses.values())
+
+    profiles = client.get("/api/v1/profiles", headers=admin).json()
+    employee_id = profiles[0]["employee_id"]
+
+    # Ensure at least one evidence-backed result exists (grade a competency).
+    comp_id = client.get("/api/v1/competencies", headers=admin).json()[0]["id"]
+    qs = client.get(f"/api/v1/assessments/questions/{comp_id}", headers=admin).json()
+    client.post("/api/v1/assessments/grade", headers=admin, json={
+        "employee_id": employee_id, "competency_id": comp_id,
+        "responses": [{"question_id": q["id"], "choice": 1, "score": 0.8} for q in qs],
+    })
+
+    # Compute the employee's readiness: six factors → an index in [0,100] + a status.
+    rs = client.post(f"/api/v1/readiness/employees/{employee_id}/compute", headers=admin).json()
+    assert 0.0 <= rs["readiness_index"] <= 100.0
+    assert rs["readiness_status"] in statuses
+    assert set(rs["factors"]) == {
+        "competency_score", "evidence_confidence", "data_quality",
+        "risk_adjustment", "role_criticality", "recency",
+    }
+    # Explainability: the persisted breakdown defends the verdict.
+    assert "raw_product" in rs["breakdown"] and rs["breakdown"]["method_version"] == "rs-v1"
+    assert rs["source_count"] >= 1, "seeded competency results should back the score"
+
+    # Read-back returns the latest score.
+    got = client.get(f"/api/v1/readiness/employees/{employee_id}", headers=admin).json()
+    assert got["readiness_index"] == rs["readiness_index"]
+    assert got["readiness_status"] == rs["readiness_status"]
+
+    # Department rollup over the employee's section aggregates ≥1 employee.
+    nodes = client.get("/api/v1/org/nodes", headers=admin).json()
+    section_id = next(n["id"] for n in nodes if n["node_type"] == "SECTION")
+    agg = client.post(f"/api/v1/readiness/nodes/{section_id}/compute", headers=admin).json()
+    assert agg["entity_type"] == "DEPARTMENT" and agg["source_count"] >= 1
+    assert 0.0 <= agg["readiness_index"] <= 100.0
+
+    # The listing surfaces both employee and department-level scores.
+    listed = client.get("/api/v1/readiness", headers=admin).json()
+    kinds = {row["entity_type"] for row in listed}
+    assert "EMPLOYEE" in kinds and "DEPARTMENT" in kinds
+
+    # The compute + aggregate writes stayed inside the tamper-evident audit chain.
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+
+    # RBAC: a plain employee cannot compute readiness verdicts.
+    employee = _login(client, "employee@noc.ly")
+    assert client.post(f"/api/v1/readiness/employees/{employee_id}/compute",
+                       headers=employee).status_code == 403

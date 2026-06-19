@@ -34,6 +34,7 @@ from app.models.assessment_v2 import (
     ScoringRubric, AssessmentBlueprint, AssessmentBlueprintCompetency, AssessmentBlueprintRule,
     AIQuestionGenerationRequest, AIGeneratedQuestion, QuestionReview,
 )
+from app.models.readiness import ReadinessScore
 
 __all__ = [
     "AppUser",
@@ -53,4 +54,5 @@ __all__ = [
     "ScoringRubric", "AssessmentBlueprint", "AssessmentBlueprintCompetency",
     "AssessmentBlueprintRule", "AIQuestionGenerationRequest", "AIGeneratedQuestion",
     "QuestionReview",
+    "ReadinessScore",
 ]

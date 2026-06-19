@@ -185,6 +185,9 @@ def seed() -> None:
         # ---- Scoring rubrics + governed blueprints + AI question queue (P-C) ----
         from app.seed.seed_c import seed_c
         seed_c(db)
+        # ---- Evidence-backed results + multi-factor readiness scores (P-D) ----
+        from app.seed.seed_d import seed_d
+        seed_d(db)
 
         db.commit()
         print("Seed complete.")
