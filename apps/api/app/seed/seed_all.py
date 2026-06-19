@@ -197,6 +197,9 @@ def seed() -> None:
         # ---- Assessment execution split + question bank (P-G) ----
         from app.seed.seed_g import seed_g
         seed_g(db)
+        # ---- Development plans (P-H) ----
+        from app.seed.seed_h import seed_h
+        seed_h(db)
 
         db.commit()
         print("Seed complete.")

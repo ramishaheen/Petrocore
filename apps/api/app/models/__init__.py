@@ -43,6 +43,7 @@ from app.models.assessment_exec import (
     QuestionBank, QuestionTag, AssessmentCampaign, AssessmentParticipant,
     AssessmentAttempt, AssessmentResponse, AssessmentResultRow, EvidenceReview,
 )
+from app.models.development import LearningNeed, DevelopmentPlan, DevelopmentPlanItem
 
 __all__ = [
     "AppUser",
@@ -68,4 +69,5 @@ __all__ = [
     "IntegrationConnector", "IntegrationSyncLog",
     "QuestionBank", "QuestionTag", "AssessmentCampaign", "AssessmentParticipant",
     "AssessmentAttempt", "AssessmentResponse", "AssessmentResultRow", "EvidenceReview",
+    "LearningNeed", "DevelopmentPlan", "DevelopmentPlanItem",
 ]

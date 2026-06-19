@@ -693,3 +693,42 @@ def test_assessment_execution_split(client):
     assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
     employee = _login(client, "employee@noc.ly")
     assert client.post("/api/v1/assessment-campaigns", headers=employee, json={"name": "x"}).status_code == 403
+
+
+def test_development_planning(client):
+    """P-H: derive learning needs from verified gaps → development plan → items →
+    approve → complete, all audited."""
+    admin = _login(client, "admin@petrocore.ly")
+    employee_id = client.get("/api/v1/profiles", headers=admin).json()[0]["employee_id"]
+    comp_id = client.get("/api/v1/competencies", headers=admin).json()[0]["id"]
+
+    # Create a verified gap (grade low, then analyze).
+    qs = client.get(f"/api/v1/assessments/questions/{comp_id}", headers=admin).json()
+    client.post("/api/v1/assessments/grade", headers=admin, json={
+        "employee_id": employee_id, "competency_id": comp_id,
+        "responses": [{"question_id": q["id"], "choice": 0, "score": 0.0} for q in qs]})
+    client.post(f"/api/v1/gaps/analyze/{employee_id}", headers=admin)
+
+    # Derive learning needs from the gaps.
+    needs = client.post(f"/api/v1/development/employees/{employee_id}/learning-needs", headers=admin).json()
+    assert needs, "expected learning needs derived from verified gaps"
+    need_id = needs[0]["id"]
+
+    # Build a development plan, add an item linked to the need, approve, complete.
+    plan = client.post("/api/v1/development/plans", headers=admin, json={
+        "entity_type": "Employee", "entity_id": employee_id, "plan_name": "IDP", "plan_period": "2026"}).json()
+    item = client.post(f"/api/v1/development/plans/{plan['id']}/items", headers=admin, json={
+        "action_type": "Training", "action_description": "PSM L5", "learning_need_id": need_id}).json()
+    assert client.post(f"/api/v1/development/plans/{plan['id']}/approve", headers=admin).json()["approval_status"] == "APPROVED"
+    assert client.post(f"/api/v1/development/items/{item['id']}/complete", headers=admin).json()["completion_status"] == "COMPLETE"
+
+    detail = client.get(f"/api/v1/development/plans/{plan['id']}", headers=admin).json()
+    assert detail["items"] and detail["items"][0]["completion_status"] == "COMPLETE"
+    # The completed item closed its learning need.
+    after = client.get(f"/api/v1/development/employees/{employee_id}/learning-needs", headers=admin).json()
+    assert any(n["id"] == need_id and n["status"] == "CLOSED" for n in after)
+
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+    employee = _login(client, "employee@noc.ly")
+    assert client.post("/api/v1/development/plans", headers=employee, json={
+        "entity_id": employee_id, "plan_name": "x"}).status_code == 403
