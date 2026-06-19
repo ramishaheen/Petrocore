@@ -252,3 +252,33 @@ a.cap { display: block; color: inherit; }
 .disc-grid { gap: 20px; }
 .disc { padding: 28px; }
 .disc p { line-height: 1.65; }
+
+/* =========================================================================
+   Header fix — scrim + de-crowd so the nav never overlaps the hero
+   ========================================================================= */
+header::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(6,8,12,0.95) 0%, rgba(6,8,12,0.62) 55%, rgba(6,8,12,0) 100%);
+  transition: opacity 0.4s var(--ease);
+}
+header.shrink::before { opacity: 0; }            /* shrink already paints a solid bar */
+header { padding-top: 14px; padding-bottom: 14px; }
+.brand { flex: none; font-size: 1.12rem; }
+nav { gap: 16px; }
+nav a.link { font-size: 0.8rem; }
+nav .btn { padding: 9px 15px; font-size: 0.78rem; }
+/* keep hero copy clear of the fixed header */
+.order-hero { padding-top: clamp(140px, 16vh, 184px); }
+.pf-hero { padding-top: clamp(132px, 15vh, 168px); }
+
+/* =========================================================================
+   Marquee restyle — smaller, refined serif, filled, clearly moving
+   ========================================================================= */
+.marquee { padding: 13px 0; }
+.marquee .track { gap: 46px; animation: scrollx 22s linear infinite; }
+.marquee span {
+  font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-style: normal;
+  font-size: clamp(0.85rem, 1.4vw, 1.2rem); text-transform: uppercase; letter-spacing: 0.2em;
+  color: rgba(238,242,248,0.55); -webkit-text-stroke: 0; gap: 46px;
+}
+.marquee span::after { content: "✦"; color: var(--flame); -webkit-text-stroke: 0; font-size: 0.6em; }
