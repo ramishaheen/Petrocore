@@ -203,6 +203,9 @@ def seed() -> None:
         # ---- Operational & asset context (P-I) ----
         from app.seed.seed_i import seed_i
         seed_i(db)
+        # ---- Strategy cascade (P-J) ----
+        from app.seed.seed_j import seed_j
+        seed_j(db)
 
         db.commit()
         print("Seed complete.")

@@ -47,6 +47,9 @@ from app.models.development import LearningNeed, DevelopmentPlan, DevelopmentPla
 from app.models.operations import (
     Site, ProcessUnit, Equipment, Procedure, CriticalTask, TaskRisk,
 )
+from app.models.strategy import (
+    StrategicObjective, StrategicKpi, ObjectiveCompetency, StrategicReadinessGap,
+)
 
 __all__ = [
     "AppUser",
@@ -74,4 +77,5 @@ __all__ = [
     "AssessmentAttempt", "AssessmentResponse", "AssessmentResultRow", "EvidenceReview",
     "LearningNeed", "DevelopmentPlan", "DevelopmentPlanItem",
     "Site", "ProcessUnit", "Equipment", "Procedure", "CriticalTask", "TaskRisk",
+    "StrategicObjective", "StrategicKpi", "ObjectiveCompetency", "StrategicReadinessGap",
 ]

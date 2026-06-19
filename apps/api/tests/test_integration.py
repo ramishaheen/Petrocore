@@ -762,3 +762,36 @@ def test_operations_and_asset_context(client):
     employee = _login(client, "employee@noc.ly")
     assert client.post("/api/v1/operations/equipment", headers=employee, json={
         "tag": "X", "name_en": "x", "name_ar": "x"}).status_code == 403
+
+
+def test_strategy_cascade(client):
+    """P-J: objectives → KPIs → competency alignment → strategic readiness gap
+    (strategy connected to the competency engine)."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # Seeded corporate objective with a computed gap.
+    objs = client.get("/api/v1/strategy/objectives", headers=admin).json()
+    assert any(o["level"] == "CORPORATE" for o in objs)
+    seeded = client.get(f"/api/v1/strategy/objectives/{objs[0]['id']}", headers=admin).json()
+    assert seeded["kpis"] and seeded["competencies"]
+
+    # Create a department objective under the corporate one, align a competency, compute the gap.
+    comp_id = client.get("/api/v1/competencies", headers=admin).json()[0]["id"]
+    dept = client.post("/api/v1/strategy/objectives", headers=admin, json={
+        "level": "DEPARTMENT", "title_en": "Cut HSE incidents", "title_ar": "خفض حوادث السلامة",
+        "parent_objective_id": objs[0]["id"], "period": "2026"}).json()
+    client.post(f"/api/v1/strategy/objectives/{dept['id']}/kpis", headers=admin, json={
+        "code": "TRIR", "name_en": "Total Recordable Incident Rate", "name_ar": "معدل الحوادث", "target_value": 0.5})
+    client.post(f"/api/v1/strategy/objectives/{dept['id']}/competencies", headers=admin, json={
+        "competency_id": comp_id, "required_level": 4})
+    gap = client.post(f"/api/v1/strategy/objectives/{dept['id']}/readiness-gap", headers=admin).json()
+    assert "overall_readiness_pct" in gap and gap["gaps"]
+    assert 0.0 <= gap["overall_readiness_pct"] <= 100.0
+
+    detail = client.get(f"/api/v1/strategy/objectives/{dept['id']}", headers=admin).json()
+    assert detail["readiness_gaps"]
+
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+    employee = _login(client, "employee@noc.ly")
+    assert client.post("/api/v1/strategy/objectives", headers=employee, json={
+        "title_en": "x", "title_ar": "x"}).status_code == 403
