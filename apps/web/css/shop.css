@@ -205,3 +205,15 @@
   .card { opacity: 1; translate: 0 0; }
   .shop-hero-glow { animation: none; }
 }
+
+/* ===== Compact density pass ===== */
+.shop-hero { min-height: 68vh; padding: 112px 0 52px; }
+.shop-title { font-size: clamp(2.3rem, 7vw, 5.4rem); }
+.shop-lead { margin-top: 22px; max-width: 560px; }
+.shop-hero-stats { margin-top: 36px; padding-top: 24px; gap: clamp(20px, 4vw, 50px); }
+.shop-main { padding: clamp(28px, 5vh, 56px) 0 18px; }
+.product-grid { grid-template-columns: repeat(auto-fill, minmax(265px, 1fr)); gap: 18px; }
+.card-name { font-size: 1.28rem; }
+.card-body { padding: 0 20px 20px; }
+.assurance { padding: clamp(38px, 6vh, 66px) 0; margin-top: 26px; }
+.assure { padding: 24px 22px; }

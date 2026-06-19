@@ -302,3 +302,58 @@ footer { border-top: 1px solid var(--line); background: var(--bg-2); padding: 70
 @media (max-width: 560px) {
   #trust .trust-row { grid-template-columns: 1fr; }
 }
+
+/* =========================================================================
+   Compact density pass — reduce overall scale & spacing (less "crowded")
+   Overrides earlier rules by source order.
+   ========================================================================= */
+:root { --max: 1200px; }
+
+header { padding: 16px clamp(16px, 3.5vw, 44px); }
+header.shrink { padding: 10px clamp(16px, 3.5vw, 44px); }
+nav { gap: 22px; }
+
+section.block { padding: clamp(50px, 7vh, 96px) 0; }
+.sec-head { margin-bottom: 40px; }
+.sec-head h2 { font-size: clamp(1.7rem, 4.4vw, 3rem); }
+
+/* Hero — shorter scroll, smaller headline */
+#hero { height: 250vh; }
+.hero-title { font-size: clamp(2.3rem, 7.6vw, 6rem); }
+.hero-sub { margin-top: 20px; max-width: 500px; }
+.hero-cta { margin-top: 26px; }
+
+.marquee { padding: 13px 0; }
+.marquee span { font-size: clamp(1rem, 2vw, 1.5rem); }
+
+.intro { gap: 48px; }
+.intro h2 { font-size: clamp(1.6rem, 3.8vw, 2.8rem); }
+.intro p.body { margin-top: 20px; }
+
+.stats { padding-top: 38px; gap: 20px; }
+.stat .num { font-size: clamp(1.9rem, 4.4vw, 3.2rem); }
+
+.grid-cap { gap: 16px; }
+.cap { padding: 26px 24px; }
+.cap h3 { font-size: 1.28rem; margin: 14px 0 10px; }
+
+/* Pinned collection — shorter */
+#ops { height: 250vh; }
+
+.future-grid { gap: 44px; }
+
+#cta h2 { font-size: clamp(2.1rem, 6vw, 4.6rem); }
+#cta p { margin-top: 20px; }
+
+#trust .trust-row { gap: 16px; }
+#trust .trust-item { padding: 24px 22px; }
+#trust .trust-quote { margin: 24px 0; }
+#trust .trust-quote blockquote { font-size: clamp(1.2rem, 2.6vw, 1.85rem); }
+
+footer { padding: 54px 0 34px; }
+.foot-bottom { margin-top: 44px; }
+
+@media (max-width: 560px) {
+  #hero { height: 200vh; }
+  #ops { height: 300vh; }
+}

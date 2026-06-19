@@ -229,3 +229,22 @@ input.bad, textarea.bad { border-color: #e0606a; box-shadow: 0 0 0 3px rgba(224,
   .shop-hero-glow { animation: none; }
   .step { animation: none; }
 }
+
+/* ===== Compact density pass ===== */
+.order-hero { padding: 112px 0 50px; }
+.order-title { font-size: clamp(2.1rem, 6vw, 4.8rem); }
+.order-lead { margin-top: 20px; max-width: 600px; }
+.trustbar-inner { padding: 18px 0; }
+.steps3 { gap: 16px; }
+.s3 { padding: 28px 26px; }
+.s3 h3 { font-size: 1.28rem; }
+.config { gap: 24px; }
+.config-form { padding: clamp(20px, 2.5vw, 30px); }
+.step legend { font-size: clamp(1.2rem, 2.4vw, 1.7rem); }
+.field { margin-bottom: 20px; }
+.creds { gap: 16px; }
+.cred { padding: 22px 20px; }
+.quotes { min-height: 200px; }
+.quote { padding: clamp(24px, 3.5vw, 42px); }
+.quote blockquote { font-size: clamp(1.1rem, 2.4vw, 1.7rem); }
+.summary { top: 84px; }
