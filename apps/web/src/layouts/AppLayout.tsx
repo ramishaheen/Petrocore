@@ -1,7 +1,7 @@
 import {
   Activity, BarChart3, BookOpen, Bot, Boxes, Building2, ClipboardCheck, ClipboardList, Crown,
   Factory, FileStack, Gauge, GitBranch, GraduationCap, LayoutDashboard, LogOut, Moon, Network,
-  Plug, Rocket, ScrollText, Share2, ShieldCheck, Globe, Sun, Target, UserCircle, Users,
+  Plug, Rocket, ScrollText, Settings, Share2, ShieldCheck, Globe, Sun, Target, UserCircle, Users,
   type LucideIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -23,7 +23,7 @@ const ICONS: Record<string, LucideIcon> = {
   workforcePlanning: Target, knowledgeGraph: Share2, integrations: Plug,
   strategy: Target, operations: Factory, campaigns: ClipboardList, development: GraduationCap,
   workflows: GitBranch, aiStudio: Bot, groups: Boxes,
-  governance: ShieldCheck, enablement: Rocket, diagnostic: ScrollText,
+  governance: ShieldCheck, enablement: Rocket, diagnostic: ScrollText, settings: Settings,
 };
 const GROUP_ORDER = ["me", "overview", "foundation", "intelligence", "decision", "rollout"];
 

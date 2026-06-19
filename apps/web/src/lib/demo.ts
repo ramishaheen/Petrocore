@@ -453,6 +453,18 @@ const syncLogs = [
   { id: "sl1", connector_code: "HR-CORE", direction: "INBOUND", entity_type: "Employee", records_in: 3, records_ok: 3, records_failed: 0, status: "SUCCESS", message: "Initial employee load.", at: "2026-06-18T22:00:00Z" },
 ];
 
+/* ---------------------------------- P-N: self-service settings (mutable demo state) */
+const demoAi = { model: "claude-opus-4-8", gateway_url: "http://ai-gateway:9000", api_key_set: false, mode: "stub" as "live" | "stub" };
+// Per-connector editable config the Settings tab persists (base URL / key flag).
+const demoConnCfg: Record<string, { base_url: string; api_key_set: boolean }> = {};
+function connectorPublic(c: (typeof connectors)[number]) {
+  const cfg = demoConnCfg[c.code] ?? { base_url: "", api_key_set: false };
+  return { ...c, base_url: cfg.base_url, api_key_set: cfg.api_key_set };
+}
+function parseBody(config: InternalAxiosRequestConfig): Record<string, unknown> {
+  try { return JSON.parse((config.data as string) || "{}"); } catch { return {}; }
+}
+
 /* ---------------------------------- P-G…P-M: full-spec layers (demo fixtures) */
 // P-J strategy
 const stObjectives = [
@@ -644,10 +656,44 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   if (url === "/psychometrics/question-quality") return psychQuality;
   if (url === "/psychometrics/reliability") return psychReliability;
   if (url === "/benchmarking/companies") return benchCompanies;
-  if (url === "/integration/connectors" && method === "get") return connectors;
+  if (url === "/integration/connectors" && method === "get") return connectors.map(connectorPublic);
   if (url === "/integration/sync-logs") return syncLogs;
   if (method === "post" && /^\/integration\/connectors\/[^/]+\/sync$/.test(url))
     return { id: "sl-" + Math.random().toString(36).slice(2, 7), connector_code: url.split("/")[3], status: "SUCCESS" };
+  // P-N: connector connection config (Save & Test)
+  if (method === "put" && /^\/integration\/connectors\/[^/]+$/.test(url)) {
+    const code = url.split("/")[3];
+    const b = parseBody(config);
+    const prev = demoConnCfg[code] ?? { base_url: "", api_key_set: false };
+    demoConnCfg[code] = {
+      base_url: typeof b.base_url === "string" ? b.base_url : prev.base_url,
+      api_key_set: prev.api_key_set || (typeof b.api_key === "string" && b.api_key.trim().length > 0),
+    };
+    const c = connectors.find((x) => x.code === code);
+    return c ? { ...connectorPublic(c), status: (b.status as string) || c.status, sync_mode: (b.sync_mode as string) || c.sync_mode } : { ok: true };
+  }
+  if (method === "post" && /^\/integration\/connectors\/[^/]+\/test$/.test(url)) {
+    const code = url.split("/")[3];
+    const base = (demoConnCfg[code]?.base_url || "").trim();
+    return base
+      ? { ok: true, code, message: `Reached ${base} (HTTP 200).` }
+      : { ok: false, code, message: "No base URL configured — set one and save before testing." };
+  }
+
+  // P-N: AI gateway settings (Save & Test)
+  if (url === "/settings/ai" && method === "get") return { ...demoAi };
+  if (url === "/settings/ai" && method === "put") {
+    const b = parseBody(config);
+    if (typeof b.model === "string" && b.model.trim()) demoAi.model = b.model.trim();
+    if (typeof b.gateway_url === "string" && b.gateway_url.trim()) demoAi.gateway_url = b.gateway_url.trim();
+    if (typeof b.api_key === "string" && b.api_key.trim()) { demoAi.api_key_set = true; demoAi.mode = "live"; }
+    return { ...demoAi };
+  }
+  if (url === "/settings/ai/test" && method === "post") {
+    return demoAi.mode === "live"
+      ? { ok: true, mode: "live", message: `Reached ${demoAi.gateway_url} (HTTP 200).` }
+      : { ok: true, mode: "stub", message: "Running in deterministic stub mode — no API key configured." };
+  }
 
   // P-J strategy
   if (url === "/strategy/objectives" && method === "get") return stObjectives;

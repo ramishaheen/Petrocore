@@ -59,6 +59,7 @@ from app.models.ai_lifecycle import (
 from app.models.groups import (
     WorkforceGroup, WorkforceGroupMember, TalentPool, TalentPoolMember,
 )
+from app.models.settings import PlatformSetting
 
 __all__ = [
     "AppUser",
@@ -90,4 +91,5 @@ __all__ = [
     "WorkflowInstance", "WorkflowStep", "Approval", "PermissionRole", "UserPermissionRole",
     "PromptTemplate", "AIModelVersion", "AIRequest", "AIOutput", "AIReview",
     "WorkforceGroup", "WorkforceGroupMember", "TalentPool", "TalentPoolMember",
+    "PlatformSetting",
 ]

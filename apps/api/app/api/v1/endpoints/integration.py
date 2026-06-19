@@ -7,6 +7,7 @@ import csv
 import io
 from datetime import datetime, timezone
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -183,6 +184,73 @@ def register_connector(
                  entity="intg_connector", entity_id=c.id, after={"code": c.code, "type": c.system_type})
     db.commit()
     return {"id": c.id, "code": c.code, "status": c.status}
+
+
+class ConnectorConfigIn(BaseModel):
+    base_url: str | None = None
+    api_key: str | None = None  # write-only; blank leaves the stored key unchanged
+    sync_mode: str | None = None
+    status: str | None = None
+
+
+def _connector_public(c: IntegrationConnector) -> dict:
+    cfg = c.config or {}
+    return {
+        "id": c.id, "code": c.code, "name_en": c.name_en, "name_ar": c.name_ar,
+        "system_type": c.system_type, "direction": c.direction, "status": c.status,
+        "sync_mode": c.sync_mode, "base_url": cfg.get("base_url", ""),
+        "api_key_set": bool(cfg.get("api_key")),
+        "last_sync_at": c.last_sync_at.isoformat() if c.last_sync_at else None,
+    }
+
+
+@router.put("/connectors/{code}")
+def update_connector(
+    code: str, body: ConnectorConfigIn,
+    user: CurrentUser = Depends(_steward), db: Session = Depends(get_db_for),
+) -> dict:
+    """Update a connector's connection config from the Settings tab. The API key is
+    stored write-only inside ``config`` (blank input keeps the existing key)."""
+    c = db.execute(select(IntegrationConnector).where(IntegrationConnector.code == code)).scalar_one_or_none()
+    if not c:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "connector not found")
+    cfg = dict(c.config or {})
+    if body.base_url is not None:
+        cfg["base_url"] = body.base_url.strip()
+    if body.api_key is not None and body.api_key.strip():
+        cfg["api_key"] = body.api_key.strip()
+    c.config = cfg
+    if body.sync_mode is not None and body.sync_mode.strip():
+        c.sync_mode = body.sync_mode.strip()
+    if body.status is not None and body.status.strip():
+        c.status = body.status.strip()
+    db.flush()
+    append_audit(db, actor_user_id=user.id, action="UPDATE_CONNECTOR",
+                 entity="intg_connector", entity_id=c.id,
+                 after={"code": c.code, "base_url": cfg.get("base_url", ""), "status": c.status})
+    db.commit()
+    return _connector_public(c)
+
+
+@router.post("/connectors/{code}/test")
+def test_connector(
+    code: str, user: CurrentUser = Depends(_steward), db: Session = Depends(get_db_for),
+) -> dict:
+    """Connection-test a connector by probing its configured ``base_url``."""
+    c = db.execute(select(IntegrationConnector).where(IntegrationConnector.code == code)).scalar_one_or_none()
+    if not c:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "connector not found")
+    base_url = (c.config or {}).get("base_url", "").strip()
+    if not base_url:
+        return {"ok": False, "code": code,
+                "message": "No base URL configured — set one and save before testing."}
+    try:
+        resp = httpx.get(base_url, timeout=5.0)
+        ok = resp.status_code < 500
+        return {"ok": ok, "code": code,
+                "message": f"Reached {base_url} (HTTP {resp.status_code})."}
+    except Exception as exc:  # noqa: BLE001 — surface connection failures to the UI
+        return {"ok": False, "code": code, "message": f"Could not reach {base_url}: {exc}"}
 
 
 @router.get("/sync-logs")

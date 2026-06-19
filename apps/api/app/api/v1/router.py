@@ -5,7 +5,7 @@ from app.api.v1.endpoints import (
     ai_lifecycle, analytics, assessment, assessment_blueprint, assessment_exec, auth,
     competency, competency_depth, config, dashboards, development, enablement, gaps,
     governance, groups, integration, operations, org, profile, readiness, reports,
-    strategy, talent, training, workflow, workforce,
+    settings, strategy, talent, training, workflow, workforce,
 )
 
 api_router = APIRouter()
@@ -35,3 +35,4 @@ api_router.include_router(strategy.router)
 api_router.include_router(workflow.router)
 api_router.include_router(ai_lifecycle.router)
 api_router.include_router(groups.router)
+api_router.include_router(settings.router)

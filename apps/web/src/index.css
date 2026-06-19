@@ -35,7 +35,20 @@ body {
   .btn-ghost {
     @apply btn bg-white/10 text-white hover:bg-white/20;
   }
+  /* Light secondary button (on white cards/pages) */
+  .btn-soft {
+    @apply btn bg-slate-100 text-ink hover:bg-slate-200;
+  }
+  /* Form input / select */
+  .input {
+    @apply w-full border border-slate-200 rounded-xl px-3 py-2.5 bg-white text-ink
+           focus:border-petro outline-none transition-colors;
+  }
 }
+
+.dark .input { background-color: #0f1e1a; border-color: #1d322c; color: #e6efec; }
+.dark .btn-soft { background-color: #1a2e28; color: #e6efec; }
+.dark .btn-soft:hover { background-color: #21392f; }
 
 /* ---------------------------------------------------------------- Dark theme
    Curated overrides for the utilities actually used across the app, so every

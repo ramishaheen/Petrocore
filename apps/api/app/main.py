@@ -35,6 +35,23 @@ async def security_headers(request, call_next):
 app.include_router(api_router, prefix="/api/v1")
 
 
+@app.on_event("startup")
+def _apply_runtime_settings() -> None:
+    """Apply self-service settings (e.g. AI gateway config saved from the Settings
+    tab) to the live process at boot. Best-effort — never block startup."""
+    try:
+        from app.db.session import SessionLocal
+        from app.services.settings_service import apply_ai_config
+
+        db = SessionLocal()
+        try:
+            apply_ai_config(db)
+        finally:
+            db.close()
+    except Exception:  # noqa: BLE001 — settings are optional; stub mode is the default
+        pass
+
+
 @app.get("/health", tags=["meta"])
 def health() -> dict:
     return {"status": "ok", "version": __version__, "environment": settings.ENVIRONMENT}

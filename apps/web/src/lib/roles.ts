@@ -34,6 +34,7 @@ export const NAV: NavMeta[] = [
   { key: "governance", route: "/governance", group: "decision", roles: ["HR_VALIDATOR", "DEPT_MANAGER", "COMPANY_ADMIN", "NOC_EXECUTIVE", "PLATFORM_ADMIN"] },
   { key: "enablement", route: "/enablement", group: "rollout", roles: ["CONSULTANT", "COMPANY_ADMIN", "PLATFORM_ADMIN"] },
   { key: "diagnostic", route: "/diagnostic", group: "rollout", roles: ["CONSULTANT", "PLATFORM_ADMIN"] },
+  { key: "settings", route: "/settings", group: "rollout", roles: ["PLATFORM_ADMIN", "COMPANY_ADMIN"] },
 ];
 
 export const HOME: Record<Role, string> = {

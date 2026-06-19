@@ -21,6 +21,17 @@ class ModelGateway:
         self.base_url = settings.AI_GATEWAY_URL
         self.live = bool(self.api_key)
 
+    def configure(self, *, model: str | None = None, base_url: str | None = None,
+                  api_key: str | None = None) -> None:
+        """Apply runtime config (from the in-app Settings tab) to the live singleton."""
+        if model is not None:
+            self.model = model
+        if base_url is not None:
+            self.base_url = base_url
+        if api_key is not None:
+            self.api_key = api_key
+        self.live = bool(self.api_key)
+
     # ---- text completion -------------------------------------------------
     def complete(self, system: str, prompt: str, *, max_tokens: int = 512) -> str:
         if not self.live:

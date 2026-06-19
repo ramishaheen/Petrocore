@@ -36,6 +36,7 @@ const Reports = lazy(() => import("./pages/Reports"));
 const Governance = lazy(() => import("./pages/Governance"));
 const Enablement = lazy(() => import("./pages/Enablement"));
 const Diagnostic = lazy(() => import("./pages/Diagnostic"));
+const Settings = lazy(() => import("./pages/Settings"));
 
 function Protected({ children }: { children: React.ReactNode }) {
   const token = useAuth((s) => s.token);
@@ -93,6 +94,7 @@ export default function App() {
           <Route path="/governance" element={<Governance />} />
           <Route path="/enablement" element={<Enablement />} />
           <Route path="/diagnostic" element={<Diagnostic />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
         <Route path="*" element={<Protected><RoleHome /></Protected>} />
       </Routes>

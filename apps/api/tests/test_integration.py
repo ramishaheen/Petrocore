@@ -888,3 +888,54 @@ def test_workforce_groups_and_talent_pools(client):
     employee = _login(client, "employee@noc.ly")
     assert client.post("/api/v1/groups", headers=employee, json={
         "name_en": "x", "name_ar": "x"}).status_code == 403
+
+
+def test_self_service_settings_and_connections(client):
+    """P-N: admins read/save/test the AI gateway config and connector connections
+    from the in-app Settings tab; secrets are write-only; employees are forbidden."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # AI config reads back without ever exposing the secret value.
+    cfg = client.get("/api/v1/settings/ai", headers=admin).json()
+    assert set(cfg) >= {"model", "gateway_url", "api_key_set", "mode"}
+    assert "api_key" not in cfg
+    assert cfg["mode"] == ("live" if cfg["api_key_set"] else "stub")
+
+    # Save model + gateway URL (no key) — stays in stub mode and applies live.
+    saved = client.put("/api/v1/settings/ai", headers=admin, json={
+        "model": "claude-test-model", "gateway_url": "http://gw.internal:9000"}).json()
+    assert saved["model"] == "claude-test-model" and saved["gateway_url"] == "http://gw.internal:9000"
+    assert saved["api_key_set"] is False and saved["mode"] == "stub"
+
+    # Stub-mode connection test always succeeds deterministically.
+    test = client.post("/api/v1/settings/ai/test", headers=admin).json()
+    assert test["ok"] is True and test["mode"] == "stub"
+
+    # Configure a connector's connection (base URL + write-only key) and test it.
+    connectors = client.get("/api/v1/integration/connectors", headers=admin).json()
+    code = connectors[0]["code"]
+    updated = client.put(f"/api/v1/integration/connectors/{code}", headers=admin, json={
+        "base_url": "http://127.0.0.1:9/none", "api_key": "secret-token",
+        "sync_mode": "SCHEDULED", "status": "CONFIGURED"}).json()
+    assert updated["base_url"] == "http://127.0.0.1:9/none"
+    assert updated["api_key_set"] is True and "api_key" not in updated
+    assert updated["status"] == "CONFIGURED" and updated["sync_mode"] == "SCHEDULED"
+
+    # Testing an unreachable endpoint reports a clean failure (no exception).
+    ct = client.post(f"/api/v1/integration/connectors/{code}/test", headers=admin).json()
+    assert ct["ok"] is False and ct["code"] == code
+
+    # Testing an unconfigured connector asks for a base URL first.
+    other = next((c["code"] for c in connectors if c["code"] != code), None)
+    if other:
+        ct2 = client.post(f"/api/v1/integration/connectors/{other}/test", headers=admin).json()
+        assert ct2["ok"] is False
+
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+
+    # RBAC: an employee can neither read nor change settings.
+    employee = _login(client, "employee@noc.ly")
+    assert client.get("/api/v1/settings/ai", headers=employee).status_code == 403
+    assert client.put("/api/v1/settings/ai", headers=employee, json={"model": "x"}).status_code == 403
+    assert client.put(f"/api/v1/integration/connectors/{code}", headers=employee, json={
+        "base_url": "http://x"}).status_code == 403
