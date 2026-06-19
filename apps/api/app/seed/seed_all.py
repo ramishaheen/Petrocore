@@ -191,6 +191,9 @@ def seed() -> None:
         # ---- Talent, succession & knowledge continuity (P-E) ----
         from app.seed.seed_e import seed_e
         seed_e(db)
+        # ---- Knowledge-graph links + integration connectors (P-F) ----
+        from app.seed.seed_f import seed_f
+        seed_f(db)
 
         db.commit()
         print("Seed complete.")

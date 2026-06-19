@@ -38,6 +38,7 @@ from app.models.readiness import ReadinessScore
 from app.models.talent import (
     TalentProfile, SuccessionPlan, SuccessorCandidate, KnowledgeHolder, KnowledgeTransferPlan,
 )
+from app.models.integration import IntegrationConnector, IntegrationSyncLog
 
 __all__ = [
     "AppUser",
@@ -60,4 +61,5 @@ __all__ = [
     "ReadinessScore",
     "TalentProfile", "SuccessionPlan", "SuccessorCandidate",
     "KnowledgeHolder", "KnowledgeTransferPlan",
+    "IntegrationConnector", "IntegrationSyncLog",
 ]

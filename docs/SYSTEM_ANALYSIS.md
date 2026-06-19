@@ -109,7 +109,15 @@ RLS multi-tenant (enforced under a non-superuser DB role).
   and every write is audited. Migration 0006; APIs under `/talent/{pipeline,profiles,critical-roles,
   jobs/{id}/succession-plan,succession-plans[/{id}],successors/{id}/decision,knowledge-holders,
   transfer-plans}`. (Workforce planning + HR/LMS/ERP/CMMS/HSE integrations remain for a later increment.)
-- **P-F:** psychometrics/calibration, predictive readiness, knowledge graph, benchmarking.
+- **P-F ✅:** Phase-4 intelligence — workforce planning (supply/demand, critical-role coverage,
+  retirement risk, training demand), predictive readiness (deterministic, explainable horizon
+  projection), knowledge graph (traversal over the generic `cfg_entity_link` seam), psychometrics &
+  calibration (item difficulty/discrimination/reliability + retire recommendations), cross-company
+  benchmarking, and an integration registry (`intg_connector`/`intg_sync_log`, migration 0007) for
+  HR/LMS/ERP/CMMS/HSE/DMS/IAM/BI. APIs under `/workforce-planning/*`, `/readiness/forecast[/{id}]`,
+  `/knowledge-graph[/summary]`, `/psychometrics/*`, `/benchmarking/companies`,
+  `/integration/{connectors,sync-logs}`. Read-only analytics over existing data (no new workforce
+  facts invented); connector runs are audited.
 
 MVP (per spec §30): setup → segmentation → Employee 360 basic → competency matrix → blueprint →
 basic AI questions w/ review → bank → assessment → gaps → readiness → dev plan → dashboard → RBAC →

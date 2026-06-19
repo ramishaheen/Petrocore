@@ -5,15 +5,18 @@ Exports are RLS-scoped to the caller's tenant subtree.
 """
 import csv
 import io
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import CurrentUser, get_db_for, require_roles
 from app.core.rbac import Role
 from app.core.security import encrypt_pii
+from app.models.integration import IntegrationConnector, IntegrationSyncLog
 from app.models.l1_l2 import Employee, Job, OrgNode
 from app.models.l3_l4 import Competency
 from app.models.l5_l6 import Profile
@@ -137,6 +140,82 @@ def import_employees(
                  entity="l2_employee", entity_id="batch", after={"created": created, "updated": updated})
     db.commit()
     return ImportResult(created=created, updated=updated, total=len(rows))
+
+
+# ---------------------------------------------------------------- connector registry (P-F)
+@router.get("/connectors")
+def list_connectors(db: Session = Depends(get_db_for)) -> list[dict]:
+    rows = db.execute(select(IntegrationConnector).order_by(IntegrationConnector.system_type)).scalars().all()
+    return [
+        {"id": c.id, "code": c.code, "name_en": c.name_en, "name_ar": c.name_ar,
+         "system_type": c.system_type, "direction": c.direction, "status": c.status,
+         "sync_mode": c.sync_mode, "last_sync_at": c.last_sync_at.isoformat() if c.last_sync_at else None}
+        for c in rows
+    ]
+
+
+class ConnectorIn(BaseModel):
+    code: str
+    name_en: str
+    name_ar: str
+    system_type: str
+    direction: str = "INBOUND"
+    sync_mode: str = "MANUAL"
+    status: str = "PLANNED"
+
+
+@router.post("/connectors")
+def register_connector(
+    body: ConnectorIn, user: CurrentUser = Depends(_steward), db: Session = Depends(get_db_for),
+) -> dict:
+    """Register or update an external-system connector (idempotent by code)."""
+    c = db.execute(select(IntegrationConnector).where(IntegrationConnector.code == body.code)).scalar_one_or_none()
+    if c:
+        c.name_en, c.name_ar, c.system_type = body.name_en, body.name_ar, body.system_type
+        c.direction, c.sync_mode, c.status = body.direction, body.sync_mode, body.status
+    else:
+        c = IntegrationConnector(
+            code=body.code, name_en=body.name_en, name_ar=body.name_ar, system_type=body.system_type,
+            direction=body.direction, sync_mode=body.sync_mode, status=body.status)
+        db.add(c)
+    db.flush()
+    append_audit(db, actor_user_id=user.id, action="REGISTER_CONNECTOR",
+                 entity="intg_connector", entity_id=c.id, after={"code": c.code, "type": c.system_type})
+    db.commit()
+    return {"id": c.id, "code": c.code, "status": c.status}
+
+
+@router.get("/sync-logs")
+def sync_logs(db: Session = Depends(get_db_for)) -> list[dict]:
+    rows = db.execute(select(IntegrationSyncLog).order_by(IntegrationSyncLog.created_at.desc())).scalars().all()
+    return [
+        {"id": s.id, "connector_code": s.connector_code, "direction": s.direction,
+         "entity_type": s.entity_type, "records_in": s.records_in, "records_ok": s.records_ok,
+         "records_failed": s.records_failed, "status": s.status, "message": s.message,
+         "at": s.created_at.isoformat() if s.created_at else None}
+        for s in rows
+    ]
+
+
+@router.post("/connectors/{code}/sync")
+def run_sync(
+    code: str, user: CurrentUser = Depends(_steward), db: Session = Depends(get_db_for),
+) -> dict:
+    """Record a (stub) sync run against a connector and stamp last_sync_at."""
+    c = db.execute(select(IntegrationConnector).where(IntegrationConnector.code == code)).scalar_one_or_none()
+    if not c:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "connector not found")
+    log = IntegrationSyncLog(
+        connector_code=code, direction=c.direction, entity_type="Employee",
+        records_in=0, records_ok=0, records_failed=0, status="SUCCESS",
+        message="Manual sync acknowledged (no external endpoint configured).")
+    db.add(log)
+    c.last_sync_at = datetime.now(timezone.utc)
+    db.flush()
+    append_audit(db, actor_user_id=user.id, action="RUN_SYNC",
+                 entity="intg_sync_log", entity_id=log.id, after={"connector": code})
+    db.commit()
+    return {"id": log.id, "connector_code": code, "status": log.status}
 
 
 @router.get("/export/employees")

@@ -529,3 +529,62 @@ def test_talent_succession_and_knowledge_continuity(client):
     assert client.post(f"/api/v1/talent/jobs/{job_id}/succession-plan", headers=employee).status_code == 403
     assert client.post(f"/api/v1/talent/employees/{emp_id}/flag", headers=employee,
                        json={"talent_segment": "EMERGING"}).status_code == 403
+
+
+def test_phase4_planning_prediction_and_intelligence(client):
+    """P-F: workforce planning, predictive readiness, knowledge graph, psychometrics,
+    benchmarking, and the integration registry."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # Workforce planning overview + sub-views.
+    ov = client.get("/api/v1/workforce-planning/overview", headers=admin).json()
+    assert "ready_pct" in ov and ov["total_employees"] >= 1 and ov["critical_roles"] >= 1
+    assert isinstance(client.get("/api/v1/workforce-planning/supply-demand", headers=admin).json(), list)
+    cov = client.get("/api/v1/workforce-planning/coverage", headers=admin).json()
+    assert cov and all("coverage" in c for c in cov)
+    assert isinstance(client.get("/api/v1/workforce-planning/training-demand", headers=admin).json(), list)
+    rr = client.get("/api/v1/workforce-planning/retirement-risk", headers=admin).json()
+    assert any(h["retirement_risk"] >= 0.6 for h in rr)  # seeded knowledge holder
+
+    # Predictive readiness: an assessed employee gets a forecast ≥ current.
+    profiles = client.get("/api/v1/profiles", headers=admin).json()
+    emp_id = profiles[0]["employee_id"]
+    client.post(f"/api/v1/readiness/employees/{emp_id}/compute", headers=admin)
+    fc = client.get(f"/api/v1/readiness/forecast/{emp_id}?horizon_months=12", headers=admin).json()
+    assert fc["current_index"] is not None and fc["projected_index"] is not None
+    assert fc["projected_index"] >= fc["current_index"] and fc["drivers"]
+    pipe = client.get("/api/v1/readiness/forecast", headers=admin).json()
+    assert pipe["projected_ready"] >= pipe["current_ready"]
+
+    # Knowledge graph: seeded EntityLinks form a traversable graph.
+    summary = client.get("/api/v1/knowledge-graph/summary", headers=admin).json()
+    assert summary["total_links"] >= 1
+    g = client.get("/api/v1/knowledge-graph", headers=admin).json()
+    assert g["node_count"] >= 2 and g["edge_count"] >= 1
+    assert any(e["link_type"] == "Required" for e in g["edges"])
+
+    # Psychometrics: question-quality + reliability render (data may be sparse).
+    qq = client.get("/api/v1/psychometrics/question-quality", headers=admin).json()
+    assert isinstance(qq, list)
+    rel = client.get("/api/v1/psychometrics/reliability", headers=admin).json()
+    assert "reliability_score" in rel and 0.0 <= rel["reliability_score"] <= 1.0
+
+    # Benchmarking: subsidiaries ranked by average readiness.
+    bench = client.get("/api/v1/benchmarking/companies", headers=admin).json()
+    assert bench and bench[0]["rank"] == 1 and "avg_readiness" in bench[0]
+
+    # Integration registry: seeded connectors + a sync run is logged.
+    connectors = client.get("/api/v1/integration/connectors", headers=admin).json()
+    assert any(c["system_type"] == "HR" for c in connectors)
+    code = connectors[0]["code"]
+    run = client.post(f"/api/v1/integration/connectors/{code}/sync", headers=admin).json()
+    assert run["status"] == "SUCCESS"
+    logs = client.get("/api/v1/integration/sync-logs", headers=admin).json()
+    assert any(lg["connector_code"] == code for lg in logs)
+
+    # RBAC: a plain employee cannot run a sync.
+    employee = _login(client, "employee@noc.ly")
+    assert client.post(f"/api/v1/integration/connectors/{code}/sync", headers=employee).status_code == 403
+
+    # The audit chain remained intact through all the P-F writes.
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
