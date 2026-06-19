@@ -858,3 +858,33 @@ def test_ai_lifecycle_and_governance(client):
     employee = _login(client, "employee@noc.ly")
     assert client.post("/api/v1/ai/requests", headers=employee, json={
         "request_type": "x", "prompt": "x"}).status_code == 403
+
+
+def test_workforce_groups_and_talent_pools(client):
+    """P-M: a workforce group with a readiness rollup, and a talent pool."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    # Seeded group + pool present.
+    assert client.get("/api/v1/groups", headers=admin).json()
+    assert client.get("/api/v1/talent-pools", headers=admin).json()
+
+    # Create a group, add two members, get its readiness rollup.
+    profiles = client.get("/api/v1/profiles", headers=admin).json()
+    g = client.post("/api/v1/groups", headers=admin, json={
+        "name_en": "Critical Ops Crew", "name_ar": "طاقم العمليات الحرجة", "group_type": "Custom"}).json()
+    for p in profiles[:2]:
+        client.post(f"/api/v1/groups/{g['id']}/members", headers=admin, json={"employee_id": p["employee_id"]})
+    roll = client.get(f"/api/v1/groups/{g['id']}/readiness", headers=admin).json()
+    assert roll["members"] == 2 and "avg_readiness" in roll and len(roll["member_list"]) == 2
+
+    # Create a talent pool + add a member.
+    pool = client.post("/api/v1/talent-pools", headers=admin, json={
+        "name_en": "Successor Pool", "name_ar": "مجموعة الإحلال", "pool_type": "Successor"}).json()
+    pm = client.post(f"/api/v1/talent-pools/{pool['id']}/members", headers=admin, json={
+        "employee_id": profiles[0]["employee_id"]}).json()
+    assert pm["employee_id"] == profiles[0]["employee_id"]
+
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+    employee = _login(client, "employee@noc.ly")
+    assert client.post("/api/v1/groups", headers=employee, json={
+        "name_en": "x", "name_ar": "x"}).status_code == 403

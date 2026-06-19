@@ -56,6 +56,9 @@ from app.models.workflow import (
 from app.models.ai_lifecycle import (
     PromptTemplate, AIModelVersion, AIRequest, AIOutput, AIReview,
 )
+from app.models.groups import (
+    WorkforceGroup, WorkforceGroupMember, TalentPool, TalentPoolMember,
+)
 
 __all__ = [
     "AppUser",
@@ -86,4 +89,5 @@ __all__ = [
     "StrategicObjective", "StrategicKpi", "ObjectiveCompetency", "StrategicReadinessGap",
     "WorkflowInstance", "WorkflowStep", "Approval", "PermissionRole", "UserPermissionRole",
     "PromptTemplate", "AIModelVersion", "AIRequest", "AIOutput", "AIReview",
+    "WorkforceGroup", "WorkforceGroupMember", "TalentPool", "TalentPoolMember",
 ]

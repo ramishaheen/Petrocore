@@ -212,6 +212,9 @@ def seed() -> None:
         # ---- AI lifecycle & governance (P-L) ----
         from app.seed.seed_l import seed_l
         seed_l(db)
+        # ---- Workforce groups & talent pools (P-M) ----
+        from app.seed.seed_m import seed_m
+        seed_m(db)
 
         db.commit()
         print("Seed complete.")
