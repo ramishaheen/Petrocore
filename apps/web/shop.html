@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HORO PRIVÉ — Curated Opportunities</title>
+  <meta name="description" content="A selection of exceptional watches currently under review by the HORO PRIVÉ advisory. Every opportunity is subject to verification, availability and independent assessment." />
+  <meta name="theme-color" content="#0a0b0d" />
+  <meta property="og:title" content="HORO PRIVÉ — Curated Opportunities" />
+  <meta property="og:description" content="Exceptional watches under advisory review. Request a private review." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/hp.css" />
+  <link rel="stylesheet" href="css/shop.css" />
+</head>
+<body class="shop-page">
+
+  <div id="progress"></div>
+  <div class="cursor"></div>
+
+  <div id="preload">
+    <div style="text-align:center">
+      <img class="pl-mark" src="assets/logo.svg" alt="HORO PRIVÉ" />
+      <div class="pl-bar"><i></i></div>
+      <div class="pl-count">000</div>
+    </div>
+  </div>
+
+  <header>
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/mark.svg" alt="" width="30" height="30" /> HORO&nbsp;PRIVÉ</a>
+    <nav>
+      <a class="link" href="services.html">Advisory</a>
+      <a class="link" href="shop.html" aria-current="page">Opportunities</a>
+      <a class="link" href="portfolio.html">Portfolio</a>
+      <a class="link" href="about.html">About</a>
+      <button class="btn flame cart-btn" id="cartBtn" type="button" aria-label="Open shortlist">
+        Shortlist <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="shop-hero">
+    <div class="shop-hero-glow"></div>
+    <div class="hero-noise"></div>
+    <div class="wrap">
+      <span class="kicker"><span class="ln"></span><span class="eyebrow">Under advisory review</span></span>
+      <h1 class="shop-title serif lines">
+        <span class="ln-row"><b>Curated</b></span>
+        <span class="ln-row"><b><span class="glow">opportunities.</span></b></span>
+      </h1>
+      <p class="shop-lead reveal d1">A considered selection of exceptional watches currently sourced or monitored by our advisory. These are starting points for a conversation — every opportunity is subject to verification, availability, seller checks, condition review and commercial assessment.</p>
+      <div class="shop-hero-stats reveal d2">
+        <div class="shs"><span class="num" data-to="40" data-suffix="+">0</span><span class="lbl">Source countries</span></div>
+        <div class="shs"><span class="num" data-to="15" data-suffix="-pt">0</span><span class="lbl">Verification review</span></div>
+        <div class="shs"><span class="num" data-to="100" data-suffix="%">0</span><span class="lbl">Independent advice</span></div>
+        <div class="shs"><span class="num" style="-webkit-text-fill-color:initial">Free</span><span class="lbl">Cost to enquire</span></div>
+      </div>
+    </div>
+    <div class="scroll-hint"><span class="mouse"></span><span>Browse</span></div>
+  </section>
+
+  <!-- Toolbar -->
+  <div class="shop-toolbar" id="toolbar">
+    <div class="wrap toolbar-inner">
+      <div class="filters" id="filters" role="tablist" aria-label="Filter opportunities"></div>
+      <div class="toolbar-right">
+        <div class="result-count" id="resultCount">Showing opportunities</div>
+        <label class="sort">
+          <span>Sort</span>
+          <select id="sortSelect" aria-label="Sort opportunities">
+            <option value="featured">Featured</option>
+            <option value="price-asc">Indicative price · low to high</option>
+            <option value="price-desc">Indicative price · high to low</option>
+            <option value="name">Brand · A–Z</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <main class="shop-main">
+    <div class="wrap">
+      <div class="product-grid" id="grid" aria-live="polite"></div>
+      <p class="empty-state" id="emptyState" hidden>No opportunities match that filter — <button type="button" class="linklike" data-clear>show everything</button>.</p>
+      <p class="legal" style="margin-top:30px">Indicative prices are shown in USD for guidance only and exclude shipping, insurance, duties and applicable taxes. Availability, condition and pricing are confirmed during review. “Price on Request” pieces are quoted privately. Sellers and service providers may be independent parties.</p>
+    </div>
+  </main>
+
+  <!-- Assurance -->
+  <section class="assurance">
+    <div class="wrap assurance-grid">
+      <div class="assure reveal"><div class="ai">◷</div><h3>Independent assessment</h3><p>Each opportunity carries our own view — condition, price context and the case for and against.</p></div>
+      <div class="assure reveal d1"><div class="ai">❖</div><h3>Verification coordination</h3><p>Seller checks, document and reference consistency, and inspection — arranged before funds move.</p></div>
+      <div class="assure reveal d2"><div class="ai">⊕</div><h3>International reach</h3><p>Dealers, auction houses and private collectors across more than forty markets.</p></div>
+      <div class="assure reveal d3"><div class="ai">⛉</div><h3>Discreet execution</h3><p>Negotiation, escrow coordination and insured delivery, handled privately on your behalf.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div><div class="foot-brand">HORO&nbsp;PRIVÉ<p>An independent international watch advisory. We represent the collector — sourcing, verifying and managing exceptional watches with discretion.</p></div></div>
+        <div><h4>Advisory</h4><ul>
+          <li><a href="services.html#advisory">Private advisory</a></li>
+          <li><a href="services.html#sourcing">Global sourcing</a></li>
+          <li><a href="services.html#rare">Rare-piece acquisition</a></li>
+          <li><a href="services.html#verify">Verification</a></li>
+        </ul></div>
+        <div><h4>Clients</h4><ul>
+          <li><a href="portfolio.html">Portfolio dashboard</a></li>
+          <li><a href="order.html">Start a consultation</a></li>
+          <li><a href="order.html#mandate">Submit a mandate</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul></div>
+        <div><h4>House</h4><ul>
+          <li><a href="about.html#name">The name</a></li>
+          <li><a href="about.html#independent">Why independent</a></li>
+          <li><a href="#" data-wa>Private line</a></li>
+        </ul></div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 HORO&nbsp;PRIVÉ. All rights reserved.</span>
+        <span>Discreet by design · Visuals generated with Higgsfield</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Quick-view modal -->
+  <div class="qv" id="quickView" role="dialog" aria-modal="true" aria-labelledby="qvName" hidden>
+    <div class="qv-backdrop" data-close></div>
+    <div class="qv-panel" role="document">
+      <button class="qv-close" type="button" data-close aria-label="Close">✕</button>
+      <div class="qv-media">
+        <img id="qvImg" alt="" />
+        <span class="qv-badge" id="qvBadge" hidden></span>
+      </div>
+      <div class="qv-body">
+        <div class="qv-ref" id="qvRef"></div>
+        <h2 class="qv-name serif" id="qvName"></h2>
+        <div class="qv-price" id="qvPrice"></div>
+        <p class="qv-desc" id="qvDesc"></p>
+        <dl class="qv-specs" id="qvSpecs"></dl>
+        <div class="qv-assess" id="qvAssess"></div>
+        <div class="qv-actions">
+          <a class="btn flame" id="qvReview" href="order.html">Request private review</a>
+          <button class="btn ghost" type="button" id="qvShortlist">Add to shortlist</button>
+          <a class="btn ghost" id="qvDiscuss" href="#" data-wa>Discuss this watch</a>
+        </div>
+        <div class="qv-note" id="qvAvail"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shortlist drawer -->
+  <div class="cart-drawer" id="cartDrawer" aria-hidden="true">
+    <div class="cart-backdrop" data-cart-close></div>
+    <aside class="cart-panel" role="dialog" aria-label="Your shortlist" aria-modal="true">
+      <div class="cart-head">
+        <h3>Your shortlist</h3>
+        <button class="qv-close" type="button" data-cart-close aria-label="Close shortlist">✕</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-foot">
+        <div class="cart-total"><span>Indicative total</span><strong id="cartTotal">$0</strong></div>
+        <button class="btn flame cart-checkout" type="button" id="checkoutBtn">Request review of shortlist</button>
+        <p class="cart-fineprint">A consultant reviews your shortlist and responds privately. No payment is taken — indicative totals exclude fees, duties and taxes.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <a class="wa-fab" href="#" data-wa aria-label="Private line on WhatsApp"><span>Private line</span> ◵</a>
+
+  <script src="js/frames.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/hp.js"></script>
+  <script src="js/shop.js"></script>
+</body>
+</html>

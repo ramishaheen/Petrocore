@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HORO PRIVÉ — Start a Private Consultation</title>
+  <meta name="description" content="Begin a private, no-obligation consultation with HORO PRIVÉ. Tell us your objective and we'll build a collector brief, search internationally and represent you through acquisition." />
+  <meta name="theme-color" content="#0a0b0d" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Syne:wght@600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/hp.css" />
+  <link rel="stylesheet" href="css/order.css" />
+</head>
+<body class="order-page">
+
+  <div id="progress"></div>
+  <div class="cursor"></div>
+
+  <div id="preload">
+    <div style="text-align:center">
+      <img class="pl-mark" src="assets/logo.svg" alt="HORO PRIVÉ" />
+      <div class="pl-bar"><i></i></div>
+      <div class="pl-count">000</div>
+    </div>
+  </div>
+
+  <header>
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/mark.svg" alt="" width="30" height="30" /> HORO&nbsp;PRIVÉ</a>
+    <nav>
+      <a class="link" href="services.html">Advisory</a>
+      <a class="link" href="shop.html">Opportunities</a>
+      <a class="link" href="portfolio.html">Portfolio</a>
+      <a class="link" href="order.html" aria-current="page">Consult</a>
+      <a class="btn ghost" href="#" data-login>Client Login</a>
+      <a class="btn flame" href="#configurator">Start →</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="order-hero">
+    <div class="shop-hero-glow"></div>
+    <div class="hero-noise"></div>
+    <div class="wrap">
+      <span class="kicker"><span class="ln"></span><span class="eyebrow">Private consultation · No obligation</span></span>
+      <h1 class="order-title serif lines">
+        <span class="ln-row"><b>Tell us your objective.</b></span>
+        <span class="ln-row"><b>We'll do the <span class="glow">rest.</span></b></span>
+      </h1>
+      <p class="order-lead reveal d1">Answer a few questions and we'll build your collector brief, then search internationally on your behalf. No payment is taken online — your brief is reviewed by a consultant who responds personally, usually within one business day.</p>
+      <div class="hero-cta reveal d2">
+        <a class="btn flame" href="#configurator">Begin your consultation</a>
+        <a class="btn ghost" href="#mandate">Submit a rare-piece mandate</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust bar -->
+  <div class="trustbar">
+    <div class="wrap trustbar-inner">
+      <div class="tb"><span class="ti">◷</span><div><strong>Independent</strong><span>We represent you, not a showroom</span></div></div>
+      <div class="tb"><span class="ti">🔒</span><div><strong>Discreet &amp; private</strong><span>Encrypted · no online payment</span></div></div>
+      <div class="tb"><span class="ti">⊕</span><div><strong>Global sourcing</strong><span>40+ international markets</span></div></div>
+      <div class="tb"><span class="ti">❖</span><div><strong>Verified</strong><span>Checks before any commitment</span></div></div>
+    </div>
+  </div>
+
+  <!-- Consultation wizard -->
+  <section class="block" id="configurator">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="serif lines"><span class="ln-row"><b>Your private consultation</b></span></h2>
+        <p class="reveal">Three steps. A few minutes. Reviewed by a human.</p>
+      </div>
+
+      <div class="selective reveal">
+        <span class="si">❖</span>
+        <p>We currently receive <strong>more consultation requests than we can accept</strong>. Clients are taken on selectively — matched to profile, objective and fit. Share your details and a preferred time below; a consultant will review your brief and reach out by email if there is a match.</p>
+      </div>
+
+      <div class="config">
+        <form class="config-form" id="orderForm" novalidate>
+          <ol class="stepper" id="stepper">
+            <li class="active" data-step="1"><span>1</span> Objective</li>
+            <li data-step="2"><span>2</span> The watch</li>
+            <li data-step="3"><span>3</span> You</li>
+          </ol>
+
+          <!-- STEP 1 -->
+          <fieldset class="step active" data-step="1">
+            <legend class="serif">What are you trying to achieve?</legend>
+            <p class="step-hint">Choose the closest fit — your consultant will refine it with you.</p>
+            <div class="field"><label>Your objective</label><div class="pills" data-group="intent"></div></div>
+            <div class="field two">
+              <div><label>Is this your first significant watch?</label><div class="pills" data-group="first"></div></div>
+              <div><label>Is your budget…</label><div class="pills" data-group="flex"></div></div>
+            </div>
+            <div class="step-nav"><span></span><button type="button" class="btn flame" data-next>Continue →</button></div>
+          </fieldset>
+
+          <!-- STEP 2 -->
+          <fieldset class="step" data-step="2">
+            <legend class="serif">Tell us about the watch</legend>
+            <p class="step-hint">Share what you know. Nothing here is required except a way to reach you on the next step.</p>
+            <div class="field two">
+              <div><label for="brand">Brand(s)</label><input type="text" id="brand" name="brand" placeholder="e.g. Rolex, Patek Philippe" /></div>
+              <div><label for="model">Model / reference</label><input type="text" id="model" name="model" placeholder="e.g. Daytona 126500LN" /></div>
+            </div>
+            <div class="field two">
+              <div><label for="budget">Budget range</label><input type="text" id="budget" name="budget" placeholder="e.g. $25,000–40,000" /></div>
+              <div><label for="year">Preferred year / era</label><input type="text" id="year" name="year" placeholder="e.g. 2020+, or vintage" /></div>
+            </div>
+            <div class="field"><label>Preferred condition</label><div class="pills" data-group="condition"></div></div>
+            <div class="field two">
+              <div><label>Box &amp; papers</label><div class="pills" data-group="papers"></div></div>
+              <div><label>Acquisition timeframe</label><div class="pills" data-group="timeframe"></div></div>
+            </div>
+            <div class="field"><label for="notes">Anything else?</label><textarea id="notes" name="notes" rows="3" placeholder="Existing collection, wrist size, a milestone, examples you like…"></textarea></div>
+            <div class="step-nav"><button type="button" class="btn ghost" data-prev>← Back</button><button type="button" class="btn flame" data-next>Continue →</button></div>
+          </fieldset>
+
+          <!-- STEP 3 -->
+          <fieldset class="step" data-step="3">
+            <legend class="serif">Where shall we reach you?</legend>
+            <p class="step-hint">A consultant responds personally — discreetly, and on your terms.</p>
+            <div class="field two">
+              <div><label for="fname">Full name <span class="req">*</span></label><input type="text" id="fname" name="fname" autocomplete="name" required placeholder="Your name" /><small class="err" data-for="fname">Please enter your name.</small></div>
+              <div><label for="email">Email <span class="req">*</span></label><input type="email" id="email" name="email" autocomplete="email" required placeholder="you@example.com" /><small class="err" data-for="email">Please enter a valid email.</small></div>
+            </div>
+            <div class="field two">
+              <div><label for="phone">Phone / WhatsApp <span class="muted">(optional)</span></label><input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="+1 555 000 0000" /></div>
+              <div><label for="country">Country <span class="req">*</span></label><input type="text" id="country" name="country" autocomplete="country-name" required placeholder="Country" /><small class="err" data-for="country">Please enter your country.</small></div>
+            </div>
+            <div class="field two">
+              <div><label>Preferred contact method</label><div class="pills" data-group="channel"></div></div>
+              <div><label for="tz">Your time zone <span class="muted">(optional)</span></label><input type="text" id="tz" name="tz" placeholder="e.g. GMT, EST, GST" /></div>
+            </div>
+            <div class="field"><label>Preferred time to be contacted</label><div class="pills" data-group="when"></div></div>
+            <label class="consent"><input type="checkbox" id="consent" required /><span>I'd like a HORO&nbsp;PRIVÉ consultant to contact me about this enquiry. My details are kept private and never shared. <span class="req">*</span></span></label>
+            <small class="err block" data-for="consent">Please confirm to continue.</small>
+            <div class="step-nav"><button type="button" class="btn ghost" data-prev>← Back</button><button type="submit" class="btn flame" id="submitBtn">Submit my brief</button></div>
+          </fieldset>
+        </form>
+
+        <!-- Live collector brief -->
+        <aside class="summary" id="summary">
+          <div class="sum-media"><img id="sumImg" alt="HORO PRIVÉ" /><span class="sum-tag" id="sumTag">Collector brief</span></div>
+          <div class="sum-body">
+            <h3 class="serif">Your collector brief</h3>
+            <dl class="sum-list" id="sumList"></dl>
+            <p class="sum-secure"><span>🔒</span> Private &amp; encrypted · reviewed by a consultant</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rare-piece mandate -->
+  <section class="block" id="mandate" style="padding-top:0">
+    <div class="wrap mandate-band reveal">
+      <span class="eyebrow">Rare-piece mandate</span>
+      <h2 class="serif">Some watches are not found.<br>They are pursued.</h2>
+      <p>Engage our network to search for a precise reference, configuration, year, provenance and condition. A mandate is a focused, private search — begin it from the consultation above by selecting “I'm searching for a rare piece”.</p>
+      <button class="btn flame" type="button" id="startMandate">Begin a private mandate</button>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="block" id="faq" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><h2 class="serif lines"><span class="ln-row"><b>Good to know</b></span></h2><p class="reveal">How representation works, before you begin.</p></div>
+      <div class="faq" id="faqList">
+        <details class="faq-item"><summary>Is there any cost or obligation?</summary><div>The initial consultation is complimentary and carries no obligation. Where a sourcing or management engagement follows, fees are agreed transparently in advance.</div></details>
+        <details class="faq-item"><summary>Do you hold the watches you show?</summary><div>Sometimes, but our role is to represent you across the whole market — authorized dealers, auction houses and private collectors — rather than to sell from a fixed inventory.</div></details>
+        <details class="faq-item"><summary>How do you verify a watch?</summary><div>We coordinate seller checks, document and reference-consistency review, condition assessment and, where appropriate, independent physical inspection and escrow — before any funds move. Authentication based on images alone is preliminary.</div></details>
+        <details class="faq-item"><summary>Are valuations guaranteed?</summary><div>No. Market valuations are estimates and historical performance does not guarantee future appreciation. We never represent a watch as a guaranteed investment.</div></details>
+        <details class="faq-item"><summary>Is my information private?</summary><div>Yes. Your details are used only to assist you, transmitted over an encrypted connection, and never shared or sold. You can request deletion at any time.</div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Advisor -->
+  <section class="block" id="advisor" style="padding-top:0">
+    <div class="wrap advisor-grid">
+      <div class="advisor-media reveal"><img data-frame="1" alt="A HORO PRIVÉ consultant" /></div>
+      <div>
+        <span class="eyebrow reveal">Private client services</span>
+        <h2 class="serif lines" style="font-size:clamp(1.8rem,4.4vw,3rem);margin-top:14px"><span class="ln-row"><b>A dedicated consultant,</b></span><span class="ln-row"><b>entirely on your side.</b></span></h2>
+        <p class="reveal d1" style="color:var(--muted);max-width:460px;margin-top:16px">Prefer to talk first? Our advisors guide every engagement personally — from defining your brief to negotiation, verification and delivery. Discreet, unhurried, and independent.</p>
+        <ul class="advisor-list">
+          <li class="reveal"><span>↳</span> Replies within one business day</li>
+          <li class="reveal d1"><span>↳</span> Private virtual or in-person appointments</li>
+          <li class="reveal d2"><span>↳</span> Representation across the entire ownership journey</li>
+        </ul>
+        <div class="hero-cta reveal d2" style="margin-top:26px">
+          <a class="btn flame" href="#configurator">Start your consultation</a>
+          <a class="btn ghost" href="#" data-wa>Message the private line</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div><div class="foot-brand">HORO&nbsp;PRIVÉ<p>An independent international watch advisory. We represent the collector — sourcing, verifying and managing exceptional watches with discretion.</p></div></div>
+        <div><h4>Advisory</h4><ul><li><a href="services.html#advisory">Private advisory</a></li><li><a href="services.html#sourcing">Global sourcing</a></li><li><a href="services.html#rare">Rare-piece acquisition</a></li><li><a href="services.html#verify">Verification</a></li></ul></div>
+        <div><h4>Clients</h4><ul><li><a href="portfolio.html">Portfolio dashboard</a></li><li><a href="shop.html">Curated opportunities</a></li><li><a href="order.html#mandate">Submit a mandate</a></li><li><a href="about.html">About</a></li></ul></div>
+        <div><h4>House</h4><ul><li><a href="about.html#name">The name</a></li><li><a href="about.html#independent">Why independent</a></li><li><a href="#" data-wa>Private line</a></li></ul></div>
+      </div>
+      <p class="legal">HORO&nbsp;PRIVÉ is an advisory and sourcing service. Availability and prices change. Market valuations are estimates; historical performance does not guarantee future appreciation and watches are not guaranteed investments. Authentication based on images is preliminary; final verification may require physical inspection by a qualified professional. Customs, duties and taxes depend on the destination and applicable law. External sellers and providers may be independent parties.</p>
+      <div class="foot-bottom"><span>© 2026 HORO&nbsp;PRIVÉ. All rights reserved.</span><span>Discreet by design · Visuals generated with Higgsfield</span></div>
+    </div>
+  </footer>
+
+  <!-- Confirmation -->
+  <div class="confirm" id="confirm" hidden>
+    <div class="confirm-card">
+      <div class="confirm-mark">✓</div>
+      <h2 class="serif">Your brief is with us</h2>
+      <p id="confirmMsg">Thank you. A dedicated consultant will review your brief and respond privately, usually within one business day.</p>
+      <div class="confirm-ref">Reference <strong id="confirmRef">—</strong></div>
+      <div class="hero-cta" style="justify-content:center"><a class="btn flame" href="shop.html">View curated opportunities</a><button class="btn ghost" type="button" id="confirmClose">Start another</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <a class="wa-fab" href="#" data-wa aria-label="Private line on WhatsApp"><span>Private line</span> ◵</a>
+
+  <script src="js/frames.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/hp.js"></script>
+  <script src="js/order.js"></script>
+</body>
+</html>

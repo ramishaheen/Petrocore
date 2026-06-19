@@ -1,0 +1,411 @@
+/* =========================================================================
+   HORO PRIVÉ — shared components (layered on style.css)
+   Private watch advisory · editorial luxury system.
+   ========================================================================= */
+
+/* Elegant serif for headlines (private-bank / auction-house feel) */
+.serif { font-family: "Cormorant Garamond", "Syne", Georgia, serif !important; letter-spacing: -0.005em; font-weight: 600; }
+.brand, .foot-brand, .pl-logo { letter-spacing: 0.02em; }
+
+/* slogan under hero */
+.hero-slogan { margin-top: 22px; font-family: "Cormorant Garamond", serif; font-style: italic;
+  font-size: clamp(1.05rem, 1.8vw, 1.4rem); color: var(--flame-2); letter-spacing: 0.01em; }
+.btn.ghost.subtle { opacity: 0.75; }
+.btn.ghost.subtle:hover { opacity: 1; }
+
+/* demo / sample-data tag */
+.demo-tag { display: inline-block; font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal); border: 1px solid rgba(143,180,214,0.4); border-radius: 100px; padding: 3px 10px; vertical-align: middle; }
+
+/* ---------- Trust pillars ---------- */
+.pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.pillar { border: 1px solid var(--line); border-radius: 16px; padding: 24px 22px;
+  background: linear-gradient(180deg, var(--panel), rgba(13,19,32,0.35)); transition: border-color 0.4s, transform 0.4s; }
+.pillar:hover { border-color: rgba(201,162,74,0.4); transform: translateY(-4px); }
+.pillar .pi { font-size: 1.5rem; color: var(--flame); }
+.pillar h3 { font-size: 1.12rem; text-transform: none; margin: 12px 0 8px; }
+.pillar p { color: var(--muted); font-size: 0.86rem; }
+.intro .big { color: var(--flame-2); }
+
+/* ---------- The name ---------- */
+.name-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 56px; align-items: center; }
+.name-card { border: 1px solid var(--line); border-radius: 22px; padding: clamp(34px, 5vw, 60px); text-align: center;
+  background:
+    radial-gradient(90% 120% at 50% 0%, rgba(201,162,74,0.10), transparent 60%),
+    linear-gradient(180deg, var(--panel), rgba(13,19,32,0.4)); }
+.name-word { font-family: "Cormorant Garamond", serif; font-weight: 700; font-size: clamp(2.4rem, 6vw, 4.4rem); }
+.name-say { color: var(--flame-2); letter-spacing: 0.12em; margin-top: 10px; font-size: 1.05rem; }
+.name-listen { margin-top: 22px; background: transparent; border: 1px solid var(--line); color: var(--ink);
+  border-radius: 100px; padding: 9px 18px; font: inherit; font-size: 0.82rem; cursor: pointer; transition: border-color 0.3s, color 0.3s; }
+.name-listen:hover { border-color: var(--flame); color: var(--flame-2); }
+.name-grid .body { margin-top: 16px; }
+.name-grid .body strong { color: var(--ink); }
+
+/* ---------- How-it-works timeline ---------- */
+.timeline { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; position: relative; }
+.timeline::before { content: ""; position: absolute; top: 22px; left: 6%; right: 6%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 10%, var(--line) 90%, transparent); }
+.tl { position: relative; padding: 0 16px; }
+.tl .tn { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; position: relative; z-index: 2;
+  background: var(--bg-2); border: 1px solid var(--line); font-family: "Syne", sans-serif; font-weight: 800; color: var(--flame-2); font-size: 0.9rem; }
+.tl h3 { font-size: 1.05rem; text-transform: none; margin: 18px 0 8px; }
+.tl p { color: var(--muted); font-size: 0.85rem; }
+
+/* capability cards as links */
+a.cap { display: block; color: inherit; }
+
+/* ---------- Request module ---------- */
+.request-module { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 44px; align-items: start;
+  border: 1px solid var(--line); border-radius: 24px; padding: clamp(26px, 4vw, 50px);
+  background:
+    radial-gradient(70% 100% at 100% 0%, rgba(201,162,74,0.08), transparent 60%),
+    linear-gradient(180deg, var(--panel), rgba(13,19,32,0.3)); }
+.rm-copy h2 { font-size: clamp(1.7rem, 3.6vw, 2.6rem); margin: 12px 0 14px; }
+.rm-copy p { color: var(--muted); }
+.rm-modes { list-style: none; margin-top: 18px; display: grid; gap: 8px; }
+.rm-modes li { color: var(--ink); font-size: 0.9rem; padding-left: 20px; position: relative; }
+.rm-modes li::before { content: "—"; color: var(--flame); position: absolute; left: 0; }
+.rm-form { display: grid; gap: 14px; }
+.rmf.two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.rm-form label { display: grid; gap: 7px; font-size: 0.78rem; letter-spacing: 0.04em; color: var(--muted); }
+.rm-form input, .rm-form select { width: 100%; }
+.rm-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+.rm-actions .btn { cursor: pointer; border: 0; font: inherit; }
+.rm-actions .btn.ghost { border: 1px solid var(--line); }
+.rm-fine { color: var(--muted); font-size: 0.74rem; }
+
+/* ---------- Portfolio dashboard preview ---------- */
+.dash { border: 1px solid var(--line); border-radius: 22px; overflow: hidden;
+  background: linear-gradient(180deg, var(--panel), rgba(13,19,32,0.3)); }
+.dash-top { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border-bottom: 1px solid var(--line); }
+.dk { padding: 22px 24px; border-right: 1px solid var(--line); }
+.dk:last-child { border-right: 0; }
+.dk .dl { display: block; color: var(--muted); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.dk .dv { font-family: "Syne", sans-serif; font-weight: 800; font-size: 1.5rem; margin-top: 8px; display: block; }
+.dk .dv .dr { color: var(--muted); font-size: 0.9rem; font-weight: 400; margin-left: 4px; }
+.dk.up .dv { color: #79d39b; }
+.dk.up .dv small { font-size: 0.7rem; }
+.dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+.dash-card { padding: 24px; border-right: 1px solid var(--line); }
+.dash-card:last-child { border-right: 0; }
+.dash-card h4 { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.bar { display: flex; height: 12px; border-radius: 100px; overflow: hidden; background: rgba(255,255,255,0.05); }
+.bar span:nth-child(1){ background: var(--flame); } .bar span:nth-child(2){ background: var(--flame-2); }
+.bar span:nth-child(3){ background: var(--teal); } .bar span:nth-child(4){ background: #4a5568; }
+.legend { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+.legend li { color: var(--muted); font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
+.legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.legend .c1{ background: var(--flame);} .legend .c2{ background: var(--flame-2);} .legend .c3{ background: var(--teal);} .legend .c4{ background:#4a5568;}
+.cal, .obs { list-style: none; display: grid; gap: 12px; }
+.cal li { display: flex; justify-content: space-between; gap: 10px; font-size: 0.86rem; align-items: center; }
+.cal li b { color: var(--muted); font-weight: 500; font-size: 0.78rem; }
+.cal li b.soon { color: var(--flame-2); }
+.obs li { color: var(--muted); font-size: 0.86rem; }
+.dash-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding: 20px 24px; border-top: 1px solid var(--line); }
+.dash-foot .btn { cursor: pointer; }
+
+/* ---------- Opportunity cards (home preview + listing) ---------- */
+.opp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.opp { position: relative; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; display: block; color: inherit;
+  background: linear-gradient(180deg, var(--panel), rgba(13,19,32,0.3)); transition: transform 0.5s var(--ease), border-color 0.5s; }
+.opp:hover { transform: translateY(-5px); border-color: rgba(201,162,74,0.45); }
+.opp-media { position: relative; aspect-ratio: 4/3; overflow: hidden; }
+.opp-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--ease); }
+.opp:hover .opp-media img { transform: scale(1.07); }
+.opp-status { position: absolute; top: 12px; left: 12px; z-index: 2; padding: 5px 11px; border-radius: 100px;
+  font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;
+  background: rgba(10,11,13,0.72); backdrop-filter: blur(6px); border: 1px solid var(--line); color: var(--flame-2); }
+.opp-status.live { color: #79d39b; }
+.opp-body { padding: 18px 20px 20px; }
+.opp-brand { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.opp-name { font-family: "Cormorant Garamond", serif; font-weight: 700; font-size: 1.4rem; margin: 4px 0 8px; }
+.opp-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; color: var(--muted); font-size: 0.78rem; margin-bottom: 14px; }
+.opp-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line); padding-top: 14px; }
+.opp-price { font-family: "Syne", sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--flame-2); }
+.opp-cta { font-size: 0.8rem; color: var(--flame); }
+
+/* ---------- Rare-piece mandate band ---------- */
+.mandate-band { text-align: center; border: 1px solid var(--line); border-radius: 24px; padding: clamp(40px, 6vw, 80px);
+  background:
+    radial-gradient(80% 140% at 50% 0%, rgba(201,162,74,0.10), transparent 60%),
+    linear-gradient(180deg, var(--panel), var(--bg-2)); }
+.mandate-band h2 { font-size: clamp(1.9rem, 5vw, 3.6rem); margin: 14px 0 16px; }
+.mandate-band p { color: var(--muted); max-width: 620px; margin: 0 auto 28px; }
+.mandate-band .btn { cursor: pointer; }
+
+/* ---------- Journal ---------- */
+.journal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.jcard { display: block; color: inherit; border: 1px solid var(--line); border-radius: 16px; padding: 26px 24px;
+  background: linear-gradient(180deg, var(--panel), rgba(13,19,32,0.3)); transition: transform 0.4s, border-color 0.4s; }
+.jcard:hover { transform: translateY(-4px); border-color: rgba(201,162,74,0.4); }
+.jtag { font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal); }
+.jcard h3 { font-family: "Cormorant Garamond", serif; font-weight: 700; font-size: 1.4rem; text-transform: none; margin: 12px 0 10px; line-height: 1.15; }
+.jcard p { color: var(--muted); font-size: 0.88rem; }
+.jmore { display: inline-block; margin-top: 16px; color: var(--flame); font-size: 0.82rem; }
+
+#cta .glow { background: linear-gradient(120deg, var(--flame), var(--flame-2), var(--teal)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ---------- Legal ---------- */
+.legal { color: var(--muted); font-size: 0.72rem; line-height: 1.55; max-width: 980px; margin: 8px 0 30px; opacity: 0.8; }
+
+/* ---------- Discreet WhatsApp FAB ---------- */
+.wa-fab { position: fixed; right: 20px; bottom: 20px; z-index: 130; display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 16px; border-radius: 100px; background: rgba(10,11,13,0.82); backdrop-filter: blur(10px);
+  border: 1px solid var(--line); color: var(--ink); font-size: 0.82rem; box-shadow: 0 14px 40px rgba(0,0,0,0.5);
+  transition: border-color 0.3s, transform 0.3s; }
+.wa-fab:hover { border-color: var(--flame); transform: translateY(-2px); }
+.wa-fab span { color: var(--flame-2); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px) {
+  .name-grid, .request-module { grid-template-columns: 1fr; gap: 32px; }
+  .timeline { grid-template-columns: 1fr 1fr; gap: 28px 16px; }
+  .timeline::before { display: none; }
+  .dash-top { grid-template-columns: 1fr 1fr; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .dash-card { border-right: 0; border-bottom: 1px solid var(--line); }
+  .journal-grid { grid-template-columns: 1fr 1fr; }
+  .pillars { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+  .rmf.two { grid-template-columns: 1fr; }
+  .timeline, .journal-grid, .pillars { grid-template-columns: 1fr; }
+  .dash-top { grid-template-columns: 1fr; }
+  .dk { border-right: 0; border-bottom: 1px solid var(--line); }
+  .wa-fab span { display: none; }
+}
+
+/* ---------- Services page ---------- */
+.svc { max-width: 1100px; }
+.svc-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.svc-head h2 { font-size: clamp(1.8rem, 4.4vw, 3rem); text-transform: none; }
+.svc-lead { color: var(--muted); max-width: 760px; margin-bottom: 28px; font-size: 1rem; }
+.svc .pillars { grid-template-columns: repeat(4, 1fr); margin-bottom: 28px; }
+.svc .pillar h3 { font-size: 1rem; }
+.svc .btn { cursor: pointer; }
+
+/* ---------- Membership tiers ---------- */
+.tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: stretch; }
+.tier { position: relative; border: 1px solid var(--line); border-radius: 20px; padding: 32px 28px;
+  background: linear-gradient(180deg, var(--panel), rgba(13,19,32,0.3)); display: flex; flex-direction: column; }
+.tier.featured { border-color: rgba(201,162,74,0.5); box-shadow: 0 0 0 1px rgba(201,162,74,0.25); }
+.tier-flag { position: absolute; top: -11px; left: 28px; background: linear-gradient(120deg, var(--flame), var(--flame-2));
+  color: #190a02; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; padding: 5px 12px; border-radius: 100px; }
+.tier h3 { font-size: 1.5rem; text-transform: none; }
+.tier-for { color: var(--muted); font-size: 0.88rem; margin: 8px 0 18px; }
+.tier ul { list-style: none; display: grid; gap: 10px; margin-bottom: 24px; flex: 1; }
+.tier ul li { color: var(--ink); font-size: 0.9rem; padding-left: 22px; position: relative; }
+.tier ul li::before { content: "✓"; color: var(--flame); position: absolute; left: 0; }
+.tier .btn { cursor: pointer; width: 100%; justify-content: center; }
+@media (max-width: 920px) {
+  .svc .pillars { grid-template-columns: 1fr 1fr; }
+  .tiers { grid-template-columns: 1fr; }
+}
+
+/* ---------- About page ---------- */
+.statement { font-family: "Cormorant Garamond", serif; font-size: clamp(1.5rem, 3.4vw, 2.4rem); line-height: 1.28; margin-bottom: 18px; }
+.statement strong { color: var(--flame-2); }
+#statement .body { color: var(--muted); margin-bottom: 14px; max-width: 760px; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.cmp { border: 1px solid var(--line); border-radius: 18px; padding: 30px 28px; background: linear-gradient(180deg, var(--panel), rgba(13,19,32,0.3)); }
+.cmp.pro { border-color: rgba(201,162,74,0.45); box-shadow: 0 0 0 1px rgba(201,162,74,0.2); }
+.cmp h3 { font-family: "Cormorant Garamond", serif; font-weight: 700; font-size: 1.5rem; text-transform: none; margin-bottom: 18px; }
+.cmp ul { list-style: none; display: grid; gap: 12px; }
+.cmp ul li { font-size: 0.92rem; padding-left: 26px; position: relative; color: var(--ink); }
+.cmp .neg li { color: var(--muted); }
+.cmp .neg li::before { content: "✕"; color: #7d6a6c; position: absolute; left: 0; }
+.cmp .pos li::before { content: "✓"; color: var(--flame); position: absolute; left: 0; }
+.disc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.disc { border: 1px solid var(--line); border-radius: 14px; padding: 24px; background: var(--bg-2); }
+.disc h4 { font-size: 0.96rem; text-transform: none; margin-bottom: 10px; color: var(--flame-2); }
+.disc p { color: var(--muted); font-size: 0.86rem; }
+@media (max-width: 820px) { .compare, .disc-grid { grid-template-columns: 1fr; } }
+
+/* ===== Breathing room — HORO PRIVÉ components ===== */
+.intro .body { line-height: 1.7; margin-top: 24px; }
+.pillars { gap: 20px; }
+.pillar { padding: 28px 26px; }
+.name-grid { gap: 72px; }
+.name-grid .body { line-height: 1.7; margin-top: 18px; }
+.timeline { row-gap: 30px; }
+.tl p { line-height: 1.6; }
+.request-module { gap: 56px; padding: clamp(34px, 4.5vw, 60px); }
+.rm-form { gap: 18px; }
+.dash-top .dk { padding: 26px 26px; }
+.dash-card { padding: 28px; }
+.opp-grid { gap: 26px; }
+.opp-body { padding: 22px 22px 24px; }
+.journal-grid { gap: 24px; }
+.jcard { padding: 30px 28px; }
+.mandate-band { padding: clamp(48px, 7vw, 90px); }
+.svc { max-width: 1120px; }
+.svc-lead { line-height: 1.7; margin-bottom: 34px; }
+.svc .pillars { gap: 20px; }
+.tiers { gap: 22px; }
+.tier { padding: 34px 30px; }
+.statement { line-height: 1.34; margin-bottom: 22px; }
+#statement .body { line-height: 1.7; margin-bottom: 18px; }
+.compare { gap: 22px; }
+.cmp { padding: 34px 32px; }
+.cmp ul { gap: 14px; }
+.disc-grid { gap: 20px; }
+.disc { padding: 28px; }
+.disc p { line-height: 1.65; }
+
+/* =========================================================================
+   Header fix — scrim + de-crowd so the nav never overlaps the hero
+   ========================================================================= */
+header::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(6,8,12,0.95) 0%, rgba(6,8,12,0.62) 55%, rgba(6,8,12,0) 100%);
+  transition: opacity 0.4s var(--ease);
+}
+header.shrink::before { opacity: 0; }            /* shrink already paints a solid bar */
+header { padding-top: 14px; padding-bottom: 14px; }
+.brand { flex: none; font-size: 1.12rem; }
+nav { gap: 16px; }
+nav a.link { font-size: 0.8rem; }
+nav .btn { padding: 9px 15px; font-size: 0.78rem; }
+/* keep hero copy clear of the fixed header */
+.order-hero { padding-top: clamp(140px, 16vh, 184px); }
+.pf-hero { padding-top: clamp(132px, 15vh, 168px); }
+
+/* =========================================================================
+   Marquee restyle — smaller, refined serif, filled, clearly moving
+   ========================================================================= */
+.marquee { padding: 13px 0; }
+.marquee .track { gap: 46px; animation: scrollx 22s linear infinite; }
+.marquee span {
+  font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-style: normal;
+  font-size: clamp(0.85rem, 1.4vw, 1.2rem); text-transform: uppercase; letter-spacing: 0.2em;
+  color: rgba(238,242,248,0.55); -webkit-text-stroke: 0; gap: 46px;
+}
+.marquee span::after { content: "✦"; color: var(--flame); -webkit-text-stroke: 0; font-size: 0.6em; }
+
+/* ---------- Brand logo (vector mark + full lockup) ---------- */
+.brand-mark { width: 30px; height: 30px; display: block; flex: none; }
+.brand { gap: 9px; }
+#preload .pl-mark { width: min(264px, 66vw); height: auto; display: block; margin: 0 auto 6px;
+  animation: plrise 0.9s var(--ease) both; }
+@keyframes plrise { from { opacity: 0; transform: translateY(14px) scale(0.96); } to { opacity: 1; transform: none; } }
+
+/* ---------- Selective / by-application statement ---------- */
+.selective { display: flex; align-items: flex-start; gap: 16px; border: 1px solid rgba(201,162,74,0.35);
+  border-radius: 16px; padding: 22px 26px; margin-bottom: 34px;
+  background: linear-gradient(180deg, rgba(201,162,74,0.07), rgba(13,19,32,0.2)); }
+.selective .si { font-size: 1.3rem; color: var(--flame); flex: none; line-height: 1.4; }
+.selective p { color: var(--ink); font-size: 0.95rem; line-height: 1.6; }
+.selective p strong { color: var(--flame-2); }
+
+/* selective note on the home request module */
+.rm-note { margin-top: 16px; padding: 14px 16px; border-left: 2px solid var(--flame);
+  background: rgba(201,162,74,0.06); border-radius: 8px; color: var(--ink); font-size: 0.88rem; line-height: 1.55; }
+.rm-note strong { color: var(--flame-2); }
+
+/* =========================================================================
+   Luxe pass — elevate to quiet, editorial luxury (applies site-wide)
+   ========================================================================= */
+:root {
+  --bg: #07080b;
+  --bg-2: #0b0d12;
+  --panel: #101319;
+  --flame: #c8a24c;
+  --flame-2: #ecd49a;
+}
+html { background: var(--bg); }
+body { letter-spacing: 0.008em; }
+
+/* eyebrows & nav — couture tracking */
+.eyebrow { letter-spacing: 0.34em; }
+nav a.link { text-transform: uppercase; letter-spacing: 0.13em; font-size: 0.72rem; }
+
+/* buttons — gold glow + tracking */
+.btn { letter-spacing: 0.06em; }
+.btn.flame { box-shadow: 0 10px 34px rgba(200,162,76,0.20); }
+.btn.flame:hover { box-shadow: 0 14px 44px rgba(200,162,76,0.34); transform: translateY(-2px); }
+.btn.ghost { border-color: rgba(200,162,76,0.28); }
+.btn.ghost:hover { border-color: var(--flame); color: var(--flame-2); box-shadow: 0 10px 30px rgba(200,162,76,0.12); }
+
+/* a fine gold rule beneath major headings */
+.sec-head h2::after, .svc-head h2::after {
+  content: ""; display: block; width: 54px; height: 2px; margin-top: 18px;
+  background: linear-gradient(90deg, var(--flame), transparent);
+}
+
+/* cards & panels — warmer, gold-lit on hover */
+.cap:hover, .pillar:hover, .opp:hover, .jcard:hover, .tier:hover {
+  border-color: rgba(200,162,76,0.5);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(200,162,76,0.16);
+}
+
+/* gold hairlines on key dividers */
+footer { border-top: 1px solid rgba(200,162,76,0.18); }
+.marquee { border-color: rgba(200,162,76,0.14); }
+header.shrink { border-bottom-color: rgba(200,162,76,0.18); }
+
+/* luxe selection + scrollbar */
+::selection { background: var(--flame); color: #14100a; }
+* { scrollbar-color: rgba(200,162,76,0.4) transparent; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(200,162,76,0.35); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(200,162,76,0.55); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* =========================================================================
+   Header fix v2 — solid frosted bar so hero copy never bleeds through
+   ========================================================================= */
+header::before { display: none; }                 /* retire the partial scrim */
+header {
+  background: linear-gradient(180deg, rgba(7,8,11,0.97) 0%, rgba(7,8,11,0.9) 60%, rgba(7,8,11,0.2) 100%);
+  -webkit-backdrop-filter: blur(9px); backdrop-filter: blur(9px);
+}
+header.shrink {
+  background: rgba(7,8,11,0.94);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(200,162,76,0.18);
+}
+.brand { font-size: 1.04rem; letter-spacing: 0.06em; }
+.brand-mark { width: 28px; height: 28px; }
+
+/* =========================================================================
+   Luxe motion — film grain, hero vignette, logo intro animation
+   ========================================================================= */
+/* animated gold-lit film grain over heroes */
+.hero-noise { inset: -6%; opacity: 0.08; will-change: transform; animation: grain 7s steps(8) infinite; }
+@keyframes grain {
+  0%,100% { transform: translate(0,0); } 12% { transform: translate(-4%,-3%); }
+  25% { transform: translate(3%,-5%); } 37% { transform: translate(-5%,4%); }
+  50% { transform: translate(4%,3%); } 62% { transform: translate(-3%,-4%); }
+  75% { transform: translate(5%,2%); } 87% { transform: translate(-2%,5%); }
+}
+/* richer gold vignette on the cinematic home hero */
+#hero .hero-grade {
+  background:
+    radial-gradient(68% 50% at 50% 2%, rgba(201,162,74,0.12), transparent 55%),
+    radial-gradient(125% 90% at 50% 38%, transparent 48%, rgba(0,0,0,0.5) 100%),
+    radial-gradient(120% 80% at 50% 10%, transparent 40%, rgba(7,8,11,0.55) 100%),
+    linear-gradient(180deg, rgba(7,8,11,0.5) 0%, transparent 30%, transparent 52%, rgba(7,8,11,0.96) 100%);
+}
+
+/* logo intro — the watch-dial mark winds in */
+.brand-mark { animation: markIn 0.9s var(--ease) both; }
+@keyframes markIn { from { opacity: 0; transform: rotate(-130deg) scale(0.55); } to { opacity: 1; transform: none; } }
+
+/* preloader logo — rise + gentle gold glow */
+#preload .pl-mark { animation: plrise 0.9s var(--ease) both, plglow 2.6s ease-in-out 0.6s infinite; }
+@keyframes plglow {
+  0%,100% { filter: drop-shadow(0 0 4px rgba(201,162,74,0)); }
+  50% { filter: drop-shadow(0 0 18px rgba(201,162,74,0.32)); }
+}
+
+/* =========================================================================
+   Marquee — guaranteed continuous right-to-left scroll (seamless 2x track)
+   ========================================================================= */
+.marquee { overflow: hidden; }
+.marquee .track { width: max-content; animation: scrollx 34s linear infinite; }
+@keyframes scrollx { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+/* keep it gently moving even with reduced motion (owner request) */
+@media (prefers-reduced-motion: reduce) {
+  .marquee .track { animation: scrollx 70s linear infinite !important; }
+}
