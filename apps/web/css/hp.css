@@ -351,3 +351,19 @@ header.shrink { border-bottom-color: rgba(200,162,76,0.18); }
 ::-webkit-scrollbar-thumb { background: rgba(200,162,76,0.35); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(200,162,76,0.55); }
 ::-webkit-scrollbar-track { background: transparent; }
+
+/* =========================================================================
+   Header fix v2 — solid frosted bar so hero copy never bleeds through
+   ========================================================================= */
+header::before { display: none; }                 /* retire the partial scrim */
+header {
+  background: linear-gradient(180deg, rgba(7,8,11,0.97) 0%, rgba(7,8,11,0.9) 60%, rgba(7,8,11,0.2) 100%);
+  -webkit-backdrop-filter: blur(9px); backdrop-filter: blur(9px);
+}
+header.shrink {
+  background: rgba(7,8,11,0.94);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(200,162,76,0.18);
+}
+.brand { font-size: 1.04rem; letter-spacing: 0.06em; }
+.brand-mark { width: 28px; height: 28px; }
