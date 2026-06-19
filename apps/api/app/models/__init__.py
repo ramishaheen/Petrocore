@@ -39,6 +39,10 @@ from app.models.talent import (
     TalentProfile, SuccessionPlan, SuccessorCandidate, KnowledgeHolder, KnowledgeTransferPlan,
 )
 from app.models.integration import IntegrationConnector, IntegrationSyncLog
+from app.models.assessment_exec import (
+    QuestionBank, QuestionTag, AssessmentCampaign, AssessmentParticipant,
+    AssessmentAttempt, AssessmentResponse, AssessmentResultRow, EvidenceReview,
+)
 
 __all__ = [
     "AppUser",
@@ -62,4 +66,6 @@ __all__ = [
     "TalentProfile", "SuccessionPlan", "SuccessorCandidate",
     "KnowledgeHolder", "KnowledgeTransferPlan",
     "IntegrationConnector", "IntegrationSyncLog",
+    "QuestionBank", "QuestionTag", "AssessmentCampaign", "AssessmentParticipant",
+    "AssessmentAttempt", "AssessmentResponse", "AssessmentResultRow", "EvidenceReview",
 ]

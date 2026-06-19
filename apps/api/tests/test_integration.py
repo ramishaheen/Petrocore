@@ -634,3 +634,62 @@ def test_uat_acceptance_criteria(client):
     assert "value_index" in ok("/api/v1/reports/institutional-value")
     # Governance + tamper-evident audit chain.
     assert ok("/api/v1/governance/audit/verify")["intact"] is True
+
+
+def test_assessment_execution_split(client):
+    """P-G: campaign → participant → attempt → response → result split, with an
+    approved result writing back into the readiness-feeding competency results."""
+    admin = _login(client, "admin@petrocore.ly")
+
+    job = next(j for j in client.get("/api/v1/jobs", headers=admin).json() if j["has_approved_profile"])
+    bp = client.post(f"/api/v1/jobs/{job['id']}/blueprint", headers=admin, json={}).json()
+    blueprint_id = bp["id"]
+    comp_en = bp["competencies"][0]["competency_en"]
+    comp_id = next(c["id"] for c in client.get("/api/v1/competencies", headers=admin).json() if c["name_en"] == comp_en)
+
+    employee_id = client.get("/api/v1/profiles", headers=admin).json()[0]["employee_id"]
+
+    # Create a campaign from the blueprint, enroll, start an attempt.
+    camp = client.post("/api/v1/assessment-campaigns", headers=admin, json={
+        "name": "UAT Baseline", "blueprint_id": blueprint_id, "target_entity_type": "Employee"}).json()
+    assert camp["status"] == "PUBLISHED"
+    part = client.post(f"/api/v1/assessment-campaigns/{camp['id']}/enroll", headers=admin,
+                       json={"employee_id": employee_id}).json()
+    att = client.post(f"/api/v1/assessment-participants/{part['id']}/start", headers=admin).json()
+
+    # Submit responses for that competency's questions (all correct → high score).
+    qs = client.get(f"/api/v1/assessments/questions/{comp_id}", headers=admin).json()
+    responses = [{"question_id": q["id"], "selected_option": 1, "score": 0.9} for q in qs]
+    sub = client.post(f"/api/v1/assessment-attempts/{att['id']}/submit", headers=admin,
+                      json={"responses": responses}).json()
+    assert sub["results"], "submission produced a per-competency result"
+    result = next(r for r in sub["results"] if r["competency_id"] == comp_id)
+    assert result["result_status"] == "DRAFT" and result["actual_level"] >= 1
+
+    # Approve the result → it becomes an APPROVED L5 competency result for the employee.
+    rev = client.post(f"/api/v1/assessment-results/{result['id']}/review", headers=admin,
+                      json={"approve": True}).json()
+    assert rev["result_status"] == "APPROVED"
+    report = client.get(f"/api/v1/reports/employee/{employee_id}", headers=admin).json()
+    assert any(c["competency_en"] == comp_en and c["assessed_level"] >= 1 for c in report["competencies"])
+
+    # Evidence review round-trip.
+    ev = client.post("/api/v1/assessments/evidence", headers=admin, json={
+        "employee_id": employee_id, "kind": "CERTIFICATE", "text": "ISO 45001 lead auditor.",
+        "confidence": 0.5}).json()
+    er = client.post(f"/api/v1/evidence/{ev['evidence_id']}/review", headers=admin, json={
+        "decision": "Accepted", "confidence_score": 0.9}).json()
+    assert er["review_decision"] == "Accepted"
+
+    # Question bank + tagging.
+    bank = client.post("/api/v1/question-banks", headers=admin, json={
+        "code": "UAT-BANK", "name_en": "UAT Bank", "name_ar": "بنك"}).json()
+    assert bank["code"] == "UAT-BANK"
+    client.post(f"/api/v1/questions/{qs[0]['id']}/tags", headers=admin, json={
+        "tag_type": "Competency", "tag_value": comp_id})
+    assert client.get(f"/api/v1/questions/{qs[0]['id']}/tags", headers=admin).json()
+
+    # Audit chain intact; RBAC: employee can't create a campaign.
+    assert client.get("/api/v1/governance/audit/verify", headers=admin).json()["intact"] is True
+    employee = _login(client, "employee@noc.ly")
+    assert client.post("/api/v1/assessment-campaigns", headers=employee, json={"name": "x"}).status_code == 403

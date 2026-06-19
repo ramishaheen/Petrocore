@@ -194,6 +194,9 @@ def seed() -> None:
         # ---- Knowledge-graph links + integration connectors (P-F) ----
         from app.seed.seed_f import seed_f
         seed_f(db)
+        # ---- Assessment execution split + question bank (P-G) ----
+        from app.seed.seed_g import seed_g
+        seed_g(db)
 
         db.commit()
         print("Seed complete.")
