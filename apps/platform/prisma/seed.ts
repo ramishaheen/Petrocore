@@ -30,6 +30,21 @@ async function main() {
         ],
       });
     }
+
+    const reqCount = await prisma.request.count({ where: { clientId: collector.client.id } });
+    if (reqCount === 0) {
+      await prisma.request.create({
+        data: {
+          clientId: collector.client.id,
+          kind: "RARE_PIECE",
+          brand: "Patek Philippe",
+          model: "Nautilus 5711/1A",
+          deliveryCountry: "United Kingdom",
+          notes: "Blue dial, full set, prefer 2021+.",
+          status: "SEARCHING",
+        },
+      });
+    }
   }
 
   // A consultant (staff) account.

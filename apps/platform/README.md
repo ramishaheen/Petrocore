@@ -66,8 +66,10 @@ Anything above that is unset → the related feature runs in a clearly-labelled
 
 ## Roadmap
 
-- **Phase 1 (this):** schema, auth, RBAC, consultation intake, portfolio read/write.
-- **Phase 2:** sourcing requests + rare mandates + request status workflow.
+- **Phase 1 ✓:** schema, auth, RBAC, consultation intake, portfolio read/write.
+- **Phase 2 ✓:** sourcing requests + rare mandates, client requests UI, and a
+  staff back-office (`/admin`) that advances the request status pipeline (with
+  audit logging). Plus GitHub Actions CI (`prisma validate` + `tsc`).
 - **Phase 3:** portfolio analytics, valuation history, service reminders, documents vault.
 - **Phase 4:** opportunities + comparison + landed-cost calculator (live FX/market data).
 - **Phase 5:** admin/consultant dashboard + role management + audit log.
