@@ -188,10 +188,6 @@ const GET: Record<string, unknown> = {
     { id: "d2", kind: "RECOMMENDATION", status: "PENDING_REVIEW", confidence: 0.62 },
     { id: "d3", kind: "COMPETENCY_RESULT", status: "PENDING_REVIEW", confidence: 0.58 },
   ] },
-  "/governance/decisions": [
-    { id: "d2", kind: "RECOMMENDATION", subject_ref: "recommendation:r1", ai_recommendation: "Targeted PSM development for Yusuf Al-Tayeb: raise level 2→5.", confidence: 0.62, governance_status: "PENDING_REVIEW" },
-    { id: "d3", kind: "COMPETENCY_RESULT", subject_ref: "assessment:a8", ai_recommendation: "Mariam Saleh — Process Safety assessed level 1.", confidence: 0.58, governance_status: "PENDING_REVIEW" },
-  ],
   "/governance/audit/verify": { intact: true },
   "/enablement/pilot-entry": {
     candidates: [
@@ -465,6 +461,136 @@ function parseBody(config: InternalAxiosRequestConfig): Record<string, unknown> 
   try { return JSON.parse((config.data as string) || "{}"); } catch { return {}; }
 }
 
+/* ============================================================================
+ * Assessment workflow (stateful demo): assign → notify → take → score → govern
+ * The employee persona is Ahmed (e1); seeded so the flow is visible immediately.
+ * ==========================================================================*/
+const DEMO_ME = { employee_id: "e1", name_en: "Ahmed Al-Mansouri", name_ar: "أحمد المنصوري" };
+
+// Which competencies (and required level) each blueprint assesses.
+const BP_ASSIGN_COMPS: Record<string, Array<{ id: string; required_level: number }>> = {
+  "bp-op3": [{ id: "c-well", required_level: 4 }, { id: "c-psm", required_level: 5 }, { id: "c-comm", required_level: 3 }, { id: "c-data", required_level: 3 }],
+  "bp-pe2": [{ id: "c-proc", required_level: 4 }, { id: "c-psm", required_level: 4 }, { id: "c-dec", required_level: 3 }],
+};
+
+interface WfResult { competency_id: string; competency_en: string; competency_ar: string; assessed_level: number; required_level: number; confidence: number; status: string; }
+interface WfAssignment {
+  id: string; employee_id: string; employee_en: string; employee_ar: string;
+  blueprint_id: string; title_en: string; title_ar: string; purpose: string;
+  competencies: Array<{ id: string; en: string; ar: string; required_level: number }>;
+  assigned_by: string; due: string; status: string; created: string;
+  confidence: number | null; results: WfResult[];
+}
+interface WfNotif { id: string; employee_id: string; kind: string; title_en: string; title_ar: string; body_en: string; body_ar: string; when: string; read: boolean; }
+interface GovDecision { id: string; kind: string; subject_ref: string; ai_recommendation: string; confidence: number; governance_status: string; assignment_id?: string; competency_id?: string; }
+
+let wfSeq = 1;
+const wfAssignments: WfAssignment[] = [];
+const wfNotifs: WfNotif[] = [];
+const govDecisions: GovDecision[] = [
+  { id: "d2", kind: "RECOMMENDATION", subject_ref: "recommendation:r1", ai_recommendation: "Targeted PSM development for Yusuf Al-Tayeb: raise level 2→5.", confidence: 0.62, governance_status: "PENDING_REVIEW" },
+  { id: "d3", kind: "COMPETENCY_RESULT", subject_ref: "assessment:a8", ai_recommendation: "Mariam Saleh — Process Safety assessed level 1.", confidence: 0.58, governance_status: "PENDING_REVIEW" },
+];
+
+function bpComps(blueprintId: string) {
+  const list = BP_ASSIGN_COMPS[blueprintId] ?? BP_ASSIGN_COMPS["bp-op3"];
+  return list.map((c) => ({ id: c.id, en: cName[c.id]?.name_en ?? c.id, ar: cName[c.id]?.name_ar ?? c.id, required_level: c.required_level }));
+}
+function personName(empId: string) {
+  const p = PEOPLE.find((x) => x.emp === empId);
+  return { en: p?.en ?? empId, ar: p?.ar ?? empId };
+}
+function createAssignment(employeeId: string, blueprintId: string, assignedBy: string): WfAssignment {
+  const bp = blueprints.find((b) => b.id === blueprintId) ?? blueprints[0];
+  const nm = personName(employeeId);
+  const a: WfAssignment = {
+    id: "asg-" + wfSeq++, employee_id: employeeId, employee_en: nm.en, employee_ar: nm.ar,
+    blueprint_id: bp.id, title_en: bp.name, title_ar: bp.name_ar, purpose: bp.assessment_purpose,
+    competencies: bpComps(bp.id), assigned_by: assignedBy, due: "7d", status: "ASSIGNED",
+    created: "now", confidence: null, results: [],
+  };
+  wfAssignments.unshift(a);
+  wfNotifs.unshift({
+    id: "ntf-" + wfSeq++, employee_id: employeeId, kind: "ASSESSMENT_ASSIGNED",
+    title_en: "New assessment assigned", title_ar: "تم إسناد تقييم جديد",
+    body_en: `${bp.name} — ${a.competencies.length} competencies. Due in 7 days.`,
+    body_ar: `${bp.name_ar} — ${a.competencies.length} جدارات. خلال 7 أيام.`,
+    when: "now", read: false,
+  });
+  return a;
+}
+function assignmentSections(a: WfAssignment) {
+  return a.competencies.map((c) => ({
+    competency_id: c.id, competency_en: c.en, competency_ar: c.ar, required_level: c.required_level,
+    questions: questionsFor(c.id),
+  }));
+}
+function scoreAssignment(a: WfAssignment, responses: Record<string, number>) {
+  a.results = a.competencies.map((c) => {
+    const qs = questionsFor(c.id);
+    const itemScores = qs.map((q) => {
+      const v = responses[q.id];
+      if (q.kind === "MCQ") return v === 0 ? 1 : v == null ? 0 : 0.3; // choice A is the demo key
+      return (v ?? 0) / 5;
+    });
+    const mean = itemScores.reduce((s, x) => s + x, 0) / (itemScores.length || 1);
+    const variance = itemScores.reduce((s, x) => s + (x - mean) ** 2, 0) / (itemScores.length || 1);
+    const consistency = Math.max(0, Math.min(1, 1 - variance * 2));
+    const raw = 0.5 * mean + 0.3 * Math.min(1, 2 / 3) + 0.2 * consistency; // evidence_count = 2
+    const confidence = Math.round(Math.max(0, Math.min(1, raw)) * 100) / 100;
+    const assessed = Math.max(1, Math.min(5, Math.ceil(mean * 5)));
+    return {
+      competency_id: c.id, competency_en: c.en, competency_ar: c.ar,
+      assessed_level: assessed, required_level: c.required_level, confidence,
+      status: confidence >= 0.75 ? "APPROVED" : "PENDING_REVIEW",
+    };
+  });
+  a.confidence = Math.round((a.results.reduce((s, r) => s + r.confidence, 0) / (a.results.length || 1)) * 100) / 100;
+  const pending = a.results.filter((r) => r.status === "PENDING_REVIEW");
+  a.status = pending.length ? "AWAITING_REVIEW" : "COMPLETED";
+  pending.forEach((r) => {
+    govDecisions.unshift({
+      id: "gd-" + wfSeq++, kind: "COMPETENCY_RESULT", subject_ref: `assignment:${a.id}:${r.competency_id}`,
+      ai_recommendation: `${a.employee_en} — ${r.competency_en} assessed level ${r.assessed_level} (confidence ${Math.round(r.confidence * 100)}%).`,
+      confidence: r.confidence, governance_status: "PENDING_REVIEW", assignment_id: a.id, competency_id: r.competency_id,
+    });
+  });
+  wfNotifs.unshift({
+    id: "ntf-" + wfSeq++, employee_id: a.employee_id, kind: "ASSESSMENT_SCORED",
+    title_en: pending.length ? "Assessment submitted — under review" : "Assessment completed",
+    title_ar: pending.length ? "تم إرسال التقييم — قيد المراجعة" : "اكتمل التقييم",
+    body_en: pending.length ? `${a.title_en}: ${pending.length} result(s) routed to governance.` : `${a.title_en}: all results approved.`,
+    body_ar: pending.length ? `${a.title_ar}: تم تحويل ${pending.length} نتيجة إلى الحوكمة.` : `${a.title_ar}: تم اعتماد جميع النتائج.`,
+    when: "now", read: false,
+  });
+  return a;
+}
+function resolveDecision(id: string, approve: boolean) {
+  const d = govDecisions.find((x) => x.id === id);
+  if (!d) return { ok: false };
+  d.governance_status = approve ? "APPROVED" : "REJECTED";
+  if (d.assignment_id) {
+    const a = wfAssignments.find((x) => x.id === d.assignment_id);
+    if (a) {
+      const r = a.results.find((x) => x.competency_id === d.competency_id);
+      if (r) r.status = approve ? "APPROVED" : "REJECTED";
+      const stillPending = govDecisions.some((x) => x.assignment_id === a.id && x.governance_status === "PENDING_REVIEW");
+      if (!stillPending) a.status = "COMPLETED";
+      wfNotifs.unshift({
+        id: "ntf-" + wfSeq++, employee_id: a.employee_id, kind: "RESULT_REVIEWED",
+        title_en: approve ? "Assessment result approved" : "Assessment result returned",
+        title_ar: approve ? "تم اعتماد نتيجة التقييم" : "تمت إعادة نتيجة التقييم",
+        body_en: `${a.title_en} — ${d.competency_id} ${approve ? "approved" : "returned"} by governance.`,
+        body_ar: `${a.title_ar} — ${approve ? "اعتمدت" : "أعيدت"} من الحوكمة.`,
+        when: "now", read: false,
+      });
+    }
+  }
+  return { id, governance_status: d.governance_status };
+}
+// Seed one pending assignment for the employee persona so the loop is visible on first load.
+createAssignment(DEMO_ME.employee_id, "bp-op3", "HR_VALIDATOR");
+
 /* ---------------------------------- P-G…P-M: full-spec layers (demo fixtures) */
 // P-J strategy
 const stObjectives = [
@@ -728,6 +854,43 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   if (url === "/groups" && method === "get") return grpGroups;
   if (/^\/groups\/[^/]+\/readiness$/.test(url)) return grpReadiness(url.split("/")[2]);
   if (url === "/talent-pools" && method === "get") return talPools;
+
+  // Assessment workflow: assign → notify → take → score → govern
+  if (url === "/assessment-assignments/mine" && method === "get")
+    return wfAssignments.filter((a) => a.employee_id === DEMO_ME.employee_id);
+  if (url === "/assessment-assignments" && method === "get") return wfAssignments;
+  if (url === "/assessment-assignments" && method === "post") {
+    const b = parseBody(config);
+    return createAssignment(String(b.employee_id || DEMO_ME.employee_id), String(b.blueprint_id || "bp-op3"), String(b.assigned_by || "assessor"));
+  }
+  if (/^\/assessment-assignments\/[^/]+\/start$/.test(url) && method === "post") {
+    const a = wfAssignments.find((x) => x.id === url.split("/")[2]);
+    if (a && a.status === "ASSIGNED") a.status = "IN_PROGRESS";
+    return a ? { id: a.id, status: a.status } : { ok: false };
+  }
+  if (/^\/assessment-assignments\/[^/]+\/submit$/.test(url) && method === "post") {
+    const a = wfAssignments.find((x) => x.id === url.split("/")[2]);
+    if (!a) return { ok: false };
+    scoreAssignment(a, (parseBody(config).responses as Record<string, number>) || {});
+    return { id: a.id, status: a.status, confidence: a.confidence, results: a.results };
+  }
+  if (/^\/assessment-assignments\/[^/]+$/.test(url) && method === "get") {
+    const a = wfAssignments.find((x) => x.id === url.split("/")[2]);
+    return a ? { ...a, sections: assignmentSections(a) } : { ok: false };
+  }
+  // Notifications
+  if (url === "/notifications/mine" && method === "get")
+    return wfNotifs.filter((n) => n.employee_id === DEMO_ME.employee_id);
+  if (/^\/notifications\/[^/]+\/read$/.test(url) && method === "post") {
+    const n = wfNotifs.find((x) => x.id === url.split("/")[2]); if (n) n.read = true; return { ok: true };
+  }
+  if (url === "/notifications/read-all" && method === "post") {
+    wfNotifs.forEach((n) => { if (n.employee_id === DEMO_ME.employee_id) n.read = true; }); return { ok: true };
+  }
+  // Governance
+  if (url === "/governance/decisions" && method === "get") return govDecisions;
+  if (/^\/governance\/decisions\/[^/]+\/resolve$/.test(url) && method === "post")
+    return resolveDecision(url.split("/")[2], parseBody(config).approve !== false);
 
   if (method === "post" && url === "/assessments/grade")
     return { assessed_level: 3, required_level: 4, confidence: 0.62, status: "PENDING_REVIEW", needs_human_review: true };

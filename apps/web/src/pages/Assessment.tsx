@@ -1,13 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { ClipboardCheck, Loader2, Sparkles } from "lucide-react";
+import { CheckCircle2, ClipboardCheck, Loader2, Send, Sparkles, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Badge, Card, PageHeader, ProgressRing } from "../components/ui";
 import { api } from "../lib/api";
+import { useAuth } from "../store/auth";
 
 interface Profile { id: string; employee_id: string; name_en: string; name_ar: string; }
 interface Competency { id: string; name_en: string; name_ar: string; }
+interface Blueprint { id: string; name: string; name_ar: string; }
 interface Question { id: string; kind: string; body_en: string; body_ar: string; options: { choices?: string[] }; }
 interface Result {
   assessed_level: number; required_level: number; confidence: number; status: string; needs_human_review: boolean;
@@ -16,13 +18,21 @@ interface Result {
 export default function Assessment() {
   const { t, i18n } = useTranslation();
   const ar = i18n.language === "ar";
+  const role = useAuth((s) => s.role);
+  const canAssign = role !== "EMPLOYEE";
   const [employeeId, setEmployeeId] = useState("");
   const [competencyId, setCompetencyId] = useState("");
   const [responses, setResponses] = useState<Record<string, number>>({});
   const [result, setResult] = useState<Result | null>(null);
+  const [assignEmp, setAssignEmp] = useState("");
+  const [assignBp, setAssignBp] = useState("");
 
   const profiles = useQuery<Profile[]>({ queryKey: ["profiles"], queryFn: async () => (await api.get("/profiles")).data });
   const comps = useQuery<Competency[]>({ queryKey: ["competencies"], queryFn: async () => (await api.get("/competencies")).data });
+  const blueprints = useQuery<Blueprint[]>({ queryKey: ["blueprints"], queryFn: async () => (await api.get("/blueprints")).data, enabled: canAssign });
+  const assign = useMutation({
+    mutationFn: async () => api.post("/assessment-assignments", { employee_id: assignEmp, blueprint_id: assignBp, assigned_by: role }),
+  });
   const questions = useQuery<Question[]>({
     queryKey: ["questions", competencyId],
     queryFn: async () => (await api.get(`/assessments/questions/${competencyId}`)).data,
@@ -49,6 +59,40 @@ export default function Assessment() {
   return (
     <div className="space-y-6">
       <PageHeader title={t("assessment.title")} subtitle={t("assessment.subtitle")} icon={ClipboardCheck} />
+
+      {canAssign && (
+        <Card className="space-y-3 border-petro/15">
+          <div>
+            <div className="font-semibold text-ink flex items-center gap-2"><UserPlus size={16} className="text-petro" /> {t("wf.assignTitle")}</div>
+            <p className="text-xs text-ink-soft mt-0.5 max-w-2xl">{t("wf.assignDesc")}</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+            <label className="text-sm text-ink-soft">
+              {t("wf.employee")}
+              <select className={selectCls} value={assignEmp} onChange={(e) => { setAssignEmp(e.target.value); assign.reset(); }}>
+                <option value="">—</option>
+                {(profiles.data ?? []).map((p) => <option key={p.id} value={p.employee_id}>{ar ? p.name_ar : p.name_en}</option>)}
+              </select>
+            </label>
+            <label className="text-sm text-ink-soft">
+              {t("wf.blueprint")}
+              <select className={selectCls} value={assignBp} onChange={(e) => { setAssignBp(e.target.value); assign.reset(); }}>
+                <option value="">—</option>
+                {(blueprints.data ?? []).map((b) => <option key={b.id} value={b.id}>{ar ? b.name_ar : b.name}</option>)}
+              </select>
+            </label>
+            <button disabled={!assignEmp || !assignBp || assign.isPending} onClick={() => assign.mutate()} className="btn-primary justify-center">
+              {assign.isPending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+              {assign.isPending ? t("wf.assigning") : t("wf.assign")}
+            </button>
+          </div>
+          {assign.isSuccess && (
+            <div className="flex items-center gap-2 text-sm text-emerald-700 bg-emerald-50 rounded-xl px-3 py-2">
+              <CheckCircle2 size={16} /> {t("wf.assignedToast")}
+            </div>
+          )}
+        </Card>
+      )}
 
       <Card className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <label className="text-sm text-ink-soft">

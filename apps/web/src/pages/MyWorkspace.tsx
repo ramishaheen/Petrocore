@@ -1,15 +1,23 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Award, BookOpen, CheckCircle2, Clock, Dumbbell, GraduationCap, Rocket, Sparkles, Target, TrendingUp,
+  Award, BookOpen, CheckCircle2, ClipboardCheck, Clock, Dumbbell, GraduationCap, PlayCircle, Rocket,
+  Sparkles, Target, TrendingUp,
 } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer,
 } from "recharts";
 
+import AssessmentRunner from "../components/AssessmentRunner";
 import MethodInfo from "../components/MethodInfo";
 import { Badge, Card, PageSkeleton, ProgressRing } from "../components/ui";
 import { api } from "../lib/api";
+
+interface Assignment {
+  id: string; title_en: string; title_ar: string; status: string; assigned_by: string; due: string;
+  competencies: { id: string }[]; confidence: number | null;
+}
 
 interface Result {
   competency_en: string; competency_ar: string; assessed_level: number; required_level: number; status: string;
@@ -40,6 +48,17 @@ const PATH = [
 export default function MyWorkspace() {
   const { t, i18n } = useTranslation();
   const ar = i18n.language === "ar";
+  const qc = useQueryClient();
+  const [activeAssignment, setActiveAssignment] = useState<string | null>(null);
+
+  const assignments = useQuery<Assignment[]>({
+    queryKey: ["my-assignments"],
+    queryFn: async () => (await api.get("/assessment-assignments/mine")).data,
+  });
+  const startAssignment = useMutation({
+    mutationFn: async (id: string) => api.post(`/assessment-assignments/${id}/start`),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: ["my-assignments"] }); setActiveAssignment(id); },
+  });
 
   const list = useQuery<ProfileRow[]>({ queryKey: ["profiles"], queryFn: async () => (await api.get("/profiles")).data });
   const meId = list.data?.[0]?.id;
@@ -110,6 +129,41 @@ export default function MyWorkspace() {
           })}
         </div>
       </Card>
+
+      {/* My assessments */}
+      {(assignments.data ?? []).length > 0 && (
+        <Card className="animate-slide-up">
+          <div className="font-semibold text-ink mb-1 flex items-center gap-2"><ClipboardCheck size={16} className="text-petro" /> {t("wf.myAssessments")}</div>
+          <div className="text-xs text-ink-muted mb-3">{t("wf.myAssessmentsHint")}</div>
+          <div className="space-y-2">
+            {(assignments.data ?? []).map((a) => {
+              const done = a.status === "COMPLETED" || a.status === "AWAITING_REVIEW";
+              const tone = a.status === "COMPLETED" ? "green" : a.status === "AWAITING_REVIEW" ? "amber" : a.status === "IN_PROGRESS" ? "blue" : "slate";
+              return (
+                <div key={a.id} className="flex items-center justify-between gap-3 rounded-xl border border-slate-100 p-3 hover:border-petro/20 transition-colors">
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-ink truncate">{ar ? a.title_ar : a.title_en}</div>
+                    <div className="text-xs text-ink-muted">
+                      {a.competencies.length} {t("wf.competencies")} · {t("wf.assignedBy")}: {a.assigned_by}
+                      {a.status === "ASSIGNED" && <> · {t("wf.due")} {a.due}</>}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <Badge tone={tone as "green" | "amber" | "blue" | "slate"}>{t(`wf.status_${a.status}`)}</Badge>
+                    <button
+                      onClick={() => (a.status === "ASSIGNED" ? startAssignment.mutate(a.id) : setActiveAssignment(a.id))}
+                      className="btn-primary py-1.5 px-3"
+                    >
+                      <PlayCircle size={15} />
+                      {done ? t("wf.viewResult") : a.status === "IN_PROGRESS" ? t("wf.resume") : t("wf.start")}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Competency radar */}
@@ -190,6 +244,10 @@ export default function MyWorkspace() {
             achievements.map((a, i) => <Badge key={i} tone="gold" icon={Award}>{ar ? a.ar : a.en}</Badge>)}
         </div>
       </Card>
+
+      {activeAssignment && (
+        <AssessmentRunner assignmentId={activeAssignment} onClose={() => setActiveAssignment(null)} />
+      )}
     </div>
   );
 }

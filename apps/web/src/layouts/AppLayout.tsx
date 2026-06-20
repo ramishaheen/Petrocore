@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 
+import NotificationBell from "../components/NotificationBell";
 import PersonaSwitcher from "../components/PersonaSwitcher";
 import { setLocale, type Locale } from "../i18n";
 import { DEMO } from "../lib/demo";
@@ -114,6 +115,7 @@ export default function AppLayout() {
             {current && <span className="font-medium text-ink">{t(`nav.${current.key}`)}</span>}
           </nav>
           <div className="flex items-center gap-3">
+            <NotificationBell />
             {DEMO ? <PersonaSwitcher /> : <span className="chip bg-petro/10 text-petro">{ar ? roleAr : role}</span>}
             <span className="grid place-items-center w-8 h-8 rounded-full bg-petro-grad text-white text-xs font-bold">
               {((ar ? roleAr : role) || "?").slice(0, 1)}
