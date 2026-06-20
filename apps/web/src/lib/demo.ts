@@ -634,9 +634,31 @@ function axCampaignDetail(id: string) {
 }
 // P-H development plans
 const devPlans = [{ id: "dp-1", plan_name: "Individual Development Plan 2026", entity_type: "Employee", entity_id: "e1", approval_status: "APPROVED" }];
+interface DevItem { id: string; action_type: string; action_description: string; completion_status: string; post_assessment_required: boolean; }
+const devPlanItems: Record<string, DevItem[]> = {
+  "dp-1": [
+    { id: "it1", action_type: "Training", action_description: "Process Safety Management — Level 5 program.", completion_status: "IN_PROGRESS", post_assessment_required: true },
+    { id: "it2", action_type: "Mentoring", action_description: "Shadow the shift supervisor on offshore startup.", completion_status: "PLANNED", post_assessment_required: false },
+    { id: "it3", action_type: "Evidence", action_description: "Upload signed-off well-control logbook.", completion_status: "PLANNED", post_assessment_required: false },
+  ],
+};
+function devPlanEntity(id: string) { return devPlans.find((p) => p.id === id) ?? devPlans[0]; }
 function devPlanDetail(id: string) {
-  return { id, plan_name: "Individual Development Plan 2026", entity_type: "Employee", entity_id: "e1", approval_status: "APPROVED",
-    items: [{ id: "it1", action_type: "Training", action_description: "Process Safety Management — Level 5 program.", completion_status: "IN_PROGRESS", post_assessment_required: true }] };
+  const p = devPlanEntity(id);
+  return { ...p, items: devPlanItems[id] ?? devPlanItems["dp-1"] };
+}
+function completeDevItem(planId: string, itemId: string) {
+  const items = devPlanItems[planId] ?? [];
+  const it = items.find((x) => x.id === itemId);
+  if (!it) return { ok: false };
+  it.completion_status = "COMPLETE";
+  let reassessment: string | null = null;
+  if (it.post_assessment_required) {
+    // Closing a gap with a post-assessment requirement queues a re-assessment.
+    const a = createAssignment(devPlanEntity(planId).entity_id, "bp-op3", "LD_MANAGER");
+    reassessment = a.id;
+  }
+  return { id: itemId, completion_status: it.completion_status, reassessment };
 }
 // P-K workflows + permission roles
 const wfInstances = [
@@ -836,6 +858,10 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   if (/^\/assessment-campaigns\/[^/]+$/.test(url) && method === "get") return axCampaignDetail(url.split("/")[2]);
   // P-H development
   if (url === "/development/plans" && method === "get") return devPlans;
+  if (method === "post" && /^\/development\/plans\/[^/]+\/items\/[^/]+\/complete$/.test(url)) {
+    const parts = url.split("/");
+    return completeDevItem(parts[3], parts[5]);
+  }
   if (/^\/development\/plans\/[^/]+$/.test(url) && method === "get") return devPlanDetail(url.split("/")[3]);
   // P-K workflows + permissions
   if (url === "/workflows" && method === "get") return wfInstances;

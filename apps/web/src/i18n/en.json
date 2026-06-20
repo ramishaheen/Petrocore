@@ -83,6 +83,8 @@
     "subtitle": "Learning needs from verified gaps → development plans → items → completion.",
     "empty": "No development plans yet.",
     "postAssess": "Post-assessment",
+    "markComplete": "Mark complete",
+    "reassessQueued": "Item completed. A post-training re-assessment was assigned to confirm the gap is closed.",
     "note": "Plan items derive from verified gaps; completing an item closes its learning need.",
     "cs_COMPLETE": "Complete",
     "cs_IN_PROGRESS": "In progress",
