@@ -61,7 +61,10 @@ export default function Succession() {
   const decide = useMutation({
     mutationFn: async ({ id, approve }: { id: string; approve: boolean }) =>
       (await api.post(`/talent/successors/${id}/decision`, { approve })).data,
-    onSuccess: (d) => setDecided((m) => ({ ...m, [d.id]: d.recommendation_status })),
+    onSuccess: (d) => {
+      setDecided((m) => ({ ...m, [d.id]: d.recommendation_status }));
+      qc.invalidateQueries({ queryKey: ["notifications"] });
+    },
   });
 
   if (isLoading || !roles) return <PageSkeleton />;

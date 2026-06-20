@@ -205,11 +205,22 @@ const GET: Record<string, unknown> = {
     { competency_id: "c-proc", target_level: 4, learners: ["e4"], size: 1 },
     { competency_id: "c-data", target_level: 4, learners: ["e3", "e6"], size: 2 },
   ],
-  "/training/programs": [
-    { id: "pr1", title_en: "Process Safety Management — Level 5", title_ar: "إدارة سلامة العمليات — المستوى 5", method: "BLENDED", provider: "Murzuq Academy", impact_kpi: "Readiness uplift" },
-    { id: "pr2", title_en: "Digital & Data Literacy", title_ar: "الثقافة الرقمية والبيانات", method: "DIGITAL", provider: "Murzuq Academy", impact_kpi: "Digital maturity index" },
-  ],
 };
+
+// Training programs (stateful): advance through BEFORE → DURING → AFTER with measured gap-closure.
+interface TrainingProgram { id: string; title_en: string; title_ar: string; method: string; provider: string; impact_kpi: string; stage: string; closure: number; }
+const trainingPrograms: TrainingProgram[] = [
+  { id: "pr1", title_en: "Process Safety Management — Level 5", title_ar: "إدارة سلامة العمليات — المستوى 5", method: "BLENDED", provider: "Murzuq Academy", impact_kpi: "Readiness uplift", stage: "DURING", closure: 35 },
+  { id: "pr2", title_en: "Digital & Data Literacy", title_ar: "الثقافة الرقمية والبيانات", method: "DIGITAL", provider: "Murzuq Academy", impact_kpi: "Digital maturity index", stage: "BEFORE", closure: 0 },
+];
+function advanceTraining(id: string) {
+  const p = trainingPrograms.find((x) => x.id === id);
+  if (!p) return { ok: false };
+  if (p.stage === "BEFORE") { p.stage = "DURING"; p.closure = 40; }
+  else if (p.stage === "DURING") { p.stage = "AFTER"; p.closure = 80; }
+  else { p.closure = 100; }
+  return { id: p.id, stage: p.stage, closure: p.closure };
+}
 
 function questionsFor(cid: string) {
   return [
@@ -325,9 +336,13 @@ const TAL_CANDS: Record<string, Array<Record<string, unknown>>> = {
   ],
 };
 
+// Persisted successor decisions (survive plan rebuilds) + notification on decide.
+const successorDecisions: Record<string, string> = {};
 function successionPlanFor(jobId: string) {
   const role = criticalRolesTal.find((r) => r.job_id === jobId) ?? criticalRolesTal[0];
-  const cands = TAL_CANDS[jobId] ?? TAL_CANDS["j-sup"];
+  const cands: Record<string, unknown>[] = (TAL_CANDS[jobId] ?? TAL_CANDS["j-sup"]).map((c) => ({
+    ...c, recommendation_status: successorDecisions[c.id as string] ?? c.recommendation_status,
+  }));
   return {
     id: "sp-" + role.job_id, job_id: role.job_id, plan_name: `${role.title_en} — Succession Plan`,
     bench_strength: cands.filter((c) => ["READY", "READY_MINOR_GAPS"].includes(c.readiness_status as string)).length,
@@ -660,18 +675,44 @@ function completeDevItem(planId: string, itemId: string) {
   }
   return { id: itemId, completion_status: it.completion_status, reassessment };
 }
-// P-K workflows + permission roles
-const wfInstances = [
-  { id: "wf-1", workflow_type: "BlueprintApproval", entity_type: "AssessmentBlueprint", entity_id: "bp-op3", status: "OPEN", current_step: 2 },
-];
-function wfDetail(id: string) {
-  return { id, workflow_type: "BlueprintApproval", entity_type: "AssessmentBlueprint", entity_id: "bp-op3", status: "OPEN", current_step: 2,
+// P-K workflows + permission roles (stateful: approving the last step publishes the blueprint)
+interface WfStep { step_order: number; step_name: string; approver_role: string; status: string; }
+interface WfInstance { id: string; workflow_type: string; entity_type: string; entity_id: string; status: string; current_step: number; steps: WfStep[]; }
+const wfState: Record<string, WfInstance> = {
+  "wf-1": {
+    id: "wf-1", workflow_type: "BlueprintApproval", entity_type: "AssessmentBlueprint", entity_id: "bp-pe2",
+    status: "OPEN", current_step: 1,
     steps: [
-      { step_order: 1, step_name: "Functional Review", approver_role: "SME", status: "APPROVED" },
+      { step_order: 1, step_name: "Functional Review", approver_role: "SME", status: "PENDING" },
       { step_order: 2, step_name: "HR Review", approver_role: "HR_VALIDATOR", status: "PENDING" },
       { step_order: 3, step_name: "Governance Review", approver_role: "COMPANY_ADMIN", status: "PENDING" },
-    ] };
+    ],
+  },
+};
+function wfList() {
+  return Object.values(wfState).map((w) => ({ id: w.id, workflow_type: w.workflow_type, entity_type: w.entity_type, entity_id: w.entity_id, status: w.status, current_step: w.current_step }));
 }
+function wfDetail(id: string) { return wfState[id] ?? Object.values(wfState)[0]; }
+function wfAct(id: string, approve: boolean) {
+  const w = wfState[id];
+  if (!w || w.status !== "OPEN") return { ok: false };
+  const step = w.steps.find((s) => s.step_order === w.current_step);
+  if (step) step.status = approve ? "APPROVED" : "REJECTED";
+  if (!approve) { w.status = "REJECTED"; return { instance_id: id, status: w.status, current_step: w.current_step }; }
+  if (w.current_step < w.steps.length) {
+    w.current_step += 1;
+  } else {
+    w.status = "APPROVED";
+    if (w.workflow_type === "BlueprintApproval") {
+      const b = blueprints.find((x) => x.id === w.entity_id);
+      if (b) b.approval_status = "PUBLISHED";
+    }
+  }
+  return { instance_id: id, status: w.status, current_step: w.current_step };
+}
+// Blueprint approval lifecycle (mutates the shared blueprints array)
+function bpSubmit(id: string) { const b = blueprints.find((x) => x.id === id); if (b) b.approval_status = "UNDER_REVIEW"; return { id, approval_status: b?.approval_status ?? "DRAFT" }; }
+function bpApprove(id: string, publish: boolean) { const b = blueprints.find((x) => x.id === id); if (b) b.approval_status = publish ? "PUBLISHED" : "APPROVED"; return { id, approval_status: b?.approval_status ?? "DRAFT" }; }
 const permRoles = [
   { id: "pr1", role_name: "Enterprise Administrator", role_scope: "Enterprise", description: "Full enterprise configuration and governance." },
   { id: "pr2", role_name: "Company HR Manager", role_scope: "Company", description: "Manage employees, profiles and validations within a company." },
@@ -731,6 +772,8 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   // P-C: assessment blueprints + AI question review
   if (url === "/jobs") return jobs;
   if (url === "/blueprints" && method === "get") return blueprints;
+  if (method === "post" && /^\/blueprints\/[^/]+\/submit$/.test(url)) return bpSubmit(url.split("/")[2]);
+  if (method === "post" && /^\/blueprints\/[^/]+\/approve$/.test(url)) return bpApprove(url.split("/")[2], parseBody(config).publish !== false);
   if (/^\/blueprints\/[^/]+$/.test(url) && method === "get") return blueprintDetail(url.split("/")[2]);
   if (url === "/ai-questions") return aiQuestions;
   if (url === "/scoring-rubrics") return scoringRubrics;
@@ -770,8 +813,22 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   }
   if (method === "post" && /^\/talent\/jobs\/[^/]+\/succession-plan$/.test(url)) return successionPlanFor(url.split("/")[3]);
   if (method === "post" && /^\/talent\/successors\/[^/]+\/decision$/.test(url)) {
-    const approve = (() => { try { return JSON.parse(config.data || "{}").approve !== false; } catch { return true; } })();
-    return { id: url.split("/")[3], recommendation_status: approve ? "APPROVED" : "REJECTED" };
+    const id = url.split("/")[3];
+    const approve = parseBody(config).approve !== false;
+    const status = approve ? "APPROVED" : "REJECTED";
+    successorDecisions[id] = status;
+    const cand = Object.values(TAL_CANDS).flat().find((c) => c.id === id);
+    if (cand) {
+      wfNotifs.unshift({
+        id: "ntf-" + wfSeq++, employee_id: cand.employee_id as string, kind: "SUCCESSION_DECISION",
+        title_en: approve ? "Nominated as a successor" : "Succession nomination declined",
+        title_ar: approve ? "ترشيحك للإحلال" : "لم يُعتمد ترشيح الإحلال",
+        body_en: approve ? "You were approved as a successor candidate for a critical role." : "A succession nomination was returned by governance.",
+        body_ar: approve ? "تم اعتمادك مرشحاً للإحلال في دور حرج." : "أُعيد ترشيح إحلال من الحوكمة.",
+        when: "now", read: false,
+      });
+    }
+    return { id, recommendation_status: status };
   }
   if (method === "post" && url === "/talent/knowledge-holders") {
     const b = (() => { try { return JSON.parse(config.data || "{}"); } catch { return {}; } })();
@@ -857,6 +914,8 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   if (url === "/assessment-campaigns" && method === "get") return axCampaigns;
   if (/^\/assessment-campaigns\/[^/]+$/.test(url) && method === "get") return axCampaignDetail(url.split("/")[2]);
   // P-H development
+  if (url === "/training/programs" && method === "get") return trainingPrograms;
+  if (method === "post" && /^\/training\/programs\/[^/]+\/advance$/.test(url)) return advanceTraining(url.split("/")[2]);
   if (url === "/development/plans" && method === "get") return devPlans;
   if (method === "post" && /^\/development\/plans\/[^/]+\/items\/[^/]+\/complete$/.test(url)) {
     const parts = url.split("/");
@@ -864,9 +923,9 @@ export function demoResponse(config: InternalAxiosRequestConfig): unknown {
   }
   if (/^\/development\/plans\/[^/]+$/.test(url) && method === "get") return devPlanDetail(url.split("/")[3]);
   // P-K workflows + permissions
-  if (url === "/workflows" && method === "get") return wfInstances;
+  if (url === "/workflows" && method === "get") return wfList();
   if (/^\/workflows\/[^/]+$/.test(url) && method === "get") return wfDetail(url.split("/")[2]);
-  if (method === "post" && /^\/workflows\/[^/]+\/act$/.test(url)) return { instance_id: url.split("/")[2], status: "OPEN", current_step: 3 };
+  if (method === "post" && /^\/workflows\/[^/]+\/act$/.test(url)) return wfAct(url.split("/")[2], parseBody(config).approve !== false);
   if (url === "/permission-roles" && method === "get") return permRoles;
   // P-L AI lifecycle
   if (url === "/ai/requests" && method === "get") return aiRequests;

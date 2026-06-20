@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { GitBranch } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CheckCircle2, GitBranch, XCircle } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -15,6 +15,7 @@ const SS: Record<string, "green" | "amber" | "red" | "slate"> = { APPROVED: "gre
 
 export default function Workflows() {
   const { t } = useTranslation();
+  const qc = useQueryClient();
   const [sel, setSel] = useState<string | null>(null);
   const { data: list, isLoading } = useQuery<Instance[]>({
     queryKey: ["workflows"], queryFn: async () => (await api.get("/workflows")).data,
@@ -26,6 +27,14 @@ export default function Workflows() {
   const { data: detail } = useQuery<Detail>({
     queryKey: ["workflow", activeId], enabled: !!activeId,
     queryFn: async () => (await api.get(`/workflows/${activeId}`)).data,
+  });
+  const act = useMutation({
+    mutationFn: async (approve: boolean) => (await api.post(`/workflows/${activeId}/act`, { approve })).data,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["workflows"] });
+      qc.invalidateQueries({ queryKey: ["workflow", activeId] });
+      qc.invalidateQueries({ queryKey: ["blueprints"] });
+    },
   });
   if (isLoading || !list) return <PageSkeleton />;
 
@@ -59,6 +68,26 @@ export default function Workflows() {
                   </li>
                 ))}
               </ol>
+              {detail.status === "OPEN" ? (
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
+                  <span className="text-xs text-ink-muted me-auto">{t("workflows.actHint")}</span>
+                  <button className="btn bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-3 text-xs" disabled={act.isPending}
+                          onClick={() => act.mutate(true)}>
+                    <CheckCircle2 size={14} /> {t("workflows.approveStep")}
+                  </button>
+                  <button className="btn bg-red-500 hover:bg-red-600 text-white py-1.5 px-3 text-xs" disabled={act.isPending}
+                          onClick={() => act.mutate(false)}>
+                    <XCircle size={14} /> {t("workflows.rejectStep")}
+                  </button>
+                </div>
+              ) : (
+                <div className="mt-4 pt-3 border-t border-slate-100">
+                  <Badge tone={detail.status === "APPROVED" ? "green" : "red"}>{t(`workflows.ss_${detail.status === "APPROVED" ? "APPROVED" : "REJECTED"}`)}</Badge>
+                  {detail.status === "APPROVED" && detail.workflow_type === "BlueprintApproval" && (
+                    <span className="ms-2 text-xs text-emerald-700">{t("workflows.published")}</span>
+                  )}
+                </div>
+              )}
             </Card>
           )}
           <Card>

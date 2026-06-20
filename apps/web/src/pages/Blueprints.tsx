@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, FileStack, RotateCcw, Sparkles, XCircle } from "lucide-react";
+import { BadgeCheck, CheckCircle2, FileStack, RotateCcw, Send, Sparkles, XCircle } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -63,6 +63,14 @@ export default function Blueprints() {
   const generate = useMutation({
     mutationFn: async () => (await api.post(`/blueprints/${activeId}/generate-questions`)).data,
     onSuccess: () => qc.invalidateQueries({ queryKey: ["ai-questions", activeId] }),
+  });
+  const lifecycle = useMutation({
+    mutationFn: async (action: "submit" | "approve") =>
+      (await api.post(`/blueprints/${activeId}/${action}`, action === "approve" ? { publish: true } : {})).data,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["blueprints"] });
+      qc.invalidateQueries({ queryKey: ["blueprint", activeId] });
+    },
   });
   const review = useMutation({
     mutationFn: async ({ id, decision }: { id: string; decision: string }) =>
@@ -128,6 +136,25 @@ export default function Blueprints() {
                 {detail.scoring_rubric && <Badge tone="blue">{t("blueprint.rubric")}: {detail.scoring_rubric.model}</Badge>}
                 <Badge tone="slate">{t("blueprint.pass")} {Math.round(detail.passing_threshold * 100)}%</Badge>
                 <Badge tone="slate">{t("blueprint.readyAt")} {Math.round(detail.readiness_threshold * 100)}%</Badge>
+                <Badge tone={STATUS_TONE[detail.approval_status] ?? "slate"}>{detail.approval_status}</Badge>
+              </div>
+
+              <div className="mb-3">
+                {detail.approval_status === "DRAFT" && (
+                  <button className="btn-primary py-1.5 px-3 text-xs" disabled={lifecycle.isPending}
+                          onClick={() => lifecycle.mutate("submit")}>
+                    <Send size={14} /> {t("blueprint.submit")}
+                  </button>
+                )}
+                {(detail.approval_status === "UNDER_REVIEW" || detail.approval_status === "APPROVED") && (
+                  <button className="btn bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-3 text-xs" disabled={lifecycle.isPending}
+                          onClick={() => lifecycle.mutate("approve")}>
+                    <BadgeCheck size={14} /> {t("blueprint.publish")}
+                  </button>
+                )}
+                {detail.approval_status === "PUBLISHED" && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700"><BadgeCheck size={14} /> {t("blueprint.published")}</span>
+                )}
               </div>
 
               <div className="overflow-x-auto">

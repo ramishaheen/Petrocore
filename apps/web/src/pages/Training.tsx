@@ -7,7 +7,7 @@ import { Badge, Card, EmptyState, PageHeader, PageSkeleton } from "../components
 import { api } from "../lib/api";
 
 interface Cohort { competency_id: string; target_level: number; learners: string[]; size: number; }
-interface Program { id: string; title_en: string; title_ar: string; method: string; provider: string; impact_kpi: string; }
+interface Program { id: string; title_en: string; title_ar: string; method: string; provider: string; impact_kpi: string; stage: string; closure: number; }
 interface Need { need_id: string; competency_id: string; target_level: number; priority: string; }
 
 function Stage({ n, label, icon: Icon }: { n: number; label: string; icon: typeof Target }) {
@@ -35,6 +35,10 @@ export default function Training() {
   });
   const designProgram = useMutation({
     mutationFn: async (c: Cohort) => api.post("/training/programs", { competency_id: c.competency_id, target_level: c.target_level }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["programs"] }),
+  });
+  const advance = useMutation({
+    mutationFn: async (id: string) => api.post(`/training/programs/${id}/advance`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["programs"] }),
   });
 
@@ -79,12 +83,29 @@ export default function Training() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {(programs.data ?? []).map((p) => (
               <div key={p.id} className="rounded-xl border border-slate-100 p-3">
-                <div className="font-medium text-ink">{ar ? p.title_ar : p.title_en}</div>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="font-medium text-ink">{ar ? p.title_ar : p.title_en}</div>
+                  <Badge tone={p.stage === "AFTER" ? "green" : p.stage === "DURING" ? "amber" : "slate"}>{t(`workspace.stage_${p.stage}`)}</Badge>
+                </div>
                 <div className="mt-1 flex flex-wrap gap-1.5">
                   <Badge tone="green">{p.method}</Badge>
                   <Badge tone="slate">{p.provider}</Badge>
                   <Badge tone="gold">KPI: {p.impact_kpi}</Badge>
                 </div>
+                <div className="mt-2">
+                  <div className="flex justify-between text-[11px] text-ink-muted mb-1">
+                    <span>{t("training.gapClosure")}</span><span className="tabular-nums">{p.closure}%</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                    <div className="h-full bg-petro" style={{ width: `${p.closure}%` }} />
+                  </div>
+                </div>
+                {p.stage !== "AFTER" && (
+                  <button onClick={() => advance.mutate(p.id)} disabled={advance.isPending}
+                          className="btn-soft py-1 px-2.5 text-xs mt-2.5">
+                    <PlayCircle size={13} /> {t("training.advanceStage")}
+                  </button>
+                )}
               </div>
             ))}
           </div>
