@@ -227,3 +227,68 @@
   border: 1px solid rgba(143,180,214,0.35); border-radius: 100px; padding: 3px 9px; }
 .qv-actions .btn { cursor: pointer; }
 .card-name.serif { font-size: 1.5rem; }
+
+/* ===== HORO PRIVÉ — assurance strip, animated ===== */
+.assurance-grid .assure {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.55s var(--ease), border-color 0.55s ease, box-shadow 0.55s ease, background 0.55s ease;
+  will-change: transform;
+}
+/* Diagonal gold sheen that sweeps across on hover */
+.assurance-grid .assure::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -60%;
+  width: 45%; height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(236,212,154,0.14), transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+  transition: left 0.85s var(--ease);
+}
+.assurance-grid .assure:hover {
+  transform: translateY(-8px);
+  border-color: rgba(200,162,76,0.42);
+  background: linear-gradient(180deg, rgba(24,20,12,0.55), rgba(13,19,32,0.32));
+  box-shadow: 0 22px 50px -26px rgba(0,0,0,0.75), 0 0 0 1px rgba(200,162,76,0.12), 0 0 34px -18px rgba(236,212,154,0.4);
+}
+.assurance-grid .assure:hover::before { left: 130%; }
+
+/* Icon: gentle continuous float + a lift and glow on hover */
+.assure .ai {
+  display: inline-block;
+  transition: transform 0.55s var(--ease), color 0.55s ease, text-shadow 0.55s ease;
+  animation: aiFloat 5s ease-in-out infinite;
+}
+.assure.d1 .ai { animation-delay: -1.2s; }
+.assure.d2 .ai { animation-delay: -2.4s; }
+.assure.d3 .ai { animation-delay: -3.6s; }
+.assure:hover .ai {
+  transform: translateY(-4px) scale(1.12);
+  color: var(--flame-2);
+  text-shadow: 0 0 22px rgba(236,212,154,0.55);
+}
+@keyframes aiFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-6px) rotate(-3deg); }
+}
+
+/* Heading gets a gold underline that grows on hover */
+.assure h3 { position: relative; display: inline-block; }
+.assure h3::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -5px;
+  width: 0; height: 1px;
+  background: linear-gradient(90deg, var(--flame), var(--flame-2));
+  transition: width 0.55s var(--ease);
+}
+.assure:hover h3::after { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .assure .ai { animation: none; }
+  .assurance-grid .assure,
+  .assurance-grid .assure::before,
+  .assure .ai,
+  .assure h3::after { transition: none; }
+}
